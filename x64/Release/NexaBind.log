@@ -1,0 +1,276 @@
+﻿  SystemXMLReader.cpp
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CMAPTorsionForce.h(65,25): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CMAPTorsionForce.h(71,29): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomBondForce.h(98,26): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomBondForce.h(104,31): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomBondForce.h(110,37): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomBondForce.h(117,47): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomCentroidBondForce.h(154,27): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomCentroidBondForce.h(160,26): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomCentroidBondForce.h(166,35): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomCentroidBondForce.h(172,37): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomCentroidBondForce.h(179,47): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomCentroidBondForce.h(185,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomCentroidBondForce.h(193,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomCompoundBondForce.h(148,26): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomCompoundBondForce.h(154,35): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomCompoundBondForce.h(160,37): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomCompoundBondForce.h(167,47): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomCompoundBondForce.h(173,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomCompoundBondForce.h(181,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomAngleForce.h(98,27): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomAngleForce.h(104,31): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomAngleForce.h(110,37): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomAngleForce.h(117,47): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomTorsionForce.h(108,29): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomTorsionForce.h(114,31): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomTorsionForce.h(120,37): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomTorsionForce.h(127,47): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomExternalForce.h(110,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomExternalForce.h(116,31): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomExternalForce.h(122,37): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomCVForce.h(88,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomCVForce.h(94,37): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomCVForce.h(101,47): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomCVForce.h(107,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomGBForce.h(197,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomGBForce.h(203,31): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomGBForce.h(209,31): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomGBForce.h(215,37): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomGBForce.h(222,47): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomGBForce.h(228,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomGBForce.h(236,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomGBForce.h(242,35): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomGBForce.h(248,32): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomHbondForce.h(142,27): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomHbondForce.h(148,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomHbondForce.h(154,31): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomHbondForce.h(160,36): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomHbondForce.h(166,39): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomHbondForce.h(172,37): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomHbondForce.h(178,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomHbondForce.h(186,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomIntegrator.h(393,32): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomIntegrator.h(399,32): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomIntegrator.h(405,33): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomIntegrator.h(411,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomManyParticleForce.h(250,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomManyParticleForce.h(256,31): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomManyParticleForce.h(262,39): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomManyParticleForce.h(268,37): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomManyParticleForce.h(274,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomNonbondedForce.h(199,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomNonbondedForce.h(205,31): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomNonbondedForce.h(211,31): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomNonbondedForce.h(217,37): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomNonbondedForce.h(223,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomNonbondedForce.h(231,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomNonbondedForce.h(237,35): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomNonbondedForce.h(243,38): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\CustomNonbondedForce.h(250,47): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\System.h(77,27): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\System.h(90,29): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\System.h(140,32): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\System.h(187,29): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\System.h(193,27): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\GayBerneForce.h(110,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\GayBerneForce.h(116,31): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\GBSAOBCForce.h(87,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\HarmonicAngleForce.h(60,27): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\HarmonicBondForce.h(60,26): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\NonbondedForce.h(157,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\NonbondedForce.h(163,31): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\NonbondedForce.h(169,37): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\NonbondedForce.h(175,36): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\NonbondedForce.h(181,37): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\PeriodicTorsionForce.h(60,37): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\RBTorsionForce.h(60,31): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\NoseHooverIntegrator.h(190,37): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\ATMForce.h(181,30): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\ATMForce.h(187,27): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\ATMForce.h(193,37): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include\openmm\ATMForce.h(200,47): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file 'SystemXMLReader.cpp')
+  
+LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/OPT:ICF' specification
+  NexaBind.vcxproj -> C:\Users\oj53\source\repos\2_20_2024_nexabind_prototype_with_openmm_in_cpp\x64\Release\NexaBind.exe
