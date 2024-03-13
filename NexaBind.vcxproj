@@ -67,6 +67,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Users\oj53\anaconda3\envs\installed_openmm\Library\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -89,10 +90,13 @@
     <ClCompile>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>C:\Users\oj53\source\repos\2_20_2024_nexabind_prototype_with_openmm_in_cpp\NexaBind_BackEnd\core\pugixml-1.14\src;C:\Users\oj53\source\repos\2_20_2024_nexabind_prototype_with_openmm_in_cpp\NexaBind_BackEnd\core\baseline\headers\Forces;C:\Users\oj53\source\repos\2_20_2024_nexabind_prototype_with_openmm_in_cpp\NexaBind_BackEnd\core\baseline\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>C:\Users\oj53\anaconda3\envs\installed_openmm\Library\lib\OpenMM.lib;C:\Users\oj53\source\repos\2_20_2024_nexabind_prototype_with_openmm_in_cpp\NexaBind_BackEnd\core\pugixml-1.14\build\Debug\pugixml.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\oj53\source\repos\2_20_2024_nexabind_prototype_with_openmm_in_cpp\NexaBind_BackEnd\core\pugixml-1.14\build\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -111,26 +115,30 @@
     <ClCompile>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\oj53\source\repos\2_20_2024_nexabind_prototype_with_openmm_in_cpp\NexaBind_BackEnd\core\baseline\headers\Forces;C:\Users\oj53\source\repos\2_20_2024_nexabind_prototype_with_openmm_in_cpp\NexaBind_BackEnd\core\baseline\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>C:\Users\oj53\anaconda3\envs\installed_openmm\Library\lib\OpenMM.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="SystemXMLReader.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="core\baseline\headers\Dynamics.h" />
-    <ClInclude Include="core\baseline\headers\VerletIntegration.h" />
-  </ItemGroup>
-  <ItemGroup>
+    <Xml Include="state.xml" />
     <Xml Include="system.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="core\baseline\headers\Coords3D.h" />
+    <ClInclude Include="core\baseline\headers\OpenMMSystemStateXMLLoader.h" />
+    <ClInclude Include="core\baseline\headers\SystemStateXMLParser.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="core\baseline\src\OpenMMSystemStateXMLLoader.cpp" />
+    <ClCompile Include="core\baseline\src\SystemStateXMLParser.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

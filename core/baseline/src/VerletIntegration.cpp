@@ -1,13 +1,13 @@
 #include <cstring>
 #include <sstream>
 #include <cstdio>
-
 #include "VerletIntegration.h"
 
 
-void VerletIntegration::update(const OpenMM::System& system, vector<Vec3>& atomCoordinates,
-    vector<Vec3>& velocities,
-    vector<Vec3>& forces, vector<double>& masses, double tolerance) {
+using namespace BaseLine
+
+void VerletIntegration::update(const System& system, vector<Coord3D>& atomCoordinates, vector<Coord3D>& velocities, vector<Coord3D>& forces, vector<double>& masses, double tolerance) {
+
     // first-time-through initialization
 
     int numberOfAtoms = system.getNumParticles();
@@ -32,3 +32,6 @@ void VerletIntegration::update(const OpenMM::System& system, vector<Vec3>& atomC
             }
     }
 }
+
+
+

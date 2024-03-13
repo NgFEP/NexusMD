@@ -1,0 +1,546 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\Forces\\PeriodicTorsionForce.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:core\\baseline\\headers\\Forces\\PeriodicTorsionForce.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\Forces\\PeriodicTorsionForcedraft.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:core\\baseline\\headers\\Forces\\PeriodicTorsionForcedraft.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\Forces\\PeriodicTorsionForcedraft.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:core\\baseline\\src\\Forces\\PeriodicTorsionForcedraft.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D1A502DB-2A10-4DA1-8682-347FDD8FAF5E}|NexaBind.vcxproj|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\SystemStateXMLParser.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{D1A502DB-2A10-4DA1-8682-347FDD8FAF5E}|NexaBind.vcxproj|solutionrelative:core\\baseline\\src\\SystemStateXMLParser.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D1A502DB-2A10-4DA1-8682-347FDD8FAF5E}|NexaBind.vcxproj|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\SystemStateXMLParser.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{D1A502DB-2A10-4DA1-8682-347FDD8FAF5E}|NexaBind.vcxproj|solutionrelative:core\\baseline\\headers\\SystemStateXMLParser.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D1A502DB-2A10-4DA1-8682-347FDD8FAF5E}|NexaBind.vcxproj|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\Coords3D.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{D1A502DB-2A10-4DA1-8682-347FDD8FAF5E}|NexaBind.vcxproj|solutionrelative:core\\baseline\\headers\\Coords3D.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\Forces\\DihedralBondForce2.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:core\\baseline\\src\\Forces\\DihedralBondForce2.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\Forces\\DihedralBondForce.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:core\\baseline\\src\\Forces\\DihedralBondForce.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\ForceCalculator.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:core\\baseline\\src\\ForceCalculator.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\ForceCalculator.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:core\\baseline\\headers\\ForceCalculator.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\VerletIntegration.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:core\\baseline\\src\\VerletIntegration.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\Engine.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:core\\baseline\\src\\Engine.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D1A502DB-2A10-4DA1-8682-347FDD8FAF5E}|NexaBind.vcxproj|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\system.xml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{D1A502DB-2A10-4DA1-8682-347FDD8FAF5E}|NexaBind.vcxproj|solutionrelative:system.xml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D1A502DB-2A10-4DA1-8682-347FDD8FAF5E}|NexaBind.vcxproj|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\OpenMMSystemStateXMLLoader.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{D1A502DB-2A10-4DA1-8682-347FDD8FAF5E}|NexaBind.vcxproj|solutionrelative:core\\baseline\\src\\OpenMMSystemStateXMLLoader.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D1A502DB-2A10-4DA1-8682-347FDD8FAF5E}|NexaBind.vcxproj|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\OpenMMSystemStateXMLLoader.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{D1A502DB-2A10-4DA1-8682-347FDD8FAF5E}|NexaBind.vcxproj|solutionrelative:core\\baseline\\headers\\OpenMMSystemStateXMLLoader.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\Forces\\NonbondedForce.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:core\\baseline\\headers\\Forces\\NonbondedForce.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\OpenMMSystemXMLLoader.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:core\\baseline\\src\\OpenMMSystemXMLLoader.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\Forces\\DihedralBondForce2.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:core\\baseline\\headers\\Forces\\DihedralBondForce2.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\Forces\\DihedralBondForce.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:core\\baseline\\headers\\Forces\\DihedralBondForce.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D1A502DB-2A10-4DA1-8682-347FDD8FAF5E}|NexaBind.vcxproj|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\state.xml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{D1A502DB-2A10-4DA1-8682-347FDD8FAF5E}|NexaBind.vcxproj|solutionrelative:state.xml||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\test.py||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:test.py||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\SystemStateXMLgenerator.py||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:SystemStateXMLgenerator.py||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\SystemXMLgenerator.py||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:SystemXMLgenerator.py||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\oj53\\anaconda3\\envs\\installed_openmm\\Library\\include\\openmm\\ATMForce.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\VerletIntegration.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:core\\baseline\\headers\\VerletIntegration.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\SystemXMLReader.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:SystemXMLReader.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\oj53\\anaconda3\\envs\\installed_openmm\\Library\\include\\OpenMM.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 100,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:16:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "PeriodicTorsionForce.h",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\Forces\\PeriodicTorsionForce.h",
+              "RelativeDocumentMoniker": "core\\baseline\\headers\\Forces\\PeriodicTorsionForce.h",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\Forces\\PeriodicTorsionForce.h",
+              "RelativeToolTip": "core\\baseline\\headers\\Forces\\PeriodicTorsionForce.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB8AAAAgAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-03-13T14:28:11.139Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:11:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:9:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:4:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:18:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:19:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:20:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:21:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:17:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:15:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:13:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:14:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:10:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:8:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:2:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:3:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{08a1bf1d-7967-4afc-8253-1790862ab8c9}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:7:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:6:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:5:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ForceCalculator.cpp",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\ForceCalculator.cpp",
+              "RelativeDocumentMoniker": "core\\baseline\\src\\ForceCalculator.cpp",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\ForceCalculator.cpp",
+              "RelativeToolTip": "core\\baseline\\src\\ForceCalculator.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-03-12T14:31:52.825Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "ForceCalculator.h",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\ForceCalculator.h",
+              "RelativeDocumentMoniker": "core\\baseline\\headers\\ForceCalculator.h",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\ForceCalculator.h",
+              "RelativeToolTip": "core\\baseline\\headers\\ForceCalculator.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-03-12T14:31:42.706Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Engine.cpp",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\Engine.cpp",
+              "RelativeDocumentMoniker": "core\\baseline\\src\\Engine.cpp",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\Engine.cpp",
+              "RelativeToolTip": "core\\baseline\\src\\Engine.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-03-12T14:29:07.985Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "SystemStateXMLParser.cpp",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\SystemStateXMLParser.cpp",
+              "RelativeDocumentMoniker": "core\\baseline\\src\\SystemStateXMLParser.cpp",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\SystemStateXMLParser.cpp",
+              "RelativeToolTip": "core\\baseline\\src\\SystemStateXMLParser.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACgAAAAdAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-03-11T17:43:22.877Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PeriodicTorsionForcedraft.h",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\Forces\\PeriodicTorsionForcedraft.h",
+              "RelativeDocumentMoniker": "core\\baseline\\headers\\Forces\\PeriodicTorsionForcedraft.h",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\Forces\\PeriodicTorsionForcedraft.h",
+              "RelativeToolTip": "core\\baseline\\headers\\Forces\\PeriodicTorsionForcedraft.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABMAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-03-08T16:31:30.967Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "NonbondedForce.h",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\Forces\\NonbondedForce.h",
+              "RelativeDocumentMoniker": "core\\baseline\\headers\\Forces\\NonbondedForce.h",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\Forces\\NonbondedForce.h",
+              "RelativeToolTip": "core\\baseline\\headers\\Forces\\NonbondedForce.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-03-08T16:31:28.891Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PeriodicTorsionForcedraft.cpp",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\Forces\\PeriodicTorsionForcedraft.cpp",
+              "RelativeDocumentMoniker": "core\\baseline\\src\\Forces\\PeriodicTorsionForcedraft.cpp",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\Forces\\PeriodicTorsionForcedraft.cpp",
+              "RelativeToolTip": "core\\baseline\\src\\Forces\\PeriodicTorsionForcedraft.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABkAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-03-08T16:30:24.559Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "OpenMMSystemXMLLoader.cpp",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\OpenMMSystemXMLLoader.cpp",
+              "RelativeDocumentMoniker": "core\\baseline\\src\\OpenMMSystemXMLLoader.cpp",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\OpenMMSystemXMLLoader.cpp",
+              "RelativeToolTip": "core\\baseline\\src\\OpenMMSystemXMLLoader.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-03-08T15:25:20.655Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "OpenMM.h",
+              "DocumentMoniker": "C:\\Users\\oj53\\anaconda3\\envs\\installed_openmm\\Library\\include\\OpenMM.h",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\anaconda3\\envs\\installed_openmm\\Library\\include\\OpenMM.h",
+              "ToolTip": "C:\\Users\\oj53\\anaconda3\\envs\\installed_openmm\\Library\\include\\OpenMM.h",
+              "RelativeToolTip": "..\\..\\..\\..\\anaconda3\\envs\\installed_openmm\\Library\\include\\OpenMM.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-03-07T18:26:08.57Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "DihedralBondForce.cpp",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\Forces\\DihedralBondForce.cpp",
+              "RelativeDocumentMoniker": "core\\baseline\\src\\Forces\\DihedralBondForce.cpp",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\Forces\\DihedralBondForce.cpp",
+              "RelativeToolTip": "core\\baseline\\src\\Forces\\DihedralBondForce.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-03-07T17:09:59.084Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "DihedralBondForce.h",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\Forces\\DihedralBondForce.h",
+              "RelativeDocumentMoniker": "core\\baseline\\headers\\Forces\\DihedralBondForce.h",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\Forces\\DihedralBondForce.h",
+              "RelativeToolTip": "core\\baseline\\headers\\Forces\\DihedralBondForce.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-03-07T17:02:26.009Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "DihedralBondForce2.cpp",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\Forces\\DihedralBondForce2.cpp",
+              "RelativeDocumentMoniker": "core\\baseline\\src\\Forces\\DihedralBondForce2.cpp",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\Forces\\DihedralBondForce2.cpp",
+              "RelativeToolTip": "core\\baseline\\src\\Forces\\DihedralBondForce2.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACsAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-03-06T18:33:55.164Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "DihedralBondForce2.h",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\Forces\\DihedralBondForce2.h",
+              "RelativeDocumentMoniker": "core\\baseline\\headers\\Forces\\DihedralBondForce2.h",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\Forces\\DihedralBondForce2.h",
+              "RelativeToolTip": "core\\baseline\\headers\\Forces\\DihedralBondForce2.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-03-06T18:33:50.907Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "SystemStateXMLgenerator.py",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\SystemStateXMLgenerator.py",
+              "RelativeDocumentMoniker": "SystemStateXMLgenerator.py",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\SystemStateXMLgenerator.py",
+              "RelativeToolTip": "SystemStateXMLgenerator.py",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAMuSURBVDhPrVTPTxNREP627e7SQm0F2mKLUEVICP5IMBqUhB6NJ4/GGGPwoIf\u002BCR7VxBBPhnAxAeVC4kEuJB6Qi0Y8oCGKpoKQUpEWAhX6c7vb3X1Ol5UauzEc/JLJm31v3pdv5u0M/isYY5zpGohEIs8GBgZu8Dxv7tQik8mwbDb7YGpq6lEqlcqa2/twmOs\u002BBgcHEQgEzK9azMzMsHg8fsdut7Pp6enHKysrafPIQA1hBRRkelUQAcLhMEi9jTLxdnZ23pZl2elwOIYWFxe3zTBrwmAwaHpVcFy1OoIg8P39/c1Efo3KJquq\u002BpBEFCpnNiPiL9CFGvtd14rSyclJDA8P22dnZ1tcLlevKIp\u002B45BgqXBpacn0qqDUQGniXN9F9J6/AIeNg1TIyaOjo9/NEAOWhN3d3aZXRV5W8Sq2jY2sBElSwFNuR9x2x5HWtkabrZrogRXKDUEsb\u002BSxmSlg7tsG1LICX4PAX\u002Blpbff7/Q1mmHUNK6/5t2WKKt4uphBbS0NXy2QasvkiV1RtTrfb7TKvWhNWoGkaNHD4ulXGxNwmPibSOH3Ui95wI5rqeahESq8Ln7dwavLpjXe69HlB1/U2y5RXV1eNdb3E48VCDuvpHF1WoJWJhEyjdHWNVNKvJHBbgDQPlOZ74Ls7ZKmwq6vLsCKrw\u002BZu3lCjl1UquA6P0wGPi4eX7EzYhdNB6j5NoiL/AJS1S5YKY7GYsa6tS5BlUkOptTU6EI1IcNp3aQboNAh0eIUdhJybgFrcI9V2Pf9U2B4KQKCIisLbEQFnWz6gx7eMk/4VnGyOobU\u002BDk79SQF5IqNG4YM7loSKohjWfljE8WYn3KIdvkM6OKYBukIEMq2kkj7BiIJRF9Wd0iCEnlimnEwmjVUkuxU5jgzdD3jooUpEppWosT1kTlJE/S127UA89gV1J76Nj48PWRJ2dHSY3h4qg0HUkwz5AmcQajRc6vtIGRHam9aev1y/9/r1xNuRkZFiDeHY2Nj\u002BIPgTN69fThwVQ2Eon4iQHiD3HqzhPNOcvek3b\u002B7HK2Rm6MFAY\u002BoQ08uPWCmRYvl5ncnJBO29JLsajUbDe1HAL6CnYE1YMsFsAAAAAElFTkSuQmCC",
+              "WhenOpened": "2024-03-05T19:41:47.881Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "VerletIntegration.h",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\VerletIntegration.h",
+              "RelativeDocumentMoniker": "core\\baseline\\headers\\VerletIntegration.h",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\VerletIntegration.h",
+              "RelativeToolTip": "core\\baseline\\headers\\VerletIntegration.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAASAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-02-21T18:25:55.663Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "VerletIntegration.cpp",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\VerletIntegration.cpp",
+              "RelativeDocumentMoniker": "core\\baseline\\src\\VerletIntegration.cpp",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\VerletIntegration.cpp",
+              "RelativeToolTip": "core\\baseline\\src\\VerletIntegration.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-02-21T17:07:45.763Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "ATMForce.h",
+              "DocumentMoniker": "C:\\Users\\oj53\\anaconda3\\envs\\installed_openmm\\Library\\include\\openmm\\ATMForce.h",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\anaconda3\\envs\\installed_openmm\\Library\\include\\openmm\\ATMForce.h",
+              "ToolTip": "C:\\Users\\oj53\\anaconda3\\envs\\installed_openmm\\Library\\include\\openmm\\ATMForce.h",
+              "RelativeToolTip": "..\\..\\..\\..\\anaconda3\\envs\\installed_openmm\\Library\\include\\openmm\\ATMForce.h",
+              "ViewState": "AQIAAJYBAAAAAAAAAADgv7cBAAAEAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-02-20T20:38:43.67Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "SystemXMLReader.cpp",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\SystemXMLReader.cpp",
+              "RelativeDocumentMoniker": "SystemXMLReader.cpp",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\SystemXMLReader.cpp",
+              "RelativeToolTip": "SystemXMLReader.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-02-21T17:06:57.74Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "SystemXMLgenerator.py",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\SystemXMLgenerator.py",
+              "RelativeDocumentMoniker": "SystemXMLgenerator.py",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\SystemXMLgenerator.py",
+              "RelativeToolTip": "SystemXMLgenerator.py",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAAA4AAAAAAAAA",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAMuSURBVDhPrVTPTxNREP627e7SQm0F2mKLUEVICP5IMBqUhB6NJ4/GGGPwoIf\u002BCR7VxBBPhnAxAeVC4kEuJB6Qi0Y8oCGKpoKQUpEWAhX6c7vb3X1Ol5UauzEc/JLJm31v3pdv5u0M/isYY5zpGohEIs8GBgZu8Dxv7tQik8mwbDb7YGpq6lEqlcqa2/twmOs\u002BBgcHEQgEzK9azMzMsHg8fsdut7Pp6enHKysrafPIQA1hBRRkelUQAcLhMEi9jTLxdnZ23pZl2elwOIYWFxe3zTBrwmAwaHpVcFy1OoIg8P39/c1Efo3KJquq\u002BpBEFCpnNiPiL9CFGvtd14rSyclJDA8P22dnZ1tcLlevKIp\u002B45BgqXBpacn0qqDUQGniXN9F9J6/AIeNg1TIyaOjo9/NEAOWhN3d3aZXRV5W8Sq2jY2sBElSwFNuR9x2x5HWtkabrZrogRXKDUEsb\u002BSxmSlg7tsG1LICX4PAX\u002Blpbff7/Q1mmHUNK6/5t2WKKt4uphBbS0NXy2QasvkiV1RtTrfb7TKvWhNWoGkaNHD4ulXGxNwmPibSOH3Ui95wI5rqeahESq8Ln7dwavLpjXe69HlB1/U2y5RXV1eNdb3E48VCDuvpHF1WoJWJhEyjdHWNVNKvJHBbgDQPlOZ74Ls7ZKmwq6vLsCKrw\u002BZu3lCjl1UquA6P0wGPi4eX7EzYhdNB6j5NoiL/AJS1S5YKY7GYsa6tS5BlUkOptTU6EI1IcNp3aQboNAh0eIUdhJybgFrcI9V2Pf9U2B4KQKCIisLbEQFnWz6gx7eMk/4VnGyOobU\u002BDk79SQF5IqNG4YM7loSKohjWfljE8WYn3KIdvkM6OKYBukIEMq2kkj7BiIJRF9Wd0iCEnlimnEwmjVUkuxU5jgzdD3jooUpEppWosT1kTlJE/S127UA89gV1J76Nj48PWRJ2dHSY3h4qg0HUkwz5AmcQajRc6vtIGRHam9aev1y/9/r1xNuRkZFiDeHY2Nj\u002BIPgTN69fThwVQ2Eon4iQHiD3HqzhPNOcvek3b\u002B7HK2Rm6MFAY\u002BoQ08uPWCmRYvl5ncnJBO29JLsajUbDe1HAL6CnYE1YMsFsAAAAAElFTkSuQmCC",
+              "WhenOpened": "2024-02-21T17:06:57.816Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "test.py",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\test.py",
+              "RelativeDocumentMoniker": "test.py",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\test.py",
+              "RelativeToolTip": "test.py",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAAAAAA",
+              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAMuSURBVDhPrVTPTxNREP627e7SQm0F2mKLUEVICP5IMBqUhB6NJ4/GGGPwoIf\u002BCR7VxBBPhnAxAeVC4kEuJB6Qi0Y8oCGKpoKQUpEWAhX6c7vb3X1Ol5UauzEc/JLJm31v3pdv5u0M/isYY5zpGohEIs8GBgZu8Dxv7tQik8mwbDb7YGpq6lEqlcqa2/twmOs\u002BBgcHEQgEzK9azMzMsHg8fsdut7Pp6enHKysrafPIQA1hBRRkelUQAcLhMEi9jTLxdnZ23pZl2elwOIYWFxe3zTBrwmAwaHpVcFy1OoIg8P39/c1Efo3KJquq\u002BpBEFCpnNiPiL9CFGvtd14rSyclJDA8P22dnZ1tcLlevKIp\u002B45BgqXBpacn0qqDUQGniXN9F9J6/AIeNg1TIyaOjo9/NEAOWhN3d3aZXRV5W8Sq2jY2sBElSwFNuR9x2x5HWtkabrZrogRXKDUEsb\u002BSxmSlg7tsG1LICX4PAX\u002Blpbff7/Q1mmHUNK6/5t2WKKt4uphBbS0NXy2QasvkiV1RtTrfb7TKvWhNWoGkaNHD4ulXGxNwmPibSOH3Ui95wI5rqeahESq8Ln7dwavLpjXe69HlB1/U2y5RXV1eNdb3E48VCDuvpHF1WoJWJhEyjdHWNVNKvJHBbgDQPlOZ74Ls7ZKmwq6vLsCKrw\u002BZu3lCjl1UquA6P0wGPi4eX7EzYhdNB6j5NoiL/AJS1S5YKY7GYsa6tS5BlUkOptTU6EI1IcNp3aQboNAh0eIUdhJybgFrcI9V2Pf9U2B4KQKCIisLbEQFnWz6gx7eMk/4VnGyOobU\u002BDk79SQF5IqNG4YM7loSKohjWfljE8WYn3KIdvkM6OKYBukIEMq2kkj7BiIJRF9Wd0iCEnlimnEwmjVUkuxU5jgzdD3jooUpEppWosT1kTlJE/S127UA89gV1J76Nj48PWRJ2dHSY3h4qg0HUkwz5AmcQajRc6vtIGRHam9aev1y/9/r1xNuRkZFiDeHY2Nj\u002BIPgTN69fThwVQ2Eon4iQHiD3HqzhPNOcvek3b\u002B7HK2Rm6MFAY\u002BoQ08uPWCmRYvl5ncnJBO29JLsajUbDe1HAL6CnYE1YMsFsAAAAAElFTkSuQmCC",
+              "WhenOpened": "2024-02-21T17:06:57.651Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "SystemStateXMLParser.h",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\SystemStateXMLParser.h",
+              "RelativeDocumentMoniker": "core\\baseline\\headers\\SystemStateXMLParser.h",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\SystemStateXMLParser.h",
+              "RelativeToolTip": "core\\baseline\\headers\\SystemStateXMLParser.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAATAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-03-11T17:44:48.355Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "system.xml",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\system.xml",
+              "RelativeDocumentMoniker": "system.xml",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\system.xml",
+              "RelativeToolTip": "system.xml",
+              "ViewState": "AQIAAIciAAAAAAAAAAAkwNSUAABOAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003576|",
+              "WhenOpened": "2024-03-08T16:42:00.75Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "OpenMMSystemStateXMLLoader.cpp",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\OpenMMSystemStateXMLLoader.cpp",
+              "RelativeDocumentMoniker": "core\\baseline\\src\\OpenMMSystemStateXMLLoader.cpp",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\src\\OpenMMSystemStateXMLLoader.cpp",
+              "RelativeToolTip": "core\\baseline\\src\\OpenMMSystemStateXMLLoader.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAAKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-03-06T16:19:03.15Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Coords3D.h",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\Coords3D.h",
+              "RelativeDocumentMoniker": "core\\baseline\\headers\\Coords3D.h",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\Coords3D.h",
+              "RelativeToolTip": "core\\baseline\\headers\\Coords3D.h",
+              "ViewState": "AQIAAFEAAAAAAAAAAAAAAIEAAAAbAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-02-22T16:49:52.816Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "OpenMMSystemStateXMLLoader.h",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\OpenMMSystemStateXMLLoader.h",
+              "RelativeDocumentMoniker": "core\\baseline\\headers\\OpenMMSystemStateXMLLoader.h",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\core\\baseline\\headers\\OpenMMSystemStateXMLLoader.h",
+              "RelativeToolTip": "core\\baseline\\headers\\OpenMMSystemStateXMLLoader.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAcAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-03-05T19:55:56.294Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "state.xml",
+              "DocumentMoniker": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\state.xml",
+              "RelativeDocumentMoniker": "state.xml",
+              "ToolTip": "C:\\Users\\oj53\\source\\repos\\2_20_2024_nexabind_prototype_with_openmm_in_cpp\\NexaBind_BackEnd\\state.xml",
+              "RelativeToolTip": "state.xml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003576|",
+              "WhenOpened": "2024-03-05T17:06:22.007Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

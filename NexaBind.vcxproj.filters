@@ -15,19 +15,26 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SystemXMLReader.cpp">
+    <Xml Include="system.xml" />
+    <Xml Include="state.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="core\baseline\headers\OpenMMSystemStateXMLLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\baseline\headers\Coords3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\baseline\headers\SystemStateXMLParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="core\baseline\src\OpenMMSystemStateXMLLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="core\baseline\headers\Dynamics.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="core\baseline\headers\VerletIntegration.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="system.xml" />
+    <ClCompile Include="core\baseline\src\SystemStateXMLParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

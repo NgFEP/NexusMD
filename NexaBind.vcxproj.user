@@ -4,4 +4,8 @@
     <LocalDebuggerEnvironment>PATH=%PATH%;C:\Users\oj53\anaconda3\envs\installed_openmm\Library\lib;</LocalDebuggerEnvironment>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LocalDebuggerEnvironment>PATH=%PATH%;C:\Users\oj53\anaconda3\envs\installed_openmm\Library\lib;</LocalDebuggerEnvironment>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+  </PropertyGroup>
 </Project>
