@@ -1,13 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\core",
-    "\\core\\baseline",
-    "\\core\\baseline\\headers",
-    "\\core\\baseline\\headers\\Forces",
-    "\\core\\baseline\\src",
-    "\\core\\baseline\\src\\Forces"
+    "\\core"
   ],
-  "SelectedNode": "\\core\\baseline\\headers\\Forces\\PeriodicTorsionForce.h",
+  "SelectedNode": "\\core\\baseline",
   "PreviewInSolutionExplorer": false
 }

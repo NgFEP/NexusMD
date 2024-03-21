@@ -19,21 +19,60 @@
     <Xml Include="state.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core\baseline\headers\OpenMMSystemStateXMLLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="core\baseline\headers\Coords3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\baseline\headers\SystemStateXMLParser.h">
+    <ClInclude Include="core\baseline\headers\Engine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\baseline\headers\Initializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\baseline\headers\Reporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\baseline\headers\StateXMLParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\baseline\headers\SystemXMLParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\baseline\headers\VerletIntegration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\baseline\headers\Forces\Forces.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\baseline\headers\Forces\PeriodicTorsionForce.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="core\baseline\src\OpenMMSystemStateXMLLoader.cpp">
+    <ClCompile Include="core\baseline\src\Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\baseline\src\SystemStateXMLParser.cpp">
+    <ClCompile Include="core\baseline\src\Initializer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\baseline\src\Reporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\baseline\src\StateXMLParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\baseline\src\SystemXMLParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\baseline\src\VerletIntegration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\baseline\src\Forces\Forces.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\baseline\src\Forces\PeriodicTorsionForce.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NexaBindRunSimulationTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

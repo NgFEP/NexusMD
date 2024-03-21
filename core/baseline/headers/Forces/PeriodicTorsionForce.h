@@ -1,9 +1,9 @@
 #ifndef PERIODICTORSIONFORCE_H
 #define PERIODICTORSIONFORCE_H
 
-#include "Coords3D.h" // Make sure this path is correct
+#include "Coords3D.h"
 #include <vector>
-#include "SystemStateXMLParser.h" //because of its Torsionparameters
+#include "SystemXMLParser.h" //because of its Torsionparameters
 
 
 namespace BaseLine {
@@ -23,7 +23,7 @@ namespace BaseLine {
         static double torsion_angle(const Coords3D& coords1, const Coords3D& coords2, const Coords3D& coords3, const Coords3D& coords4);
         
         // Calculate the torsion angle and forces on all 4 involved atoms given four 3D coordinates
-        static pair<double, vector<Coords3D>> calculateForces(vector<Coords3D>& AP, const TorsionParameters& TP);
+        static vector<Coords3D> calculateForces(vector<Coords3D>& AP, const TorsionParameters& TP);
 
     };
 

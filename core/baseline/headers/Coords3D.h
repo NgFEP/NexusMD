@@ -1,5 +1,5 @@
-#ifndef OPENMM_Coords3D_H_
-#define OPENMM_Coords3D_H_
+#ifndef Coords3D_H_
+#define Coords3D_H_
 
 
 #include <cassert>
@@ -154,6 +154,6 @@ std::basic_ostream<CHAR,TRAITS>& operator<<(std::basic_ostream<CHAR,TRAITS>& o, 
     return o;
 }
 
-} // namespace OpenMM
+} // namespace BaseLine
 
-#endif /*OPENMM_Coords3D_H_*/
+#endif /*Coords3D_H_*/

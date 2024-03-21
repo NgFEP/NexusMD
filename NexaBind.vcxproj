@@ -90,7 +90,8 @@
     <ClCompile>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>C:\Users\oj53\source\repos\2_20_2024_nexabind_prototype_with_openmm_in_cpp\NexaBind_BackEnd\core\pugixml-1.14\src;C:\Users\oj53\source\repos\2_20_2024_nexabind_prototype_with_openmm_in_cpp\NexaBind_BackEnd\core\baseline\headers\Forces;C:\Users\oj53\source\repos\2_20_2024_nexabind_prototype_with_openmm_in_cpp\NexaBind_BackEnd\core\baseline\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\oj53\source\repos\2_20_2024_nexabind_prototype_with_openmm_in_cpp\NexaBind_BackEnd\core\baseline\headers;C:\Users\oj53\source\repos\2_20_2024_nexabind_prototype_with_openmm_in_cpp\NexaBind_BackEnd\core\pugixml-1.14\src;C:\Users\oj53\source\repos\2_20_2024_nexabind_prototype_with_openmm_in_cpp\NexaBind_BackEnd\core\baseline\headers\Forces;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -133,12 +134,25 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\baseline\headers\Coords3D.h" />
-    <ClInclude Include="core\baseline\headers\OpenMMSystemStateXMLLoader.h" />
-    <ClInclude Include="core\baseline\headers\SystemStateXMLParser.h" />
+    <ClInclude Include="core\baseline\headers\Engine.h" />
+    <ClInclude Include="core\baseline\headers\Forces\Forces.h" />
+    <ClInclude Include="core\baseline\headers\Forces\PeriodicTorsionForce.h" />
+    <ClInclude Include="core\baseline\headers\Initializer.h" />
+    <ClInclude Include="core\baseline\headers\Reporter.h" />
+    <ClInclude Include="core\baseline\headers\StateXMLParser.h" />
+    <ClInclude Include="core\baseline\headers\SystemXMLParser.h" />
+    <ClInclude Include="core\baseline\headers\VerletIntegration.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="core\baseline\src\OpenMMSystemStateXMLLoader.cpp" />
-    <ClCompile Include="core\baseline\src\SystemStateXMLParser.cpp" />
+    <ClCompile Include="core\baseline\src\Engine.cpp" />
+    <ClCompile Include="core\baseline\src\Forces\Forces.cpp" />
+    <ClCompile Include="core\baseline\src\Forces\PeriodicTorsionForce.cpp" />
+    <ClCompile Include="core\baseline\src\Initializer.cpp" />
+    <ClCompile Include="core\baseline\src\Reporter.cpp" />
+    <ClCompile Include="core\baseline\src\StateXMLParser.cpp" />
+    <ClCompile Include="core\baseline\src\SystemXMLParser.cpp" />
+    <ClCompile Include="core\baseline\src\VerletIntegration.cpp" />
+    <ClCompile Include="NexaBindRunSimulationTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

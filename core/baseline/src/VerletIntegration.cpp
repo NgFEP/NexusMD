@@ -1,37 +1,47 @@
+#include "Coords3D.h"
+#include <vector>
 #include <cstring>
 #include <sstream>
 #include <cstdio>
+#include "StateXMLParser.h"
 #include "VerletIntegration.h"
 
+using namespace BaseLine;
+using namespace std;
 
-using namespace BaseLine
+#include "VerletIntegration.h"
+#include <cmath> // Include for mathematical functions like sqrt()
 
-void VerletIntegration::update(const System& system, vector<Coord3D>& atomCoordinates, vector<Coord3D>& velocities, vector<Coord3D>& forces, vector<double>& masses, double tolerance) {
+// Define the static member variable with namespace qualification
+std::vector<double> VerletIntegration::inverseMasses;
 
-    // first-time-through initialization
+VerletIntegration::VerletIntegration() {
+    // Constructor implementation
+}
 
-    int numberOfAtoms = system.getNumParticles();
-    if (getTimeStep() == 0) {
-        // invert masses
+VerletIntegration::~VerletIntegration() {
+    // Destructor implementation
+}
 
-        for (int ii = 0; ii < numberOfAtoms; ii++) {
-            if (masses[ii] == 0.0)
-                inverseMasses[ii] = 0.0;
-            else
-                inverseMasses[ii] = 1.0 / masses[ii];
+void VerletIntegration::advance(std::vector<Coords3D>& atomPositions, std::vector<Coords3D>& velocities, std::vector<Coords3D>& totalForces, std::vector<double>& masses, int& StepNum, double& StepSize) {
+    int numberOfAtoms = atomPositions.size();
+    // Initialize inverse masses only once to prevent overcomputation of inverseMasses for every steps
+    if (StepNum == 0) {
+        inverseMasses.resize(masses.size());
+        for (size_t i = 0; i < masses.size(); ++i) {
+            inverseMasses[i] = (masses[i] == 0.0) ? 0.0 : 1.0 / masses[i];
         }
     }
 
-    // Perform the integration.
-
+    // Perform the integration
     for (int i = 0; i < numberOfAtoms; ++i) {
-        if (masses[i] != 0.0)
+        if (masses[i] != 0.0) {
             for (int j = 0; j < 3; ++j) {
-                velocities[i][j] += inverseMasses[i] * forces[i][j] * getDeltaT();
-                xPrime[i][j] = atomCoordinates[i][j] + velocities[i][j] * getDeltaT();
+                velocities[i][j] += inverseMasses[i] * totalForces[i][j] * StepSize;
+                atomPositions[i][j] += velocities[i][j] * StepSize;
             }
+        }
     }
 }
-
 
 

@@ -3,7 +3,7 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
-#include "SystemStateXMLParser.h" //because of its Torsionparameters
+#include "SystemXMLParser.h" //because of its Torsionparameters
 
 #ifndef PI
 #define PI 3.14159265358979323846
@@ -79,11 +79,11 @@ double PeriodicTorsionForce::torsion_angle(const Coords3D& coords1, const Coords
 
 // Calculate torsion angle between four 3-d cartesian coordinates, we need torsion angle in rad to later on 
 //calculate periodic torsion force and energy
-pair<double, vector<Coords3D>> PeriodicTorsionForce::calculateForces(vector<Coords3D>& AP, const TorsionParameters& TP) {
-    Coords3D u21 = (AP[TP.p2] - AP[TP.p1]) / atom_distance(AP[TP.p2] , AP[TP.p1]);
-    Coords3D u23 = (AP[TP.p2] - AP[TP.p3]) / atom_distance(AP[TP.p2] , AP[TP.p3]);
-    Coords3D u32 = (AP[TP.p3] - AP[TP.p2]) / atom_distance(AP[TP.p3] , AP[TP.p2]);
-    Coords3D u34 = (AP[TP.p3] - AP[TP.p4]) / atom_distance(AP[TP.p3] , AP[TP.p4]);
+vector<Coords3D> PeriodicTorsionForce::calculateForces(vector<Coords3D>& AP, const TorsionParameters& TP) {
+    Coords3D u21 = (AP[1] - AP[0]) / atom_distance(AP[1] , AP[0]);
+    Coords3D u23 = (AP[1] - AP[2]) / atom_distance(AP[1] , AP[2]);
+    Coords3D u32 = (AP[2] - AP[1]) / atom_distance(AP[2] , AP[1]);
+    Coords3D u34 = (AP[2] - AP[3]) / atom_distance(AP[2] , AP[3]);
 
     Coords3D n1 = plane_norm_vec(u21, u23);// n1 normal vector of plane 1
     Coords3D n2 = plane_norm_vec(u32, u34);// n2 normal vector of plane 2
@@ -118,92 +118,6 @@ pair<double, vector<Coords3D>> PeriodicTorsionForce::calculateForces(vector<Coor
     Coords3D f4 = -a4;
 
     vector<Coords3D> forces = { f1, f2, f3, f4 };
-    return { torsionangle, forces };
+    return forces;
 }
-
-
-//struct TorsionParameters {
-//    int p1, p2, p3, p4;
-//    double k, phase;
-//    int periodicity;
-//};
-
-//Coords3D PeriodicTorsionForce::calculateForces(const Coords3D& atomPositions, const TorsionParameters& torsionParams, double torsionAngle) {
-//    vector<vector<Coords3D>> forces(atomPositions.size(), vector<Coords3D>(1, Coords3D(0, 0, 0))); // Initialize forces to zero
-//
-//    // Simplified example to demonstrate concept - detailed force computation would be more complex
-//    double deltaAngle = torsionParams.periodicity * torsionAngle - torsionParams.phase;
-//    double dEdAngle = -torsionParams.k * torsionParams.periodicity * sin(deltaAngle);
-//
-//    //now we can assume that this torsion is devided 
-//
-//    // Placeholder for force vector calculation - in reality, you'd compute these based on geometry of the torsion
-//    // For this example, assume each atom equally shares the force derived from dEdAngle, equally distributed among XYZ
-//    Coords3D force(dEdAngle / 4.0, dEdAngle / 4.0, dEdAngle / 4.0); // Dividing by 4 as a placeholder for equal distribution
-//
-//    // Assign calculated force to each atom involved in the torsion
-//    for (size_t i = 0; i < atomPositions.size(); ++i) {
-//        forces[i] = force; // In a real calculation, forces on each atom would differ
-//    }
-//
-//    return forces;
-//}
-//
-
-
-
-//static vector<Coords3D> calculateForces(const Coords3D& r1, const Coords3D& r2, const Coords3D& r3, const Coords3D& r4, double k, double phase, int n) {
-//    // Calculate vectors between atoms
-//    Coords3D v12 = r2 - r1;
-//    Coords3D v23 = r3 - r2;
-//    Coords3D v34 = r4 - r3;
-//
-//    // Calculate normals to the planes defined by first three and last three atoms
-//    Coords3D n1 = v12.cross(v23).normalize();
-//    Coords3D n2 = v23.cross(v34).normalize();
-//
-//    // Calculate vector perpendicular to v23 in the plane defined by n1 and n2
-//    Coords3D m = v23.cross(n1).normalize();
-//
-//    // Torsion angle calculation
-//    double x = n1.dot(n2);
-//    double y = m.dot(n2);
-//    double torsionAngle = atan2(y, x);
-//    cout << "torsion ange from the new method" << torsionAngle << endl;
-//
-//    // Energy derivative with respect to the torsion angle
-//    double dEdPhi = k * n * sin(n * torsionAngle - phase);
-//
-//    // Calculate forces for each atom
-//    // The force is distributed among the atoms involved in the torsion according to their contribution to the torsion angle
-//    double v23LengthSquared = v23.dot(v23);
-//    Coords3D a1 = n1 * (dEdPhi / (v12.cross(v23).dot(v12.cross(v23))));
-//    Coords3D a4 = n2 * (dEdPhi / (v34.cross(v23).dot(v34.cross(v23))));
-//
-//    Coords3D a2 = (v23 * (-v12.dot(v23) / v23LengthSquared)).cross(a1);
-//    Coords3D a3 = (v23 * (-v34.dot(v23) / v23LengthSquared)).cross(a4);
-//
-//    // Forces on atoms are the negative of these, since force is the negative gradient of potential energy
-//    Coords3D f1 = -a1;//f1.x, f1.y, and f1.z are the force components acting on atom 1 in the x, y, and z directions, respectively.
-//    Coords3D f2 = -(a2 - a1);
-//    Coords3D f3 = -(a3 - a4);
-//    Coords3D f4 = -a4;
-//
-//    vector<Coords3D> forces = { f1, f2, f3, f4 };
-//    return forces;
-//}
-
-
-
-//int main() {
-//    // Example usage with Coords3D
-//    Coords3D coords1(1.0, 0.6, 0);
-//    Coords3D coords2(0, 0, 0);
-//    Coords3D coords3(1.57, 0, 0);
-//    Coords3D coords4(2.07, 2.8, 0);
-//    double torsionAngle = PeriodicTorsionForce::torsion_angle(coords1, coords2, coords3, coords4);
-//    cout << "Torsion angle: " << torsionAngle << " degrees" << endl;
-//    return 0;
-//}
-
 
