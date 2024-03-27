@@ -1,8 +1,13 @@
 {
   "ExpandedNodes": [
     "",
-    "\\core"
+    "\\core",
+    "\\core\\baseline",
+    "\\core\\baseline\\headers",
+    "\\core\\baseline\\headers\\Forces",
+    "\\core\\baseline\\src",
+    "\\core\\baseline\\src\\Forces"
   ],
-  "SelectedNode": "\\core\\baseline",
+  "SelectedNode": "\\NexaBind.sln",
   "PreviewInSolutionExplorer": false
 }

@@ -44,9 +44,10 @@ pair<vector<Coords3D>, vector<Coords3D>> Engine::Integrate(vector<Coords3D>& ato
     return pair(atomPositions, velocities);
 }
 
-void Engine::Report(const string& outputFilename, vector<Coords3D>& atomPositions, vector<Coords3D>& velocities, vector<Coords3D>& totalForces, int step, bool clearFile) {
+void Engine::Report(const string& outputFilename, vector<Coords3D>& atomPositions, vector<Coords3D>& velocities, vector<Coords3D>& totalForces, int step, vector<TorsionParameters>& torsionParams) {
     // Reporting logic here, potentially writing to `outputFilename` for the current `step`
-    Reporter::report(outputFilename, atomPositions, velocities, totalForces,step, clearFile);
+    Reporter reporter;
+    reporter.report(outputFilename, atomPositions, velocities, totalForces,step, torsionParams);
 
 }
 
@@ -60,19 +61,21 @@ void Engine::RunSimulation(const string& outputFilename, double timestep, int nu
 
     // Loop through each simulation step
     for (int currentStep = 0; currentStep < numSteps; ++currentStep) {
+
         // Update forces based on current positions
         CalculateForces(atomPositions, torsionParams, totalForces);
+
+        // Report current state, clearing the file only at the first step
+        Report(outputFilename, atomPositions, velocities, totalForces, currentStep, torsionParams);
 
         // Update positions and velocities based on new forces
         auto [updatedPositions, updatedVelocities] = Integrate(atomPositions, velocities, totalForces, masses, currentStep, timestep);
 
-        // Report current state, clearing the file only at the first step
-        bool clearFile = (currentStep == 0);
-        Report(outputFilename, updatedPositions, updatedVelocities, totalForces, currentStep, clearFile);
 
         // Prepare for the next iteration by updating positions and velocities
         atomPositions = updatedPositions;
         velocities = updatedVelocities;
+
     }
 }
 

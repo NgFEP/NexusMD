@@ -125,6 +125,16 @@ public:
     }
 
 
+    //// Calculate the cross product of two vectors
+    //Coords3D cross(const Coords3D& v1, const Coords3D& v2) {
+    //    return Coords3D(
+    //        v1[1] * v2[2] - v1[2] * v2[1],
+    //        v1[2] * v2[0] - v1[0] * v2[2],
+    //        v1[0] * v2[1] - v1[1] * v2[0]
+    //    );
+    //}
+
+
     // Existing constructor and other members...
 
     // Normalize the vector
@@ -138,6 +148,13 @@ public:
         }
         return normalized; // Return the new, normalized vector
     }
+
+    //// Normalize a vector
+    //Coords3D normalize(const Coords3D& vector) {
+    //    double len = sqrt(vector.dot(vector));
+    //    if (len == 0) return Coords3D(0, 0, 0);
+    //    return vector / len;
+    //}
 
     
 private:

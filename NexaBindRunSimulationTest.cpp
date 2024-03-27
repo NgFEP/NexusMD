@@ -17,7 +17,7 @@ int main() {
     Engine engine(systemFilename, stateFilename);
 
     double StepSize = 0.001; // Example step size
-    int TotalSteps = 5; // Example total number of steps for the simulation
+    int TotalSteps = 2; // Example total number of steps for the simulation
 
     // Run the simulation with specified parameters
     try {

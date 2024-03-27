@@ -43,7 +43,7 @@ namespace BaseLine {
         //std::pair<std::vector<Coords3D>, std::vector<Coords3D>> Integrate(int& StepNum, double& StepSize);
         std::pair<std::vector<Coords3D>, std::vector<Coords3D>> Integrate(std::vector<Coords3D>& atomPositions, std::vector<Coords3D>& velocities, std::vector<Coords3D>& totalForces, vector<double>& masses, int& Step, double& StepSize);
         //void Report(const std::string& outputFilename, int step);
-        void Report(const std::string& outputFilename, std::vector<Coords3D>& atomPositions, std::vector<Coords3D>& velocities, std::vector<Coords3D>& totalForces, int step, bool clearFile);
+        void Report(const std::string& outputFilename, std::vector<Coords3D>& atomPositions, std::vector<Coords3D>& velocities, std::vector<Coords3D>& totalForces, int step, vector<TorsionParameters>& torsionParams);
 
     };
 }

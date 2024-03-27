@@ -5,26 +5,22 @@
 #include <vector>
 #include "SystemXMLParser.h" //because of its Torsionparameters
 
-
 namespace BaseLine {
+
 
     class PeriodicTorsionForce {
     public:
         PeriodicTorsionForce();
-        ~PeriodicTorsionForce();
+        virtual ~PeriodicTorsionForce();
 
-        // Calculate the distance between two 3D coordinates
-
+        // Calculate the distance between two points
         static double atom_distance(const Coords3D& coords1, const Coords3D& coords2);
-        //static allows it to be called without an instance of the class.
-        static Coords3D plane_norm_vec(const Coords3D& uvec1, const Coords3D& uvec2);
 
-        // Calculate the torsion angle given four 3D coordinates
-        static double torsion_angle(const Coords3D& coords1, const Coords3D& coords2, const Coords3D& coords3, const Coords3D& coords4);
-        
-        // Calculate the torsion angle and forces on all 4 involved atoms given four 3D coordinates
-        static vector<Coords3D> calculateForces(vector<Coords3D>& AP, const TorsionParameters& TP);
+        // Calculate torsion angle (in radians) between four points
+        static double torsion_angle(const Coords3D& r1, const Coords3D& r2, const Coords3D& r3, const Coords3D& r4);
 
+        // Calculate forces for a given torsion
+        static std::vector<Coords3D> calculateForces(const std::vector<Coords3D>& atomPositions, const TorsionParameters& params);
     };
 
 } // namespace BaseLine
