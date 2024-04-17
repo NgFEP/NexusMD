@@ -6,7 +6,8 @@
 #include "StateXMLParser.h"
 #include "SystemXMLParser.h"
 #include "PeriodicTorsionForce.h"
-#include <string>
+#include "HarmonicAngleForce.h"
+//#include <string>
 #include <vector>
 
 namespace BaseLine {
@@ -14,7 +15,8 @@ namespace BaseLine {
     class Forces {
     public:
         //adding PeriodicTorsionForce to the total forces by going through each torsion and calculates each force on involved atoms and adding them to the total forces vector
-        static std::vector<Coords3D> AddPeriodicTorsion(vector<Coords3D>& totalForces,const std::vector<Coords3D>& atomPositions, const std::vector<TorsionParameters>& torsionParams);
+        static std::vector<Coords3D> AddPTorsion(std::vector<Coords3D>& totalForces, const std::vector<Coords3D>& atomPositions, const std::vector<PTorsionParams>& torsionParams);
+        static std::vector<Coords3D> AddHAngle(std::vector<Coords3D>& totalForces, const std::vector<Coords3D>& atomPositions, const std::vector<HAngleParams>& angleParams);
 
     private:
 

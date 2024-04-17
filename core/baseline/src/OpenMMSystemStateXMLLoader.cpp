@@ -1,7 +1,7 @@
+#include "stdafx.h"
 #include "OpenMM.h"
 #include "OpenMMSystemStateXMLLoader.h"
-#include <fstream>
-#include <iostream>
+
 
 
 SystemStateXMLLoader::SystemStateXMLLoader(const std::string& systemFilename, const std::string& stateFilename) {

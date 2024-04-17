@@ -1,10 +1,8 @@
+#include "stdafx.h"
 #include "PeriodicTorsionForce.h"
 #include "Coords3D.h"
 #include <cmath>
-#include <vector>
-#include <iostream>
 #include <iomanip>//to print with 16 decimal  
-#include "SystemXMLParser.h" //this contains definitions for TorsionParameters
 
 #ifndef PI
 #define PI 3.14159265358979323846
@@ -90,7 +88,7 @@ double PeriodicTorsionForce::torsion_angle(const Coords3D& p1, const Coords3D& p
 
 
 
-vector<Coords3D> PeriodicTorsionForce::calculateForces(const vector<Coords3D>& atomPositions, const TorsionParameters& params) {
+vector<Coords3D> PeriodicTorsionForce::calculateForces(const vector<Coords3D>& atomPositions, const PTorsionParams& params) {
     // Assuming atomPositions contains positions for the four atoms involved in the torsion
     double torsionAngle = torsion_angle(atomPositions[0], atomPositions[1], atomPositions[2], atomPositions[3]);
 
@@ -103,10 +101,10 @@ vector<Coords3D> PeriodicTorsionForce::calculateForces(const vector<Coords3D>& a
 
     Coords3D r1 = atomPositions[0], r2 = atomPositions[1], r3 = atomPositions[2], r4 = atomPositions[3];
 
-    std::cout << std::fixed << std::setprecision(16) << "r1: " << r1 << std::endl;
-    std::cout << std::fixed << std::setprecision(16) << "r2: " << r2 << std::endl;
-    std::cout << std::fixed << std::setprecision(16) << "r3: " << r3 << std::endl;
-    std::cout << std::fixed << std::setprecision(16) << "r4: " << r4 << std::endl;
+    //std::cout << std::fixed << std::setprecision(16) << "r1: " << r1 << std::endl;
+    //std::cout << std::fixed << std::setprecision(16) << "r2: " << r2 << std::endl;
+    //std::cout << std::fixed << std::setprecision(16) << "r3: " << r3 << std::endl;
+    //std::cout << std::fixed << std::setprecision(16) << "r4: " << r4 << std::endl;
 
 
 
@@ -115,16 +113,16 @@ vector<Coords3D> PeriodicTorsionForce::calculateForces(const vector<Coords3D>& a
     Coords3D v1 = r3 - r2;
     Coords3D v2 = r3 - r4;
 
-    std::cout << std::fixed << std::setprecision(20) << "v0: " << v0 << std::endl;
-    std::cout << std::fixed << std::setprecision(20) << "v1: " << v1 << std::endl;
-    std::cout << std::fixed << std::setprecision(20) << "v2: " << v2 << std::endl;
+    //std::cout << std::fixed << std::setprecision(20) << "v0: " << v0 << std::endl;
+    //std::cout << std::fixed << std::setprecision(20) << "v1: " << v1 << std::endl;
+    //std::cout << std::fixed << std::setprecision(20) << "v2: " << v2 << std::endl;
 
 
     // Calculate cross products
     Coords3D cp0 = v0.cross(v1);
     double uuu1= v0[1] * v1[2] - v0[2] * v1[1];
     double uuu2 = v0[1] * v1[2] ;
-    std::cout << std::fixed << std::setprecision(20) << "uuu2: " << uuu2 << std::endl;
+    //std::cout << std::fixed << std::setprecision(20) << "uuu2: " << uuu2 << std::endl;
 
     double uuu3 = - v0[2] * v1[1];
 
@@ -139,16 +137,16 @@ vector<Coords3D> PeriodicTorsionForce::calculateForces(const vector<Coords3D>& a
 
     //for debugging purpose
     // Print norm values
-    std::cout << std::fixed << std::setprecision(16) << "cp0: (" << cp0[0] << ", " << cp0[1] << ", " << cp0[2] << ")" << std::endl;
-    std::cout << std::fixed << std::setprecision(16) << "cp1: (" << cp1[0] << ", " << cp1[1] << ", " << cp1[2] << ")" << std::endl;
-    std::cout << std::fixed << std::setprecision(16) << "theta: " << torsionAngle << std::endl;
-    std::cout << std::fixed << std::setprecision(16) << "dEdPhi: " << dEdPhi << std::endl;
-    std::cout << std::fixed << std::setprecision(16) << "normCross1: " << normCross1 << std::endl;
-    std::cout << std::fixed << std::setprecision(16) << "normSqrBC: " << normSqrBC << std::endl;
-    std::cout << std::fixed << std::setprecision(16) << "normBC: " << normBC << std::endl;
-    std::cout << std::fixed << std::setprecision(16) << "normCross2: " << normCross2 << std::endl;
-    //std::cout << "dp: " << dp << std::endl;
-    std::cout << std::fixed << std::setprecision(16) << "dp: " << dp << std::endl;
+    //std::cout << std::fixed << std::setprecision(16) << "cp0: (" << cp0[0] << ", " << cp0[1] << ", " << cp0[2] << ")" << std::endl;
+    //std::cout << std::fixed << std::setprecision(16) << "cp1: (" << cp1[0] << ", " << cp1[1] << ", " << cp1[2] << ")" << std::endl;
+    //std::cout << std::fixed << std::setprecision(16) << "theta: " << torsionAngle << std::endl;
+    //std::cout << std::fixed << std::setprecision(16) << "dEdPhi: " << dEdPhi << std::endl;
+    //std::cout << std::fixed << std::setprecision(16) << "normCross1: " << normCross1 << std::endl;
+    //std::cout << std::fixed << std::setprecision(16) << "normSqrBC: " << normSqrBC << std::endl;
+    //std::cout << std::fixed << std::setprecision(16) << "normBC: " << normBC << std::endl;
+    //std::cout << std::fixed << std::setprecision(16) << "normCross2: " << normCross2 << std::endl;
+    ////std::cout << "dp: " << dp << std::endl;
+    //std::cout << std::fixed << std::setprecision(16) << "dp: " << dp << std::endl;
 
 
 
@@ -159,25 +157,25 @@ vector<Coords3D> PeriodicTorsionForce::calculateForces(const vector<Coords3D>& a
     double factor4 = (dEdPhi * normBC) / normCross2;
 
     // Print factor values
-    std::cout << std::fixed << std::setprecision(16) << "factor1: " << factor1 << std::endl;
-    std::cout << std::fixed << std::setprecision(16) << "factor2: " << factor2 << std::endl;
-    std::cout << std::fixed << std::setprecision(16) << "factor3: " << factor3 << std::endl;
-    std::cout << std::fixed << std::setprecision(16) << "factor4: " << factor4 << std::endl;
+    //std::cout << std::fixed << std::setprecision(16) << "factor1: " << factor1 << std::endl;
+    //std::cout << std::fixed << std::setprecision(16) << "factor2: " << factor2 << std::endl;
+    //std::cout << std::fixed << std::setprecision(16) << "factor3: " << factor3 << std::endl;
+    //std::cout << std::fixed << std::setprecision(16) << "factor4: " << factor4 << std::endl;
 
     // Calculate forces based on cross products and factors
     Coords3D force1 = cp0 * factor1;
     Coords3D force4 = cp1 * factor4;
     Coords3D s = force1 * factor2 - force4 * factor3;
-    std::cout << std::fixed << std::setprecision(16) << "s: " << s << std::endl;
+    //std::cout << std::fixed << std::setprecision(16) << "s: " << s << std::endl;
 
     Coords3D force2 = s - force1;
     Coords3D force3 = -s - force4;
 
     // Print factor values
-    std::cout << std::fixed << std::setprecision(16) << "force1: " << force1 << std::endl;
-    std::cout << std::fixed << std::setprecision(16) << "force2: " << force2 << std::endl;
-    std::cout << std::fixed << std::setprecision(16) << "force3: " << force3 << std::endl;
-    std::cout << std::fixed << std::setprecision(16) << "force4: " << force4 << std::endl;
+    //std::cout << std::fixed << std::setprecision(16) << "force1: " << force1 << std::endl;
+    //std::cout << std::fixed << std::setprecision(16) << "force2: " << force2 << std::endl;
+    //std::cout << std::fixed << std::setprecision(16) << "force3: " << force3 << std::endl;
+    //std::cout << std::fixed << std::setprecision(16) << "force4: " << force4 << std::endl;
 
 
      vector<Coords3D> forces = { force1, force2, force3, force4 };

@@ -38,26 +38,35 @@
 //}
 
 
-
+#include "stdafx.h"
 #include "Reporter.h"
-#include <iostream>
-#include <fstream>
 #include <iomanip> // For std::fixed, std::setprecision, and std::setw
 
-using namespace BaseLine;
 using namespace std;
+using namespace BaseLine;
+
 
 //std::ofstream Reporter::outputFile;
 Reporter::Reporter() {
     // Constructor implementation (if necessary, otherwise leave empty)
 }
 void Reporter::report(const std::string& filename, const std::vector<Coords3D>& positions,
-    const std::vector<Coords3D>& velocities, const std::vector<Coords3D>& forces, int step, vector<TorsionParameters>& torsionParams) {
+    const std::vector<Coords3D>& velocities, const std::vector<Coords3D>& forces, int step, const vector<PTorsionParams>& torsionParams, const vector<HAngleParams>& angleParams) {
 
 
     // Open the file with the appropriate mode
     ios_base::openmode fileMode = (step == 0) ? (ios::out) : (ios::out | ios::app);
     ofstream outputFile(filename, fileMode);
+
+    //ofstream outputFile(filename, ios::out | ((step == 0) ? ios::trunc : ios::app));
+
+    //if (!outputFile.is_open()) {
+    //    throw runtime_error("Unable to open file: " + filename);
+    //}
+
+    //outputFile << fixed << setprecision(3);
+
+
 
     // Check if the file is successfully opened
     if (!outputFile.is_open()) {
@@ -85,22 +94,32 @@ void Reporter::report(const std::string& filename, const std::vector<Coords3D>& 
 
     //}
 
+    vector<int> atoms;
+
+    if (!torsionParams.empty()) {
+
+        //For debugging purposes and PTF diagnosis, I only look at the first torsion so torsionParams[0] and only print out the first torsion atom ids
+        atoms = { torsionParams[0].p1, torsionParams[0].p2, torsionParams[0].p3, torsionParams[0].p4 };
+        //cout << atoms[0]<<"  " << atoms[1] << "  " << atoms[2] << "  " << atoms[3] << "  ";
+    }
+    if (!angleParams.empty()) {
+
+        //For debugging purposes and PTF diagnosis, I only look at the first torsion so torsionParams[0] and only print out the first torsion atom ids
+        atoms = { angleParams[0].p1, angleParams[0].p2, angleParams[0].p3};
+        //cout << atoms[0]<<"  " << atoms[1] << "  " << atoms[2] << "  " << atoms[3] << "  ";
+    }
 
 
-    //For debugging purposes and PTF diagnosis, I only look at the first torsion so torsionParams[0] and only print out the first torsion atom ids
-    int atoms[] = { torsionParams[0].p1, torsionParams[0].p2, torsionParams[0].p3, torsionParams[0].p4 };
-    //cout << atoms[0]<<"  " << atoms[1] << "  " << atoms[2] << "  " << atoms[3] << "  ";
-
-
-
-    for (int i = 0; i < 4; ++i) {  // Loop over the 4 atoms in the first torsion
+    for (int i = 0; i < atoms.size(); ++i) {  // Loop over the 4 atoms in the first torsion
         int atomIndex = atoms[i];  // Get the actual atom index
         outputFile
             << atomIndex + 1
             << "\t(" << setw(6) << positions[atomIndex][0] << ", " << setw(6) << positions[atomIndex][1] << ", " << setw(6) << positions[atomIndex][2] << ")\t"
             << "(" << setw(6) << velocities[atomIndex][0] << ", " << setw(6) << velocities[atomIndex][1] << ", " << setw(6) << velocities[atomIndex][2] << ")\t"
-            << "(" << setw(7) << forces[atomIndex][0] << ", " << setw(7) << forces[atomIndex][1] << ", " << setw(7) << forces[atomIndex][2] << ")\n";
+            << setprecision(20) << "(" << setw(24) << forces[atomIndex][0] << ", " << setw(24) << forces[atomIndex][1] << ", " << setw(24) << forces[atomIndex][2] << ")\n" << setprecision(3);
     }
+
+
 
     outputFile << "\n";
     outputFile.close();

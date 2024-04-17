@@ -16,7 +16,7 @@ namespace BaseLine {
     private:
         static std::vector<double> inverseMasses;
         static std::vector<Coords3D> UpdatedAtomPositions;
-        //void initializeInverseMasses(const std::vector<double>& masses);
+        //void initializeInverseMasses(const vector<double>& masses);
         //double getDeltaT() const;
         //int getTimeStep() const;
         //void setTimeStep(int step);

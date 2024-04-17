@@ -3,7 +3,7 @@
 
 #include "Coords3D.h"
 #include <vector>
-#include "SystemXMLParser.h" //because of its Torsionparameters
+#include "SystemXMLParser.h" //this contains definitions for TorsionParameters
 
 namespace BaseLine {
 
@@ -20,7 +20,7 @@ namespace BaseLine {
         static double torsion_angle(const Coords3D& r1, const Coords3D& r2, const Coords3D& r3, const Coords3D& r4);
 
         // Calculate forces for a given torsion
-        static std::vector<Coords3D> calculateForces(const std::vector<Coords3D>& atomPositions, const TorsionParameters& params);
+        static std::vector<Coords3D> calculateForces(const std::vector<Coords3D>& atomPositions, const PTorsionParams& params);
     };
 
 } // namespace BaseLine

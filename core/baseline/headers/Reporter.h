@@ -14,8 +14,8 @@
 //
 //        // Reports simulation data.
 //        // The clearFile parameter determines whether to clear existing file data (true for the first step).
-//        static void report(const std::string& filename, const std::vector<Coords3D>& positions,
-//            const std::vector<Coords3D>& velocities, const std::vector<Coords3D>& forces,
+//        static void report(const string& filename, const vector<Coords3D>& positions,
+//            const vector<Coords3D>& velocities, const vector<Coords3D>& forces,
 //            int step, bool clearFile);
 //    };
 //
@@ -30,7 +30,7 @@
 #include "Coords3D.h"
 #include <vector>
 #include <string>
-#include <fstream>
+//#include <fstream>
 #include "SystemXMLParser.h"
 
 namespace BaseLine {
@@ -39,10 +39,10 @@ namespace BaseLine {
         Reporter();
         // Update report function to no longer require clearFile parameter
         void report(const std::string& filename, const std::vector<Coords3D>& positions,
-            const std::vector<Coords3D>& velocities, const std::vector<Coords3D>& forces, int step, std::vector<TorsionParameters>& torsionParams);
+            const std::vector<Coords3D>& velocities, const std::vector<Coords3D>& forces, int step, const std::vector<PTorsionParams>& torsionParams, const std::vector<HAngleParams>& angleParams);
 
     private:
-        //static std::ofstream outputFile;
+        //static ofstream outputFile;
     };
 }
 

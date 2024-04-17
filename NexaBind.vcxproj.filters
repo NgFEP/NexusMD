@@ -46,6 +46,12 @@
     <ClInclude Include="core\baseline\headers\Forces\PeriodicTorsionForce.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="core\baseline\headers\Forces\HarmonicAngleForce.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\baseline\headers\stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\baseline\src\Engine.cpp">
@@ -72,7 +78,10 @@
     <ClCompile Include="core\baseline\src\Forces\PeriodicTorsionForce.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NexaBindRunSimulationTest.cpp">
+    <ClCompile Include="core\baseline\src\Forces\HarmonicAngleForce.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\baseline\Tests\TestBaselinePeriodicTorsionForce.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -3,11 +3,8 @@
     "",
     "\\core",
     "\\core\\baseline",
-    "\\core\\baseline\\headers",
-    "\\core\\baseline\\headers\\Forces",
-    "\\core\\baseline\\src",
-    "\\core\\baseline\\src\\Forces"
+    "\\core\\baseline\\Tests"
   ],
-  "SelectedNode": "\\NexaBind.sln",
+  "SelectedNode": "\\core\\baseline\\Tests\\TestBaselineHarmonicAngleForce.cpp",
   "PreviewInSolutionExplorer": false
 }

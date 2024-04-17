@@ -1,7 +1,5 @@
+#include "stdafx.h"
 #include "pugixml.hpp"
-#include <iostream>
-#include <vector>
-#include <string>
 #include "SystemXMLParser.h"
 // The implementation of parseSystemXML and parseStateXML goes here
 
@@ -28,8 +26,8 @@ vector<double> SystemXMLParser::MassesParser(const string& filename) {
 
 }
 
-vector<TorsionParameters> SystemXMLParser::PeriodicTorsionParser(const string& filename) {
-    vector<TorsionParameters> torsionParameters;
+vector<PTorsionParams> SystemXMLParser::PTorsionParser(const string& filename) {
+    vector<PTorsionParams> torsionParameters;
     pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_file(filename.c_str());
 
@@ -44,20 +42,50 @@ vector<TorsionParameters> SystemXMLParser::PeriodicTorsionParser(const string& f
         if (forceType == "PeriodicTorsionForce") {
             // Once the correct <Force> element is found, iterate through its <Torsion> children
             for (auto& torsion : force.child("Torsions").children("Torsion")) {
-                TorsionParameters tp;
+                PTorsionParams tp;
                 tp.p1 = torsion.attribute("p1").as_int();
                 tp.p2 = torsion.attribute("p2").as_int();
                 tp.p3 = torsion.attribute("p3").as_int();
                 tp.p4 = torsion.attribute("p4").as_int();
-                tp.k = torsion.attribute("k").as_double();
-                tp.periodicity = torsion.attribute("periodicity").as_int();
-                tp.phase = torsion.attribute("phase").as_double();
+                tp.k = torsion.attribute("k").as_double();// k type is double
+                tp.periodicity = torsion.attribute("periodicity").as_int();// periodicity type is int
+                tp.phase = torsion.attribute("phase").as_double();// phase type is double
                 torsionParameters.push_back(tp);
             }
         }
     }
 
     return torsionParameters;
+}
+
+vector<HAngleParams> SystemXMLParser::HAngleParser(const string& filename) {
+    vector<HAngleParams> angleParameters;
+    pugi::xml_document doc;
+    pugi::xml_parse_result result = doc.load_file(filename.c_str());
+
+    if (!result) {
+        cerr << "XML [" << filename << "] parsed with errors, Error description: " << result.description() << "\n";
+        return angleParameters;
+    }
+
+    // Navigate to the <Force> elements and check for the type attribute to be "HarmonicAngleForce"
+    for (auto& force : doc.child("System").child("Forces").children("Force")) {
+        string forceType = force.attribute("type").as_string();
+        if (forceType == "HarmonicAngleForce") {
+            // Once the correct <Force> element is found, iterate through its <Angle> children
+            for (auto& angle : force.child("Angles").children("Angle")) {
+                HAngleParams ap;
+                ap.p1 = angle.attribute("p1").as_int();
+                ap.p2 = angle.attribute("p2").as_int();
+                ap.p3 = angle.attribute("p3").as_int();
+                ap.a = angle.attribute("a").as_double();
+                ap.k = angle.attribute("k").as_double();
+                angleParameters.push_back(ap);
+            }
+        }
+    }
+
+    return angleParameters;
 }
 
 

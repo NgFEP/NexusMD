@@ -1,7 +1,5 @@
+#include "stdafx.h"
 #include "pugixml.hpp"
-#include <iostream>
-#include <vector>
-#include <string>
 #include "StateXMLParser.h"
 // The implementation of parseSystemXML and parseStateXML goes here
 

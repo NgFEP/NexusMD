@@ -1,7 +1,6 @@
+#include "stdafx.h"
 #include "OpenMM.h"
 #include "OpenMMSystemXMLLoader.h"
-#include <fstream>
-#include <iostream>
 
 SystemXMLLoader::SystemXMLLoader(const std::string& filename) {// class SystemXMLLoader and constructor :: SystemXMLLoader
     std::ifstream system_input(filename.c_str());

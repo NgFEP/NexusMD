@@ -1,16 +1,15 @@
+#include "stdafx.h"
 #include "Coords3D.h"
-#include <vector>
 #include <cstring>
-#include <sstream>
 #include <cstdio>
 #include "StateXMLParser.h"
 #include "VerletIntegration.h"
+#include <cmath> // Include for mathematical functions like sqrt()
 
 using namespace BaseLine;
 using namespace std;
 
-#include "VerletIntegration.h"
-#include <cmath> // Include for mathematical functions like sqrt()
+
 
 // Define the static member variable with namespace qualification
 vector<double> VerletIntegration::inverseMasses;
