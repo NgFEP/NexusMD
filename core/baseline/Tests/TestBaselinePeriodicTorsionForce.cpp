@@ -23,14 +23,15 @@ int main() {
     };
 
     vector<PTorsionParams> torsionParams = { {0, 1, 2, 3, 0.6508444444444444, 0.0, 3} };//order p1, p2, p3, p4, k double, phase double, periodicity int
+    vector<HBondParams> bondParams{};//p1,p2,d,k //double d; // Ideal bond distance and double k; // Force constant
     vector<HAngleParams> angleParams{};//empty as in here we only want to test the accuracy of software result for 1 periodic torsion force
     vector<double> masses = { 14.01, 12.01, 12.01, 1.008 };
 
-    Engine engine("","",atomPositions, masses, torsionParams, angleParams);//engine construction for test run
+    Engine engine("", "", atomPositions, masses, torsionParams, bondParams, angleParams);//engine construction for test run
     string outputFilename = "output_test_PTF_1Torsion.txt"; // Output file for reporting
 
-    double StepSize = 0.001; // Example step size
-    int TotalSteps = 2; // Example total number of steps for the simulation
+    double StepSize = 0.001; // Example step size this is 1 fs and 0.001 ps
+    int TotalSteps = 3; // Example total number of steps for the simulation
 
     // Run the simulation with specified parameters
     try {

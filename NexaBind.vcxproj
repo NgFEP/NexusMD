@@ -138,8 +138,10 @@
     <ClInclude Include="core\baseline\headers\Engine.h" />
     <ClInclude Include="core\baseline\headers\Forces\Forces.h" />
     <ClInclude Include="core\baseline\headers\Forces\HarmonicAngleForce.h" />
+    <ClInclude Include="core\baseline\headers\Forces\HarmonicBondForce.h" />
     <ClInclude Include="core\baseline\headers\Forces\PeriodicTorsionForce.h" />
     <ClInclude Include="core\baseline\headers\Initializer.h" />
+    <ClInclude Include="core\baseline\headers\KineticEnergy.h" />
     <ClInclude Include="core\baseline\headers\Reporter.h" />
     <ClInclude Include="core\baseline\headers\StateXMLParser.h" />
     <ClInclude Include="core\baseline\headers\stdafx.h" />
@@ -150,13 +152,15 @@
     <ClCompile Include="core\baseline\src\Engine.cpp" />
     <ClCompile Include="core\baseline\src\Forces\Forces.cpp" />
     <ClCompile Include="core\baseline\src\Forces\HarmonicAngleForce.cpp" />
+    <ClCompile Include="core\baseline\src\Forces\HarmonicBondForce.cpp" />
     <ClCompile Include="core\baseline\src\Forces\PeriodicTorsionForce.cpp" />
     <ClCompile Include="core\baseline\src\Initializer.cpp" />
+    <ClCompile Include="core\baseline\src\KineticEnergy.cpp" />
     <ClCompile Include="core\baseline\src\Reporter.cpp" />
     <ClCompile Include="core\baseline\src\StateXMLParser.cpp" />
     <ClCompile Include="core\baseline\src\SystemXMLParser.cpp" />
     <ClCompile Include="core\baseline\src\VerletIntegration.cpp" />
-    <ClCompile Include="core\baseline\Tests\TestBaselinePeriodicTorsionForce.cpp" />
+    <ClCompile Include="core\baseline\Tests\TestBaseline3Forces.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -38,8 +38,10 @@ namespace BaseLine {
     public:
         Reporter();
         // Update report function to no longer require clearFile parameter
-        void report(const std::string& filename, const std::vector<Coords3D>& positions,
-            const std::vector<Coords3D>& velocities, const std::vector<Coords3D>& forces, int step, const std::vector<PTorsionParams>& torsionParams, const std::vector<HAngleParams>& angleParams);
+        // for test report and shows positions, velocities and forces of all atoms and for all the steps, used for test purposes
+        void TestPVFReport(const std::string& filename, const std::vector<Coords3D>& positions,
+            const std::vector<Coords3D>& velocities, const std::vector<Coords3D>& forces, int step, const std::vector<PTorsionParams>& torsionParams, const std::vector<HBondParams>& bondParams, const std::vector<HAngleParams>& angleParams);
+        void TotalEnergyReport(const std::string& baseFilename, double& totalKEnergy, double& totalPEnergy, double& totalEnergy, int step);
 
     private:
         //static ofstream outputFile;

@@ -14,6 +14,12 @@ namespace BaseLine {
         int periodicity;
     };
 
+    struct HBondParams {
+        int p1, p2;     // Indices of the two particles forming the bond
+        double d;       // Ideal bond distance in nanometers
+        double k;       // Force constant in kJ/mol/nm^2
+    };
+
     struct HAngleParams {// HAngleParams HarmonicAngleParams
         int p1, p2, p3; // Indices of the particles forming the angle
         double a; // Ideal angle in radians
@@ -26,11 +32,16 @@ namespace BaseLine {
 
         static std::vector<double> MassesParser(const std::string& filename);
 
-        // Parses the state.xml file and returns a vector of PTorsionParams structure
+        // Parses the system.xml file and returns a vector of PTorsionParams structure
         static std::vector<PTorsionParams> PTorsionParser(const std::string& filename);
 
-        // Parses the state.xml file and returns a vector of HAngleParams structure
+        // Parses the system.xml file and returns a vector of HBondParams structure
+        static std::vector<HBondParams> HBondParser(const std::string& filename);
+
+        // Parses the system.xml file and returns a vector of HAngleParams structure
         static std::vector<HAngleParams> HAngleParser(const std::string& filename);
+
+
 
     };
 

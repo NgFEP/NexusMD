@@ -3,8 +3,11 @@
     "",
     "\\core",
     "\\core\\baseline",
+    "\\core\\baseline\\headers",
+    "\\core\\baseline\\headers\\Forces",
+    "\\core\\baseline\\src",
+    "\\core\\baseline\\src\\Forces",
     "\\core\\baseline\\Tests"
   ],
-  "SelectedNode": "\\core\\baseline\\Tests\\TestBaselineHarmonicAngleForce.cpp",
   "PreviewInSolutionExplorer": false
 }

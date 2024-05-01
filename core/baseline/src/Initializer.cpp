@@ -19,7 +19,7 @@ using namespace BaseLine;
 //
 //    return pair(totalForces, velocities);
 //}
-void Initializer::InitializeForcesAndVelocities(const std::vector<Coords3D>& atomPositions, std::vector<Coords3D>& totalForces, std::vector<Coords3D>& velocities) {
+void Initializer::InitializeForcesAndVelocities(const vector<Coords3D>& atomPositions, vector<Coords3D>& totalForces, vector<Coords3D>& velocities) {
     size_t numAtoms = atomPositions.size();
     totalForces.assign(numAtoms, Coords3D(0, 0, 0));
     velocities.assign(numAtoms, Coords3D(0, 0, 0));

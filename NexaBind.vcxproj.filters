@@ -52,6 +52,12 @@
     <ClInclude Include="core\baseline\headers\stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="core\baseline\headers\Forces\HarmonicBondForce.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\baseline\headers\KineticEnergy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\baseline\src\Engine.cpp">
@@ -81,7 +87,13 @@
     <ClCompile Include="core\baseline\src\Forces\HarmonicAngleForce.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\baseline\Tests\TestBaselinePeriodicTorsionForce.cpp">
+    <ClCompile Include="core\baseline\src\Forces\HarmonicBondForce.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\baseline\Tests\TestBaseline3Forces.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\baseline\src\KineticEnergy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

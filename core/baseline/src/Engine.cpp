@@ -16,12 +16,14 @@ Engine::Engine(
     const vector<Coords3D>& atomPositions,
     const vector<double>& masses,
     const vector<PTorsionParams>& torsionParams,
+    const vector<HBondParams>& bondParams,
     const vector<HAngleParams>& angleParams
 ) : _systemFilename(systemFilename),
 _stateFilename(stateFilename),
 _atomPositions(atomPositions),
 _masses(masses),
 _torsionParams(torsionParams),
+_bondParams(bondParams),
 _angleParams(angleParams)
 {
     InitializeSimulationParameters();
@@ -71,18 +73,25 @@ void Engine::InitializeSimulationParameters() {
 
 
 void Engine::CalculateForces() {
-    
+    //since energy is calculated during force calculation for each step _totalPEnergy gets reseted
+    //potential energy is calculated per force and per atom energy is not calculated therefore only totalPEnergy is going to be reported
+    _totalPEnergy = 0.0;
+
+
     //bug found: Forces are calculated from scratch every step and we need to make sure that the vector gets equal to zero on each step before adding up new calculated forces.
-    size_t numAtoms = _atomPositions.size();
-    _totalForces.assign(numAtoms, Coords3D(0, 0, 0));
+    _totalForces.assign(_numAtoms, Coords3D(0, 0, 0));
     
     // Forces calculation logic here, updating `totalForces` by adding PtorsionForces
     if (!_torsionParams.empty()) {
-        Forces::AddPTorsion(_totalForces, _atomPositions, _torsionParams);
+        Forces::AddPTorsion(_totalForces, _atomPositions, _torsionParams, _totalPEnergy);
+    }
+    if (!_bondParams.empty()) {
+        Forces::AddHBond(_totalForces, _atomPositions, _bondParams, _totalPEnergy);
     }
     if (!_angleParams.empty()) {
-        Forces::AddHAngle(_totalForces, _atomPositions, _angleParams);
+        Forces::AddHAngle(_totalForces, _atomPositions, _angleParams, _totalPEnergy);
     }
+
 }
 
 //pair<vector<Coords3D>, vector<Coords3D>> Engine::Integrate2(vector<Coords3D>& atomPositions, vector<Coords3D>& velocities, vector<Coords3D>& totalForces, vector<double>& masses, int& Step, double& StepSize) {
@@ -91,15 +100,36 @@ void Engine::CalculateForces() {
 //    return pair(atomPositions, velocities);
 //}
 
-void Engine::Integrate(int& Step, double& StepSize) {
+void Engine::Integrate(int& Step) {
     // Integration logic here, updating `atomPositions` and `velocities`
-    VerletIntegration::advance(_atomPositions, _velocities, _totalForces, _masses, Step, StepSize);
+
+    VerletIntegration::InverseMasses(_masses, _inverseMasses);
+    //VerletIntegration::Advance(_dt, _atomPositions, _velocities, _totalForces, _inverseMasses, _posDelta);
+    VerletIntegration::Advance(_atomPositions, _velocities, _totalForces, _inverseMasses, Step, _dt);
+    //VerletIntegration::SelectVerletStepSize(_velocities, _totalForces, _inverseMasses, _dt,  errorTol,  maxStepSize);
+
+   // VerletIntegration::advance(_atomPositions, _velocities, _totalForces, _masses, Step, StepSize);
+}
+
+void Engine::TotalEnergy() {
+    _totalKEnergy = 0.0;
+    _totalEnergy = 0.0;
+    _kineticEnergies.assign(_numAtoms, 0.0);
+
+    KineticEnergy::calculateKineticEnergy(_velocities, _masses,_numAtoms, _kineticEnergies, _totalKEnergy);
+
+    _totalEnergy = _totalPEnergy + _totalKEnergy;
+    //std::vector<double> _kineticEnergies;// a vector of _kineticEnergy for each atom
+    //std::vector<double> _potentialEnergies;// a vector of _potentialEnergy for each atom
+
 }
 
 void Engine::Report(const string& outputFilename, int step) {
     // Reporting logic here, potentially writing to `outputFilename` for the current `step`
     Reporter reporter;
-    reporter.report(outputFilename, _atomPositions, _velocities, _totalForces,step, _torsionParams, _angleParams);
+    reporter.TestPVFReport(outputFilename, _atomPositions, _velocities, _totalForces,step, _torsionParams, _bondParams, _angleParams);
+    reporter.TotalEnergyReport(outputFilename, _totalKEnergy, _totalPEnergy, _totalEnergy, step);
+
 
 }
 
@@ -109,19 +139,20 @@ void Engine::RunSimulation(const string& outputFilename, double timestep, int nu
 
     // Initialize using the unpacked atomPositions
     //Initialize(atomPositions, totalForces, velocities);
-
+    _numAtoms = _atomPositions.size();
+    _dt = { timestep ,timestep };
     // Loop through each simulation step
     for (int currentStep = 0; currentStep < numSteps; ++currentStep) {
 
         // Update forces based on current positions
         CalculateForces();
-
+        TotalEnergy();
         // Report current state, clearing the file only at the first step
         Report(outputFilename, currentStep);
 
         // Update positions and velocities based on new forces
         //auto [updatedPositions, updatedVelocities] = Integrate(atomPositions, velocities, totalForces, masses, currentStep, timestep);
-        Integrate(currentStep, timestep);
+        Integrate(currentStep);
 
 
         // Prepare for the next iteration by updating positions and velocities

@@ -9,6 +9,7 @@
 #include "Initializer.h"
 #include "Forces.h"
 #include "VerletIntegration.h"
+#include "KineticEnergy.h"
 #include <string>
 #include <tuple>
 #include <vector>
@@ -27,6 +28,7 @@ namespace BaseLine {
             const std::vector<Coords3D>& atomPositions = std::vector<Coords3D>(),
             const std::vector<double>& masses = std::vector<double>(),
             const std::vector<PTorsionParams>& torsionParams = std::vector<PTorsionParams>(),
+            const std::vector<HBondParams>& bondParams = std::vector<HBondParams>(),
             const std::vector<HAngleParams>& angleParams = std::vector<HAngleParams>()
         );
 
@@ -39,14 +41,27 @@ namespace BaseLine {
 
     private:
         void InitializeSimulationParameters();
+        std::size_t _numAtoms;
         std::string _systemFilename;
         std::string _stateFilename;
         std::vector<Coords3D> _atomPositions;
         std::vector<PTorsionParams> _torsionParams;
+        std::vector<HBondParams> _bondParams;
         std::vector<HAngleParams> _angleParams;
         std::vector<Coords3D> _totalForces;
         std::vector<Coords3D> _velocities;
         std::vector<double> _masses;
+        std::vector<double> _inverseMasses;
+        std::vector<double> _kineticEnergies;// a vector of _kineticEnergy for each atom
+        //std::vector<double> _potentialEnergies;// a vector of _potentialEnergy for each atom does not exist since potential is calculated per force not per atom
+        double _totalKEnergy;// total kinetic Energy of the system at current step
+        double _totalPEnergy;// total potential Energy of the system at current step
+        double _totalEnergy;// total Energy=potential+kinetic of the system at current step
+
+        std::vector<double> _dt;
+        double errorTol=0.0002;//check and adjust later 
+        double maxStepSize=0.02;//check and adjust later this is in ps and is 20 fs
+
         //void InitializeFromFiles(const std::string& systemFilename, const std::string& stateFilename);
 
         //void Initialize(const vector<Coords3D>& atomPositions);
@@ -56,7 +71,8 @@ namespace BaseLine {
         void CalculateForces();
         //pair<vector<Coords3D>, vector<Coords3D>> Integrate(int& StepNum, double& StepSize);
         //std::pair<std::vector<Coords3D>, std::vector<Coords3D>> Integrate2(std::vector<Coords3D>& atomPositions, std::vector<Coords3D>& velocities, std::vector<Coords3D>& totalForces, std::vector<double>& masses, int& Step, double& StepSize);
-        void Engine::Integrate(int& Step, double& StepSize);
+        void Integrate(int& Step);
+        void TotalEnergy();
         //void Report(const string& outputFilename, int step);
         void Report(const std::string& outputFilename, int step);
 

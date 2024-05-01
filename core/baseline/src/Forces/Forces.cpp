@@ -6,7 +6,7 @@ using namespace std;
 using namespace BaseLine;
 
 
-vector<Coords3D> Forces::AddPTorsion(vector<Coords3D>& totalForces, const vector<Coords3D>& atomPositions, const vector<PTorsionParams>& torsionParams) {
+void Forces::AddPTorsion(vector<Coords3D>& totalForces, const vector<Coords3D>& atomPositions, const vector<PTorsionParams>& torsionParams, double& totalPEnergy) {
     //vector<Coords3D> totalForces(atomPositions.size(), Coords3D(0, 0, 0)); // Initialize totalForces with the size of atomPositions
 
     for (const auto& torsion : torsionParams) {
@@ -15,7 +15,7 @@ vector<Coords3D> Forces::AddPTorsion(vector<Coords3D>& totalForces, const vector
                                         Coords3D(atomPositions[torsion.p2][0], atomPositions[torsion.p2][1], atomPositions[torsion.p2][2]),
                                         Coords3D(atomPositions[torsion.p3][0], atomPositions[torsion.p3][1], atomPositions[torsion.p3][2]),
                                         Coords3D(atomPositions[torsion.p4][0], atomPositions[torsion.p4][1], atomPositions[torsion.p4][2]) };
-        auto forces = PeriodicTorsionForce::calculateForces(AP, torsion);
+        auto forces = PeriodicTorsionForce::calculateForces(AP, torsion, totalPEnergy);
         totalForces[torsion.p1] += forces[0];
         totalForces[torsion.p2] += forces[1];
         totalForces[torsion.p3] += forces[2];
@@ -44,19 +44,30 @@ vector<Coords3D> Forces::AddPTorsion(vector<Coords3D>& totalForces, const vector
     //    totalForces[torsion.p4] += forces[3];
     //}
 
-    return totalForces;
 }
 
-vector<Coords3D> Forces::AddHAngle(vector<Coords3D>& totalForces, const vector<Coords3D>& atomPositions, const vector<HAngleParams>& angleParams) {
+
+void Forces::AddHBond(vector<Coords3D>& totalForces, const vector<Coords3D>& atomPositions, const vector<HBondParams>& bondParams, double& totalPEnergy) {
+    for (const auto& bond : bondParams) {
+        //if (bond.p1 < atomPositions.size() && bond.p2 < atomPositions.size()) {
+        vector<Coords3D> AP = { atomPositions[bond.p1], atomPositions[bond.p2] };
+        auto forces = HarmonicBondForce::calculateForces(AP, bond, totalPEnergy);
+        totalForces[bond.p1] += forces[0];
+        totalForces[bond.p2] += forces[1];
+        //}
+    }
+
+}
+
+void Forces::AddHAngle(vector<Coords3D>& totalForces, const vector<Coords3D>& atomPositions, const vector<HAngleParams>& angleParams, double& totalPEnergy) {
 
     for (const auto& angle : angleParams) {
         vector<Coords3D> AP = { atomPositions[angle.p1], atomPositions[angle.p2], atomPositions[angle.p3] };
-        auto forces = HarmonicAngleForce::calculateForces(AP, angle);
+        auto forces = HarmonicAngleForce::calculateForces(AP, angle, totalPEnergy);
         totalForces[angle.p1] += forces[0];
         totalForces[angle.p2] += forces[1];
         totalForces[angle.p3] += forces[2];
     }
 
-    return totalForces;
 }
 

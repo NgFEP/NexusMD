@@ -23,14 +23,15 @@ int main() {
     };
 
     vector<PTorsionParams> torsionParams = {};//empty as in here we only want to test the accuracy of software result for 1 harmonic angle force
+    vector<HBondParams> bondParams{};//p1,p2,d,k //double d; // Ideal bond distance and double k; // Force constant
     vector<HAngleParams> angleParams{ {0, 1, 2, 1.911135530933791, 418.40000000000003} };//p1,p2,p3,a,k //double a; // Ideal angle in radians and double k; // Force constant
     vector<double> masses = { 14.01, 12.01, 1.008 };
-
-    Engine engine("","",atomPositions, masses, torsionParams, angleParams);//engine construction for test run
+    
+    Engine engine("", "", atomPositions, masses, torsionParams, bondParams, angleParams);//engine construction for test run
     string outputFilename = "output_test_HAF_1Angle.txt"; // Output file for reporting
 
     double StepSize = 0.001; // Example step size
-    int TotalSteps = 2; // Example total number of steps for the simulation
+    int TotalSteps = 3; // Example total number of steps for the simulation
 
     // Run the simulation with specified parameters
     try {

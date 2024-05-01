@@ -56,9 +56,9 @@ double PeriodicTorsionForce::torsion_angle(const Coords3D& p1, const Coords3D& p
     //start of previous method
     Coords3D m1 = cp0.cross(cp1).normalize();
 
-    double x = cp0.dot(cp1);
-    double y = m1.dot(cp1);
-    double angle2 = atan2(y, x);
+    //double x = cp0.dot(cp1);
+    //double y = m1.dot(cp1);
+    //double angle2 = atan2(y, x);
     //end of previous method
 
 
@@ -88,7 +88,7 @@ double PeriodicTorsionForce::torsion_angle(const Coords3D& p1, const Coords3D& p
 
 
 
-vector<Coords3D> PeriodicTorsionForce::calculateForces(const vector<Coords3D>& atomPositions, const PTorsionParams& params) {
+vector<Coords3D> PeriodicTorsionForce::calculateForces(const vector<Coords3D>& atomPositions, const PTorsionParams& params, double& totalPEnergy) {
     // Assuming atomPositions contains positions for the four atoms involved in the torsion
     double torsionAngle = torsion_angle(atomPositions[0], atomPositions[1], atomPositions[2], atomPositions[3]);
 
@@ -96,7 +96,7 @@ vector<Coords3D> PeriodicTorsionForce::calculateForces(const vector<Coords3D>& a
     double deltaAngle = params.periodicity * torsionAngle - params.phase;
     // New line for energy calculation
     double energy = params.k * (1.0 + cos(deltaAngle));
-
+    totalPEnergy += energy;
     double dEdPhi = -params.k * params.periodicity * sin(deltaAngle);
 
     Coords3D r1 = atomPositions[0], r2 = atomPositions[1], r3 = atomPositions[2], r4 = atomPositions[3];

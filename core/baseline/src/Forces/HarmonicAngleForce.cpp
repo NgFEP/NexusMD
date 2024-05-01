@@ -20,10 +20,12 @@ double HarmonicAngleForce::calculateAngle(const Coords3D& p1, const Coords3D& p2
     return theta;
 }
 
-vector<Coords3D> HarmonicAngleForce::calculateForces(const vector<Coords3D>& atomPositions, const HAngleParams& params) {
+vector<Coords3D> HarmonicAngleForce::calculateForces(const vector<Coords3D>& atomPositions, const HAngleParams& params, double& totalPEnergy) {
     double theta = calculateAngle(atomPositions[0], atomPositions[1], atomPositions[2]);
     double deltaIdeal = theta - params.a;
     double energy = 0.5 * params.k * deltaIdeal * deltaIdeal;
+    totalPEnergy += energy;
+
     double dEdAngle = params.k * deltaIdeal;
 
     Coords3D v0 = atomPositions[1] - atomPositions[0];
