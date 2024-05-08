@@ -30,10 +30,24 @@
 #include "Coords3D.h"
 #include <vector>
 #include <string>
-//#include <fstream>
 #include "SystemXMLParser.h"
+#include <set>
 
 namespace BaseLine {
+
+    struct PDBAtom {
+        int atomNum;
+        std::string atomName;
+        std::string resName;
+        char chainID;
+        int resSeq;
+        Coords3D coords;
+        double occupancy;
+        double tempFactor;
+        std::string element;
+        std::string recordType; // Added to distinguish ATOM from HETATM
+    };
+
     class Reporter {
     public:
         Reporter();
@@ -43,8 +57,32 @@ namespace BaseLine {
             const std::vector<Coords3D>& velocities, const std::vector<Coords3D>& forces, int step, const std::vector<PTorsionParams>& torsionParams, const std::vector<HBondParams>& bondParams, const std::vector<HAngleParams>& angleParams);
         void TotalEnergyReport(const std::string& baseFilename, double& totalKEnergy, double& totalPEnergy, double& totalEnergy, int step);
 
+        // Main function to read, process, and write PDB file
+        //void pdbOutputGenerator(const std::string& inputFilename, const std::string& outputFilename, std::vector<PDBAtom>& outputTemplate,const std::vector<Coords3D>& positions, int step);
+        void pdbOutputGeneratorPart1(const std::string& inputFilename, const std::string& outputFilename, std::vector<PDBAtom>& outputTemplate);
+        void pdbOutputGeneratorPart2(const std::string& outputFilename, std::vector<PDBAtom>& outputTemplate, const std::vector<Coords3D>& positions, size_t ModelNum);
+
+
     private:
+        std::string _PBCLine = "";
+        // Set containing standard amino acid residues
+        const std::set<std::string> standardAminoAcids = {
+            "ALA", "ARG", "ASN", "ASP", "CYS", "GLN", "GLU", "GLY", "HIS", "ILE",
+            "LEU", "LYS", "MET", "PHE", "PRO", "SER", "THR", "TRP", "TYR", "VAL"
+        };
         //static ofstream outputFile;
+        std::string getCurrentDate();
+
+        // Extracts the element from the atom name
+        std::string extractElement(const std::string& atomName);
+
+        PDBAtom parsePDBLine(const std::string& line);
+
+        void outputTemplateExtractor(const std::string& inputFilename, std::vector<PDBAtom>& outputTemplate);
+
+        // Helper function to format a PDB line
+        std::string formatPDBLine(const PDBAtom& atom);
+
     };
 }
 

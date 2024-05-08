@@ -56,6 +56,8 @@ void Engine::InitializeSimulationParameters() {
         _masses = SystemXMLParser::MassesParser(_systemFilename);
         _torsionParams = SystemXMLParser::PTorsionParser(_systemFilename);
         _angleParams = SystemXMLParser::HAngleParser(_systemFilename);
+        _RealSimRun = true;
+       
     }
     Initializer initializer;
     initializer.InitializeForcesAndVelocities(_atomPositions, _totalForces, _velocities);
@@ -124,21 +126,37 @@ void Engine::TotalEnergy() {
 
 }
 
-void Engine::Report(const string& outputFilename, int step) {
+void Engine::Report(const string& inputFilename, const string& outputFilename, int& step, int& interval) {
     // Reporting logic here, potentially writing to `outputFilename` for the current `step`
     Reporter reporter;
-    reporter.TestPVFReport(outputFilename, _atomPositions, _velocities, _totalForces,step, _torsionParams, _bondParams, _angleParams);
-    reporter.TotalEnergyReport(outputFilename, _totalKEnergy, _totalPEnergy, _totalEnergy, step);
+    if (_RealSimRun){
 
+        // Write the REMARK line with the current date
+        // Model number is different than step number. it's step divided by interval (the interval at which the reporters will save data)
+
+        if (step == 0 ) {
+            //reporter.pdbOutputGenerator(inputFilename, outputFilename, _outputTemplate, _atomPositions, step);
+
+            reporter.pdbOutputGeneratorPart1(inputFilename, outputFilename, _outputTemplate);
+        }
+        else if (((step + 1) % interval) == 0) {
+            _Modelnum = (step + 1) / interval;//in pdb step starts from 1
+            reporter.pdbOutputGeneratorPart2(outputFilename, _outputTemplate, _atomPositions, _Modelnum);
+        }
+    }
+    else {
+        reporter.TestPVFReport(outputFilename, _atomPositions, _velocities, _totalForces, step, _torsionParams, _bondParams, _angleParams);
+        reporter.TotalEnergyReport(outputFilename, _totalKEnergy, _totalPEnergy, _totalEnergy, step);
+    }
 
 }
 
 
 
-void Engine::RunSimulation(const string& outputFilename, double timestep, int numSteps){ //, const string& systemFilename, const string& stateFilename, vector<Coords3D>& totalForces, vector<Coords3D>& velocities) {    // Unpack the tuple returned by Inputs
+void Engine::RunSimulation(const string& inputFilename, const string& outputFilename, double& timestep, int& numSteps, int& interval){ // const string& systemFilename, const string& stateFilename, vector<Coords3D>& totalForces, vector<Coords3D>& velocities) {    // Unpack the tuple returned by Inputs
 
     // Initialize using the unpacked atomPositions
-    //Initialize(atomPositions, totalForces, velocities);
+    // Initialize(atomPositions, totalForces, velocities);
     _numAtoms = _atomPositions.size();
     _dt = { timestep ,timestep };
     // Loop through each simulation step
@@ -148,7 +166,8 @@ void Engine::RunSimulation(const string& outputFilename, double timestep, int nu
         CalculateForces();
         TotalEnergy();
         // Report current state, clearing the file only at the first step
-        Report(outputFilename, currentStep);
+
+        Report(inputFilename, outputFilename, currentStep, interval);
 
         // Update positions and velocities based on new forces
         //auto [updatedPositions, updatedVelocities] = Integrate(atomPositions, velocities, totalForces, masses, currentStep, timestep);
@@ -156,8 +175,8 @@ void Engine::RunSimulation(const string& outputFilename, double timestep, int nu
 
 
         // Prepare for the next iteration by updating positions and velocities
-        //atomPositions = updatedPositions;
-        //velocities = updatedVelocities;
+        // atomPositions = updatedPositions;
+        // velocities = updatedVelocities;
 
     }
 }

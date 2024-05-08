@@ -36,11 +36,12 @@ namespace BaseLine {
         
         //void Inputs(const string& systemFilename, const string& stateFilename);
         //void RunSimulation(const string& outputFilename, double timestep, int numSteps, const string& systemFilename, const string& stateFilename);
-        void RunSimulation(const std::string& outputFilename, double timestep, int numSteps);// , const std::string& systemFilename, const std::string& stateFilename, std::vector<Coords3D>& totalForces, std::vector<Coords3D>& velocities);
+        void RunSimulation(const std::string& inputFilename, const std::string& outputFilename, double& timestep, int& numSteps, int& interval);// , const std::string& systemFilename, const std::string& stateFilename, std::vector<Coords3D>& totalForces, std::vector<Coords3D>& velocities);
 
 
     private:
         void InitializeSimulationParameters();
+        bool _RealSimRun=false;
         std::size_t _numAtoms;
         std::string _systemFilename;
         std::string _stateFilename;
@@ -58,6 +59,11 @@ namespace BaseLine {
         double _totalPEnergy;// total potential Energy of the system at current step
         double _totalEnergy;// total Energy=potential+kinetic of the system at current step
 
+        std::vector<PDBAtom> _outputTemplate;//to store the exracted output.pdb format from input.pdb file 
+        std::size_t _Modelnum;
+
+
+
         std::vector<double> _dt;
         double errorTol=0.0002;//check and adjust later 
         double maxStepSize=0.02;//check and adjust later this is in ps and is 20 fs
@@ -74,7 +80,7 @@ namespace BaseLine {
         void Integrate(int& Step);
         void TotalEnergy();
         //void Report(const string& outputFilename, int step);
-        void Report(const std::string& outputFilename, int step);
+        void Report(const std::string& inputFilename, const std::string& outputFilename, int& step, int& interval);
 
     };
 }

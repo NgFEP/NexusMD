@@ -8,8 +8,8 @@ using namespace BaseLine;
 int main() {
 
     // Assuming these vectors need to be passed to the RunSimulation method.
-    vector<Coords3D> totalForces; // Initialized empty, assuming Engine handles their setup.
-    vector<Coords3D> velocities; // Initialized empty, similarly.
+    //vector<Coords3D> totalForces; // Initialized empty, assuming Engine handles their setup.
+    //vector<Coords3D> velocities; // Initialized empty, similarly.
 
 
     // first torsion info: 

@@ -160,7 +160,10 @@
     <ClCompile Include="core\baseline\src\StateXMLParser.cpp" />
     <ClCompile Include="core\baseline\src\SystemXMLParser.cpp" />
     <ClCompile Include="core\baseline\src\VerletIntegration.cpp" />
-    <ClCompile Include="core\baseline\Tests\TestBaseline3Forces.cpp" />
+    <ClCompile Include="NexaBindRunSimulationTest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="input.pdb" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

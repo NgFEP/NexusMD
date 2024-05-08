@@ -1,55 +1,39 @@
-//#include "stdafx.h"
-//#include "Engine.h"
-//#include "Coords3D.h"
-//
-//using namespace std;
-//using namespace BaseLine;
-//
-//int main() {
-//    string systemFilename = "system.xml"; // Path to the system file
-//    string stateFilename = "state.xml"; // Path to the state file
-//    string outputFilename = "output.txt"; // Output file for reporting
-//
-//    // Assuming these vectors need to be passed to the RunSimulation method.
-//    vector<Coords3D> totalForces; // Initialized empty, assuming Engine handles their setup.
-//    vector<Coords3D> velocities; // Initialized empty, similarly.
-//
-//    Engine engine(systemFilename, stateFilename);
-//
-//    double StepSize = 0.001; // Example step size
-//    int TotalSteps = 2; // Example total number of steps for the simulation
-//
-//    // Run the simulation with specified parameters
-//    try {
-//        engine.RunSimulation(outputFilename, StepSize, TotalSteps);// , systemFilename, stateFilename, totalForces, velocities);
-//
-//        cout << "Simulation completed successfully." << endl;
-//    }
-//    catch (const exception& e) {
-//        cerr << "Error during simulation: " << e.what() << endl;
-//    }
-//
-//    return 0;
-//}
+#include "stdafx.h"
+#include "Engine.h"
+#include "Coords3D.h"
 
+using namespace std;
+using namespace BaseLine;
 
+int main() {
+    string systemFilename = "system.xml"; // Path to the system file
+    string stateFilename = "state.xml"; // Path to the state file
+    string outputFilename = "output_SimRun_test.pdb"; // Output file for reporting
+    string inputFilename = "input.pdb"; // Output file for reporting
 
+    // Assuming these vectors need to be passed to the RunSimulation method.
+    //vector<Coords3D> totalForces; // Initialized empty, assuming Engine handles their setup.
+    //vector<Coords3D> velocities; // Initialized empty, similarly.
 
+    Engine engine(systemFilename, stateFilename, {}, {}, {}, {}, {});
 
+    double StepSize = 0.001; // Example step size
+    int TotalSteps = 1000; // Example total number of steps for the simulation
+    int interval = 100; // Model number is different than step number. it's step divided by interval (the interval at which the reporters will save data)
+    cout << "Total Model #: " << abs(TotalSteps / interval) << endl;
 
+    // Run the simulation with specified parameters
+    try {
+        engine.RunSimulation(inputFilename, outputFilename, StepSize, TotalSteps, interval);// , systemFilename, stateFilename, totalForces, velocities);
 
+        cout << "Simulation completed successfully." << endl;
+    }
+    catch (const exception& e) {
+        cerr << "Error during simulation: " << e.what() << endl;
+    }
 
-
-
-
-
-
-
-
-
-
-
-
+    return 0;
+}
 
 
 
