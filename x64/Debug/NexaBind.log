@@ -1,5 +1,0 @@
-﻿  VerletIntegration.cpp
-  simrun.cpp
-  Generating Code...
-C:\Users\oj53\source\repos\2_20_2024_nexabind_prototype_with_openmm_in_cpp\core\baseline\src\VerletIntegration.cpp(5,10): error C1083: Cannot open include file: 'VerletIntegration.h': No such file or directory
-C:\Users\oj53\source\repos\2_20_2024_nexabind_prototype_with_openmm_in_cpp\simrun.cpp(1,10): error C1083: Cannot open include file: 'OpenMM.h': No such file or directory
