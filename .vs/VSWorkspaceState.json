@@ -1,11 +1,6 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\core",
-    "\\core\\baseline",
-    "\\core\\baseline\\headers",
-    "\\core\\baseline\\src",
-    "\\core\\baseline\\Tests"
+    ""
   ],
   "SelectedNode": "\\NexaBind.sln",
   "PreviewInSolutionExplorer": false

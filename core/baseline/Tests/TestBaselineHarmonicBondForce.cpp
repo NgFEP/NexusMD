@@ -31,10 +31,12 @@ int main() {
 
     double StepSize = 0.001; // Example step size
     int TotalSteps = 3; // Example total number of steps for the simulation
+    int interval = 1;
 
     // Run the simulation with specified parameters
     try {
-        engine.RunSimulation(outputFilename, StepSize, TotalSteps);// , systemFilename, stateFilename, totalForces, velocities);
+        //engine.RunSimulation(outputFilename, StepSize, TotalSteps);// , systemFilename, stateFilename, totalForces, velocities);
+        engine.RunSimulation("", outputFilename, StepSize, TotalSteps, interval);// , systemFilename, stateFilename, totalForces, velocities);
 
         cout << "Simulation completed successfully." << endl;
     }

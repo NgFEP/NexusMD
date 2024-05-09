@@ -131,7 +131,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Xml Include="state.xml" />
+    <Xml Include="state_dialanine.xml" />
     <Xml Include="system.xml" />
+    <Xml Include="system_dialanine.xml" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\baseline\headers\Coords3D.h" />
@@ -160,7 +162,7 @@
     <ClCompile Include="core\baseline\src\StateXMLParser.cpp" />
     <ClCompile Include="core\baseline\src\SystemXMLParser.cpp" />
     <ClCompile Include="core\baseline\src\VerletIntegration.cpp" />
-    <ClCompile Include="NexaBindRunSimulationTest.cpp" />
+    <ClCompile Include="core\baseline\Tests\TestBaseline3Forces.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="input.pdb" />

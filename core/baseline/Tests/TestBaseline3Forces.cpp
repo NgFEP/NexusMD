@@ -77,10 +77,13 @@ int main() {
 
     double StepSize = 0.001; // Example step size 1 fs
     int TotalSteps = 2000; // Example total number of steps for the simulation
+    int interval = 1; // Model number is different than step number. it's step divided by interval (the interval at which the reporters will save data)
 
     // Run the simulation with specified parameters
     try {
-        engine.RunSimulation(outputFilename, StepSize, TotalSteps);// , systemFilename, stateFilename, totalForces, velocities);
+        //engine.RunSimulation(outputFilename, StepSize, TotalSteps);// , systemFilename, stateFilename, totalForces, velocities);
+        engine.RunSimulation("", outputFilename, StepSize, TotalSteps, interval);// , systemFilename, stateFilename, totalForces, velocities);
+
 
         cout << "Simulation completed successfully." << endl;
     }
