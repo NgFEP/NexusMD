@@ -90,9 +90,9 @@
     <ClCompile>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>C:\Users\oj53\source\repos\2_20_2024_nexabind_prototype_with_openmm_in_cpp\NexaBind_BackEnd\core\baseline\headers;C:\Users\oj53\source\repos\2_20_2024_nexabind_prototype_with_openmm_in_cpp\NexaBind_BackEnd\core\pugixml-1.14\src;C:\Users\oj53\source\repos\2_20_2024_nexabind_prototype_with_openmm_in_cpp\NexaBind_BackEnd\core\baseline\headers\Forces;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>core\baseline\headers;core\pugixml-1.14\src;core\baseline\headers\Forces;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

@@ -1,4 +1,13 @@
-#include "stdafx.h"
+//#include "stdafx.h"
+
+#pragma once
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <sstream>
+#include <fstream>
+
 #include "Initializer.h"
 #include "utility"
 

@@ -1,6 +1,14 @@
 //Engine is the combiner of all the simulation elements: .pdb state reader, initializer(total forces and velocities), total force calculator, integrator, reporter 
 // Engine.cpp
-#include "stdafx.h"
+//#include "stdafx.h"
+#pragma once
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <sstream>
+#include <fstream>
+#include <utility>
 #include "Engine.h"
 
 using namespace std;

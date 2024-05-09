@@ -1,4 +1,14 @@
-#include "stdafx.h"
+//#include "stdafx.h"
+
+#pragma once
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <sstream>
+#include <fstream>
+#include <utility>
+
 #include "Engine.h"
 #include "Coords3D.h"
 
@@ -76,7 +86,7 @@ int main() {
     string outputFilename = "output_test_3Forces.txt"; // Output file for reporting
 
     double StepSize = 0.001; // Example step size 1 fs
-    int TotalSteps = 2000; // Example total number of steps for the simulation
+    int TotalSteps = 20; // Example total number of steps for the simulation
     int interval = 1; // Model number is different than step number. it's step divided by interval (the interval at which the reporters will save data)
 
     // Run the simulation with specified parameters
