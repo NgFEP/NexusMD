@@ -51,13 +51,13 @@
     <ClInclude Include="core\baseline\headers\Forces\HarmonicAngleForce.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\baseline\headers\stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="core\baseline\headers\Forces\HarmonicBondForce.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\baseline\headers\KineticEnergy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\baseline\headers\PeriodicBoundaryCondition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -95,11 +95,15 @@
     <ClCompile Include="core\baseline\src\KineticEnergy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\baseline\Tests\TestBaseline3Forces.cpp">
+    <ClCompile Include="core\baseline\src\PeriodicBoundaryCondition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NexaBindRunSimulation_Dialanine_Test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="input.pdb" />
+    <None Include="dialanine_VMD2.pdb" />
   </ItemGroup>
 </Project>

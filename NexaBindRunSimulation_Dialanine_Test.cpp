@@ -17,8 +17,8 @@ using namespace BaseLine;
 int main() {
     string systemFilename = "system_dialanine.xml"; // Path to the system file
     string stateFilename = "state_dialanine.xml"; // Path to the state file
-    string outputFilename = "output_SimRun_Dialanine_test.pdb"; // Output file for reporting
-    string inputFilename = "dialanine_VMD.pdb"; // Output file for reporting
+    string outputFilename = "output_SimRun_Dialanine_PBC_test.pdb"; // Output file for reporting
+    string inputFilename = "dialanine_VMD2.pdb"; // Output file for reporting
 
     // Assuming these vectors need to be passed to the RunSimulation method.
     //vector<Coords3D> totalForces; // Initialized empty, assuming Engine handles their setup.
@@ -27,8 +27,8 @@ int main() {
     Engine engine(systemFilename, stateFilename, {}, {}, {}, {}, {});
 
     double StepSize = 0.001; // Example step size
-    int TotalSteps = 5000; // Example total number of steps for the simulation
-    int interval = 100; // Model number is different than step number. it's step divided by interval (the interval at which the reporters will save data)
+    int TotalSteps = 2000; // Example total number of steps for the simulation
+    int interval = 1; // Model number is different than step number. it's step divided by interval (the interval at which the reporters will save data)
     cout << "Total Frames #: " << abs(TotalSteps / interval) << endl;
 
     // Run the simulation with specified parameters

@@ -38,11 +38,18 @@ double PeriodicTorsionForce::atom_distance(const Coords3D& coords1, const Coords
 
 
 // Calculate torsion angle (in radians) between four points
-double PeriodicTorsionForce::torsion_angle(const Coords3D& p1, const Coords3D& p2, const Coords3D& p3, const Coords3D& p4) {
+double PeriodicTorsionForce::torsion_angle(const Coords3D& p1, const Coords3D& p2, const Coords3D& p3, const Coords3D& p4, const PeriodicBoundaryCondition::BoxInfo& boxInfo) {
     // Calculate vectors between atoms
-    Coords3D v0 = p1 - p2;
-    Coords3D v1 = p3 - p2;
-    Coords3D v2 = p3 - p4;
+    // Coords3D v0 = p1 - p2;
+    // Coords3D v1 = p3 - p2;
+    // Coords3D v2 = p3 - p4;
+
+    Coords3D v0 = PeriodicBoundaryCondition::minimumImageVector(p1, p2, boxInfo);
+    Coords3D v1 = PeriodicBoundaryCondition::minimumImageVector(p3, p2, boxInfo);
+    Coords3D v2 = PeriodicBoundaryCondition::minimumImageVector(p3, p4, boxInfo);
+
+
+
 
     // Apply periodic boundary conditions if needed
     // APPLY_PERIODIC_TO_DELTA(v0)
@@ -98,9 +105,9 @@ double PeriodicTorsionForce::torsion_angle(const Coords3D& p1, const Coords3D& p
 
 
 
-vector<Coords3D> PeriodicTorsionForce::calculateForces(const vector<Coords3D>& atomPositions, const PTorsionParams& params, double& totalPEnergy) {
+vector<Coords3D> PeriodicTorsionForce::calculateForces(const vector<Coords3D>& atomPositions, const PTorsionParams& params, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo) {
     // Assuming atomPositions contains positions for the four atoms involved in the torsion
-    double torsionAngle = torsion_angle(atomPositions[0], atomPositions[1], atomPositions[2], atomPositions[3]);
+    double torsionAngle = torsion_angle(atomPositions[0], atomPositions[1], atomPositions[2], atomPositions[3], boxInfo);
 
     // Calculate energy derivative with respect to the torsion angle
     double deltaAngle = params.periodicity * torsionAngle - params.phase;
@@ -119,9 +126,14 @@ vector<Coords3D> PeriodicTorsionForce::calculateForces(const vector<Coords3D>& a
 
 
     // Calculate vectors between atoms
-    Coords3D v0 = r1 - r2;
-    Coords3D v1 = r3 - r2;
-    Coords3D v2 = r3 - r4;
+    // Coords3D v0 = r1 - r2;
+    // Coords3D v1 = r3 - r2;
+    // Coords3D v2 = r3 - r4;
+
+    Coords3D v0 = PeriodicBoundaryCondition::minimumImageVector(r1, r2, boxInfo);
+    Coords3D v1 = PeriodicBoundaryCondition::minimumImageVector(r3, r2, boxInfo);
+    Coords3D v2 = PeriodicBoundaryCondition::minimumImageVector(r3, r4, boxInfo);
+
 
     //std::cout << std::fixed << std::setprecision(20) << "v0: " << v0 << std::endl;
     //std::cout << std::fixed << std::setprecision(20) << "v1: " << v1 << std::endl;
@@ -187,7 +199,18 @@ vector<Coords3D> PeriodicTorsionForce::calculateForces(const vector<Coords3D>& a
     //std::cout << std::fixed << std::setprecision(16) << "force3: " << force3 << std::endl;
     //std::cout << std::fixed << std::setprecision(16) << "force4: " << force4 << std::endl;
 
-
+    if (abs(force1[1]) > 200) {
+        cout << "";
+    }
+    if (abs(force2[1]) > 200) {
+        cout << "";
+    }
+    if (abs(force3[1]) > 200) {
+        cout << "";
+    }
+    if (abs(force4[1]) > 200) {
+        cout << "";
+    }
      vector<Coords3D> forces = { force1, force2, force3, force4 };
 
     return forces;

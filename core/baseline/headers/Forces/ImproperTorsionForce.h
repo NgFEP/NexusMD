@@ -4,6 +4,7 @@
 #include "Coords3D.h"
 #include <vector>
 #include "SystemXMLParser.h" //this contains definitions for AngleParameters
+#include "PeriodicBoundaryCondition.h"
 
 
 namespace BaseLine {

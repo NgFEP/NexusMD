@@ -52,9 +52,6 @@ int main() {
 
     //};
 
-
-
-
     // combined atom positions with making sure repetitive atoms combined into one by assigning the accurate ids to force parameters (torsionParams, bondParams and angleParams)  
     vector<Coords3D> atomPositions = {
         {2.5160000324249268, 1.4160000085830688, 1.9440000057220459},//		<Position p1=0/>
@@ -86,7 +83,7 @@ int main() {
     string outputFilename = "output_test_3Forces.txt"; // Output file for reporting
 
     double StepSize = 0.001; // Example step size 1 fs
-    int TotalSteps = 20; // Example total number of steps for the simulation
+    int TotalSteps = 20000; // Example total number of steps for the simulation
     int interval = 1; // Model number is different than step number. it's step divided by interval (the interval at which the reporters will save data)
 
     // Run the simulation with specified parameters

@@ -9,6 +9,7 @@
 #include <sstream>
 #include <fstream>
 #include <utility>
+#include <limits>
 #include "Engine.h"
 
 using namespace std;
@@ -58,18 +59,44 @@ _angleParams(angleParams)
 //    return make_tuple(atomPositions, masses, torsionParams);
 //}
 
+
+
+
 void Engine::InitializeSimulationParameters() {
     if (!_systemFilename.empty() && !_stateFilename.empty()) {
         _atomPositions = StateXMLParser::parseStateXML(_stateFilename);
         _masses = SystemXMLParser::MassesParser(_systemFilename);
         _torsionParams = SystemXMLParser::PTorsionParser(_systemFilename);
+        _bondParams = SystemXMLParser::HBondParser(_systemFilename);// ****
         _angleParams = SystemXMLParser::HAngleParser(_systemFilename);
         _RealSimRun = true;
-       
+
     }
+    else {// in this case we're dealing with test files which
+        _boxInfo.boxSize = { 100,100,100 };
+    }
+
+    // Extract box boundaries from the initial atom positions
+    PeriodicBoundaryCondition::extractBoxBoundaries(_atomPositions, _boxInfo, _stateFilename);
+
     Initializer initializer;
     initializer.InitializeForcesAndVelocities(_atomPositions, _totalForces, _velocities);
 }
+
+
+
+//void Engine::InitializeSimulationParameters() {
+//    if (!_systemFilename.empty() && !_stateFilename.empty()) {
+//        _atomPositions = StateXMLParser::parseStateXML(_stateFilename);
+//        _masses = SystemXMLParser::MassesParser(_systemFilename);
+//        _torsionParams = SystemXMLParser::PTorsionParser(_systemFilename);
+//        _angleParams = SystemXMLParser::HAngleParser(_systemFilename);
+//        _RealSimRun = true;
+//       
+//    }
+//    Initializer initializer;
+//    initializer.InitializeForcesAndVelocities(_atomPositions, _totalForces, _velocities);
+//}
 
 
 
@@ -93,13 +120,13 @@ void Engine::CalculateForces() {
     
     // Forces calculation logic here, updating `totalForces` by adding PtorsionForces
     if (!_torsionParams.empty()) {
-        Forces::AddPTorsion(_totalForces, _atomPositions, _torsionParams, _totalPEnergy);
+        Forces::AddPTorsion(_totalForces, _atomPositions, _torsionParams, _totalPEnergy, _boxInfo);
     }
     if (!_bondParams.empty()) {
-        Forces::AddHBond(_totalForces, _atomPositions, _bondParams, _totalPEnergy);
+        Forces::AddHBond(_totalForces, _atomPositions, _bondParams, _totalPEnergy, _boxInfo);
     }
     if (!_angleParams.empty()) {
-        Forces::AddHAngle(_totalForces, _atomPositions, _angleParams, _totalPEnergy);
+        Forces::AddHAngle(_totalForces, _atomPositions, _angleParams, _totalPEnergy, _boxInfo);
     }
 
 }
@@ -115,22 +142,26 @@ void Engine::Integrate(int& Step) {
 
     VerletIntegration::InverseMasses(_masses, _inverseMasses);
     //VerletIntegration::Advance(_dt, _atomPositions, _velocities, _totalForces, _inverseMasses, _posDelta);
-    VerletIntegration::Advance(_atomPositions, _velocities, _totalForces, _inverseMasses, Step, _dt);
+    VerletIntegration::Advance(_atomPositions, _velocities, _totalForces, _inverseMasses, Step, _dt, _boxInfo);
     //VerletIntegration::SelectVerletStepSize(_velocities, _totalForces, _inverseMasses, _dt,  errorTol,  maxStepSize);
 
    // VerletIntegration::advance(_atomPositions, _velocities, _totalForces, _masses, Step, StepSize);
 }
 
-void Engine::TotalEnergy() {
+void Engine::TotalEnergy(double& timestep) {
     _totalKEnergy = 0.0;
     _totalEnergy = 0.0;
     _kineticEnergies.assign(_numAtoms, 0.0);
 
-    KineticEnergy::calculateKineticEnergy(_velocities, _masses,_numAtoms, _kineticEnergies, _totalKEnergy);
+    //KineticEnergy::calculateKineticEnergy(_velocities, _masses,_numAtoms, _kineticEnergies, _totalKEnergy);
+    KineticEnergy::calculateKineticEnergy(_velocities, _masses, _totalForces, timestep, _numAtoms, _kineticEnergies, _totalKEnergy);
 
     _totalEnergy = _totalPEnergy + _totalKEnergy;
-    //std::vector<double> _kineticEnergies;// a vector of _kineticEnergy for each atom
-    //std::vector<double> _potentialEnergies;// a vector of _potentialEnergy for each atom
+    if (_totalEnergy > 200) {
+        cout << "";
+    }
+    //vector<double> _kineticEnergies;// a vector of _kineticEnergy for each atom
+    //vector<double> _potentialEnergies;// a vector of _potentialEnergy for each atom
 
 }
 
@@ -154,8 +185,9 @@ void Engine::Report(const string& inputFilename, const string& outputFilename, i
     }
     else {
         reporter.TestPVFReport(outputFilename, _atomPositions, _velocities, _totalForces, step, _torsionParams, _bondParams, _angleParams);
-        reporter.TotalEnergyReport(outputFilename, _totalKEnergy, _totalPEnergy, _totalEnergy, step);
     }
+    //ploting energy conservation
+    reporter.TotalEnergyReport(outputFilename, _totalKEnergy, _totalPEnergy, _totalEnergy, step);// ******
 
 }
 
@@ -172,9 +204,11 @@ void Engine::RunSimulation(const string& inputFilename, const string& outputFile
 
         // Update forces based on current positions
         CalculateForces();
-        TotalEnergy();
-        // Report current state, clearing the file only at the first step
+        //TotalEnergy();
+        TotalEnergy(timestep);
 
+        // Report current state, clearing the file only at the first step
+        
         Report(inputFilename, outputFilename, currentStep, interval);
 
         // Update positions and velocities based on new forces

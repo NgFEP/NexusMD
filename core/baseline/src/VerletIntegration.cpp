@@ -8,12 +8,12 @@
 #include <sstream>
 #include <fstream>
 #include <utility>
-
 #include "Coords3D.h"
 #include <cstring>
 #include <cstdio>
 #include "StateXMLParser.h"
 #include "VerletIntegration.h"
+#include "PeriodicBoundaryCondition.h"
 #include <cmath> // Include for mathematical functions like sqrt()
 #include <algorithm>
 
@@ -47,7 +47,7 @@ void VerletIntegration::InverseMasses(vector<double>& masses, vector<double>& in
 
 
 //modified version NexaBind modified with cuda openmm method
-void VerletIntegration::Advance(vector<Coords3D>& atomPositions, vector<Coords3D>& velocities, vector<Coords3D>& totalForces, vector<double>& inverseMasses, int& StepNum, const vector<double>& dt) {
+void VerletIntegration::Advance(vector<Coords3D>& atomPositions, vector<Coords3D>& velocities, vector<Coords3D>& totalForces, vector<double>& inverseMasses, int& StepNum, const vector<double>& dt, const PeriodicBoundaryCondition::BoxInfo& boxInfo) {
     double dtPos = dt[1];
     double dtVel = 0.5 * (dt[0] + dt[1]);
     double scale = dtVel;// / (double)0x100000000;
@@ -56,14 +56,41 @@ void VerletIntegration::Advance(vector<Coords3D>& atomPositions, vector<Coords3D
 
     UpdatedAtomPositions.assign(numberOfAtoms, Coords3D(0, 0, 0));
 
+  //vector<Coords3D>& velocities2= velocities;
+
+    //if (StepNum==1) {
+    //    cout << "";
+    //}
     // Perform the integration
     for (int i = 0; i < numberOfAtoms; ++i) {
         if (inverseMasses[i] != 0.0) {
             for (int j = 0; j < 3; ++j) {
                 //note that the following calculated velocity is at t+StepSize/2 and not t+StepSize
                 velocities[i][j] += inverseMasses[i] * totalForces[i][j] * scale;
+
+                if (velocities[i][j] > 200) {
+                    cout << "";
+                }
+
                 //note that the following calculated atompositions is at t+StepSize
                 UpdatedAtomPositions[i][j] = atomPositions[i][j] + velocities[i][j] * dtPos;
+
+                // For PBC: Wrap coordinates to stay within box dimensions
+                while (true) {
+                    if (UpdatedAtomPositions[i][j] < boxInfo.lb[j]) {
+                        UpdatedAtomPositions[i][j] += boxInfo.boxSize[j];
+                    }
+                    else if (UpdatedAtomPositions[i][j] > boxInfo.ub[j]) {
+                        UpdatedAtomPositions[i][j] -= boxInfo.boxSize[j];
+                    }
+                    // loop until the updated position is located in the sim box 
+                    if (UpdatedAtomPositions[i][j] >= boxInfo.lb[j] && UpdatedAtomPositions[i][j] <= boxInfo.ub[j]) {
+                        break;
+                    }
+                }
+
+
+
             }
         }
     }
@@ -72,11 +99,20 @@ void VerletIntegration::Advance(vector<Coords3D>& atomPositions, vector<Coords3D
     for (int i = 0; i < numberOfAtoms; ++i) {
         if (inverseMasses[i] != 0.0)
             for (int j = 0; j < 3; ++j) {
-                //now these velocities and atomPositions are at the next step of t+StepSize 
-                velocities[i][j] = (UpdatedAtomPositions[i][j] - atomPositions[i][j]) * oneOverDt;
+                // now these velocities and atomPositions are at the next step of t+StepSize 
+                
+
+                // bug fixed: due to PBC updatedAtomPositions is updated and atompositions is still on the other side of the box which creats very large velocity values, since the following equation is the same as                 UpdatedAtomPositions[i][j] = atomPositions[i][j] + velocities[i][j] * dtPos;
+                // therfore there is no point in adding it.
+                //velocities[i][j] = (UpdatedAtomPositions[i][j] - atomPositions[i][j]) * oneOverDt;
+                
+                //if (velocities[i][j] > 200) {
+                //    cout << "";
+                //}
                 atomPositions[i][j] = UpdatedAtomPositions[i][j];
             }
     }
+
 }
 
 

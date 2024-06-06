@@ -39,7 +39,7 @@ int main() {
     string outputFilename = "output_test_HBF_1Bond.txt"; // Output file for reporting
 
     double StepSize = 0.001; // Example step size
-    int TotalSteps = 3; // Example total number of steps for the simulation
+    int TotalSteps = 40; // Example total number of steps for the simulation
     int interval = 1;
 
     // Run the simulation with specified parameters

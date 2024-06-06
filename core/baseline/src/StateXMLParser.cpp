@@ -8,7 +8,7 @@
 #include <sstream>
 #include <fstream>
 #include <utility>
-
+//#include <stdexcept>   // For runtime_error
 #include "pugixml.hpp"
 #include "StateXMLParser.h"
 // The implementation of parseSystemXML and parseStateXML goes here
@@ -38,6 +38,32 @@ vector<Coords3D> StateXMLParser::parseStateXML(const string& filename) {
 
     return atomPositions;
 }
+
+Coords3D StateXMLParser::extractBoxSize(const string& filename) {
+    pugi::xml_document doc;
+    pugi::xml_parse_result result = doc.load_file(filename.c_str());
+
+    if (!result) {
+        cerr << "XML [" + filename + "] parsed with errors, Error description: " + string(result.description()) << "\n";
+    }
+
+    pugi::xml_node stateNode = doc.child("State");
+    pugi::xml_node periodicBoxVectorsNode = stateNode.child("PeriodicBoxVectors");
+    if (!periodicBoxVectorsNode) {
+        cerr << "PeriodicBoxVectors not found in XML [" + filename + "]" << "\n";
+
+    }
+
+    Coords3D boxSize;
+    boxSize[0] = periodicBoxVectorsNode.child("A").attribute("x").as_double();
+    boxSize[1] = periodicBoxVectorsNode.child("B").attribute("y").as_double();
+    boxSize[2] = periodicBoxVectorsNode.child("C").attribute("z").as_double();
+
+    return boxSize;
+}
+
+
+
 
 //int main() {
 //    string statefile = "state.xml";

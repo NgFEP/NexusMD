@@ -4,13 +4,14 @@
 #include "Coords3D.h"
 #include <vector>
 #include "SystemXMLParser.h" //this contains definitions for BondParameters
+#include "PeriodicBoundaryCondition.h"
 
 
 namespace BaseLine {
 
     class HarmonicBondForce {
     public:
-        static std::vector<Coords3D> calculateForces(const std::vector<Coords3D>& atomPositions, const HBondParams& params, double& totalPEnergy);
+        static std::vector<Coords3D> calculateForces(const std::vector<Coords3D>& atomPositions, const HBondParams& params, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo);
 
 
     private:

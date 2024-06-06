@@ -15,6 +15,8 @@ namespace BaseLine {
 
         // Parses the state.xml file and returns a vector of AtomPosition structures
         static std::vector<Coords3D> parseStateXML(const std::string& filename);
+        static Coords3D extractBoxSize(const std::string& filename);
+
     };
 }
 

@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
 <System openmmVersion="8.1.1" type="System" version="1">
 	<PeriodicBoxVectors>
-		<A x="1" y="0" z="0"/>
-		<B x="0" y="1" z="0"/>
-		<C x="0" y="0" z="1"/>
+		<A x="2" y="0" z="0"/>
+		<B x="0" y="2" z="0"/>
+		<C x="0" y="0" z="2"/>
 	</PeriodicBoxVectors>
 	<Particles>
 		<Particle mass="1.008"/>
@@ -29,35 +29,34 @@
 		<Particle mass="1.008"/>
 		<Particle mass="1.008"/>
 	</Particles>
-	<Constraints>
-		<Constraint d=".10900000000000001" p1="1" p2="0"/>
-		<Constraint d=".10900000000000001" p1="1" p2="2"/>
-		<Constraint d=".10900000000000001" p1="1" p2="3"/>
-		<Constraint d=".10900000000000001" p1="8" p2="9"/>
-		<Constraint d=".10900000000000001" p1="10" p2="11"/>
-		<Constraint d=".10900000000000001" p1="10" p2="12"/>
-		<Constraint d=".10900000000000001" p1="10" p2="13"/>
-		<Constraint d=".101" p1="7" p2="6"/>
-		<Constraint d=".10900000000000001" p1="18" p2="19"/>
-		<Constraint d=".10900000000000001" p1="18" p2="20"/>
-		<Constraint d=".10900000000000001" p1="18" p2="21"/>
-		<Constraint d=".101" p1="17" p2="16"/>
-	</Constraints>
+	<Constraints/>
 	<Forces>
 		<Force forceGroup="0" name="HarmonicBondForce" type="HarmonicBondForce" usesPeriodic="0" version="2">
 			<Bonds>
 				<Bond d=".1522" k="265265.6" p1="4" p2="1"/>
 				<Bond d=".12290000000000001" k="476975.9999999999" p1="4" p2="5"/>
+				<Bond d=".10900000000000001" k="284511.99999999994" p1="1" p2="0"/>
+				<Bond d=".10900000000000001" k="284511.99999999994" p1="1" p2="2"/>
+				<Bond d=".10900000000000001" k="284511.99999999994" p1="1" p2="3"/>
 				<Bond d=".1335" k="410031.99999999994" p1="4" p2="6"/>
 				<Bond d=".1522" k="265265.6" p1="14" p2="8"/>
 				<Bond d=".12290000000000001" k="476975.9999999999" p1="14" p2="15"/>
 				<Bond d=".1526" k="259407.99999999994" p1="8" p2="10"/>
+				<Bond d=".10900000000000001" k="284511.99999999994" p1="8" p2="9"/>
 				<Bond d=".1449" k="282001.5999999999" p1="8" p2="6"/>
+				<Bond d=".10900000000000001" k="284511.99999999994" p1="10" p2="11"/>
+				<Bond d=".10900000000000001" k="284511.99999999994" p1="10" p2="12"/>
+				<Bond d=".10900000000000001" k="284511.99999999994" p1="10" p2="13"/>
+				<Bond d=".101" k="363171.19999999995" p1="7" p2="6"/>
 				<Bond d=".1335" k="410031.99999999994" p1="14" p2="16"/>
+				<Bond d=".10900000000000001" k="284511.99999999994" p1="18" p2="19"/>
+				<Bond d=".10900000000000001" k="284511.99999999994" p1="18" p2="20"/>
+				<Bond d=".10900000000000001" k="284511.99999999994" p1="18" p2="21"/>
 				<Bond d=".1449" k="282001.5999999999" p1="18" p2="16"/>
+				<Bond d=".101" k="363171.19999999995" p1="17" p2="16"/>
 			</Bonds>
 		</Force>
-		<Force alpha="0" cutoff=".45" dispersionCorrection="1" ewaldTolerance=".0005" exceptionsUsePeriodic="0" forceGroup="0" includeDirectSpace="1" ljAlpha="0" ljnx="0" ljny="0" ljnz="0" method="4" name="NonbondedForce" nx="0" ny="0" nz="0" recipForceGroup="-1" rfDielectric="78.3" switchingDistance="-1" type="NonbondedForce" useSwitchingFunction="0" version="4">
+		<Force alpha="0" cutoff="1" dispersionCorrection="1" ewaldTolerance=".0005" exceptionsUsePeriodic="0" forceGroup="0" includeDirectSpace="1" ljAlpha="0" ljnx="0" ljny="0" ljnz="0" method="0" name="NonbondedForce" nx="0" ny="0" nz="0" recipForceGroup="-1" rfDielectric="78.3" switchingDistance="-1" type="NonbondedForce" useSwitchingFunction="0" version="4">
 			<GlobalParameters/>
 			<ParticleOffsets/>
 			<ExceptionOffsets/>

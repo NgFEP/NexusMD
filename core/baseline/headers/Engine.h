@@ -10,6 +10,7 @@
 #include "Forces.h"
 #include "VerletIntegration.h"
 #include "KineticEnergy.h"
+#include "PeriodicBoundaryCondition.h"
 #include <string>
 #include <tuple>
 #include <vector>
@@ -18,6 +19,18 @@
 #include "Reporter.h"
 
 namespace BaseLine {
+
+    struct BoxInfo {
+        Coords3D lb;// lower boundary
+        Coords3D ub;// upper boundary
+        Coords3D boxSize;
+
+        BoxInfo() : lb(0.0, 0.0, 0.0), ub(0.0, 0.0, 0.0), boxSize(0.0, 0.0, 0.0) {}
+        BoxInfo(const Coords3D& lower, const Coords3D& upper)
+            : lb(lower), ub(upper), boxSize(std::abs(upper[0] - lower[0]), std::abs(upper[1] - lower[1]), std::abs(upper[2] - lower[2])) {}
+    };
+
+
     class Engine {
     public:
         // Constructor declaration
@@ -59,6 +72,9 @@ namespace BaseLine {
         double _totalPEnergy;// total potential Energy of the system at current step
         double _totalEnergy;// total Energy=potential+kinetic of the system at current step
 
+        PeriodicBoundaryCondition::BoxInfo _boxInfo;
+
+
         std::vector<PDBAtom> _outputTemplate;//to store the exracted output.pdb format from input.pdb file 
         std::size_t _Modelnum;
 
@@ -74,11 +90,13 @@ namespace BaseLine {
         //pair<vector<Coords3D>, vector<Coords3D>> Initialize(const vector<Coords3D>& atomPositions);
         //void Initialize(std::vector<Coords3D>& atomPositions, std::vector<Coords3D>& totalForces, std::vector<Coords3D>& velocities);
         //std::vector<Coords3D> CalculateForces(const std::vector<Coords3D>& atomPositions, const std::vector<PTorsionParams>& torsionParams, const std::vector<HAngleParams>& angleParams, std::vector<Coords3D>& totalForces);
+        void extractBoxBoundaries(const std::vector<Coords3D>& atomPositions, BoxInfo& boxInfo);
+
         void CalculateForces();
         //pair<vector<Coords3D>, vector<Coords3D>> Integrate(int& StepNum, double& StepSize);
         //std::pair<std::vector<Coords3D>, std::vector<Coords3D>> Integrate2(std::vector<Coords3D>& atomPositions, std::vector<Coords3D>& velocities, std::vector<Coords3D>& totalForces, std::vector<double>& masses, int& Step, double& StepSize);
         void Integrate(int& Step);
-        void TotalEnergy();
+        void TotalEnergy(double& timestep);
         //void Report(const string& outputFilename, int step);
         void Report(const std::string& inputFilename, const std::string& outputFilename, int& step, int& interval);
 

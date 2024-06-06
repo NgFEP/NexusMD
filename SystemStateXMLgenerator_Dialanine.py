@@ -4,11 +4,14 @@ from openmm.unit import *
 from sys import stdout
 
 # Load the PDB file and forcefield
-pdb = PDBFile('dialanine_VMD.pdb')
+pdb = PDBFile('dialanine_VMD2.pdb')
 forcefield = ForceField('amber14-all.xml', 'amber14/tip3pfb.xml')
 
 # Create the system
-system = forcefield.createSystem(pdb.topology, nonbondedMethod=PME, nonbondedCutoff=0.45*nanometer, constraints=HBonds)
+# system = forcefield.createSystem(pdb.topology, nonbondedMethod=PME, nonbondedCutoff=0.45*nanometer, constraints=HBonds)
+
+system = forcefield.createSystem(pdb.topology, nonbondedMethod=NoCutoff, constraints=None) #fixed the mistake with the HBonds constraints ****
+
 
 # Setup the simulation
 integrator = VerletIntegrator(0.001*picoseconds)

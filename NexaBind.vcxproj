@@ -88,7 +88,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
       <AdditionalIncludeDirectories>core\baseline\headers;core\pugixml-1.14\src;core\baseline\headers\Forces;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -97,8 +97,8 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>C:\Users\oj53\anaconda3\envs\installed_openmm\Library\lib\OpenMM.lib;C:\Users\oj53\source\repos\2_20_2024_nexabind_prototype_with_openmm_in_cpp\NexaBind_BackEnd\core\pugixml-1.14\build\Debug\pugixml.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\oj53\source\repos\2_20_2024_nexabind_prototype_with_openmm_in_cpp\NexaBind_BackEnd\core\pugixml-1.14\build\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>C:\Users\oj53\anaconda3\envs\installed_openmm\Library\lib\OpenMM.lib;core\pugixml-1.14\build\Debug\pugixml.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>core\pugixml-1.14\build\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -144,9 +144,9 @@
     <ClInclude Include="core\baseline\headers\Forces\PeriodicTorsionForce.h" />
     <ClInclude Include="core\baseline\headers\Initializer.h" />
     <ClInclude Include="core\baseline\headers\KineticEnergy.h" />
+    <ClInclude Include="core\baseline\headers\PeriodicBoundaryCondition.h" />
     <ClInclude Include="core\baseline\headers\Reporter.h" />
     <ClInclude Include="core\baseline\headers\StateXMLParser.h" />
-    <ClInclude Include="core\baseline\headers\stdafx.h" />
     <ClInclude Include="core\baseline\headers\SystemXMLParser.h" />
     <ClInclude Include="core\baseline\headers\VerletIntegration.h" />
   </ItemGroup>
@@ -158,13 +158,15 @@
     <ClCompile Include="core\baseline\src\Forces\PeriodicTorsionForce.cpp" />
     <ClCompile Include="core\baseline\src\Initializer.cpp" />
     <ClCompile Include="core\baseline\src\KineticEnergy.cpp" />
+    <ClCompile Include="core\baseline\src\PeriodicBoundaryCondition.cpp" />
     <ClCompile Include="core\baseline\src\Reporter.cpp" />
     <ClCompile Include="core\baseline\src\StateXMLParser.cpp" />
     <ClCompile Include="core\baseline\src\SystemXMLParser.cpp" />
     <ClCompile Include="core\baseline\src\VerletIntegration.cpp" />
-    <ClCompile Include="core\baseline\Tests\TestBaseline3Forces.cpp" />
+    <ClCompile Include="NexaBindRunSimulation_Dialanine_Test.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="dialanine_VMD2.pdb" />
     <None Include="input.pdb" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
