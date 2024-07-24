@@ -24,7 +24,11 @@ using namespace std;
 //}
 
 
-
+//// in case user needs to specify PBC manually
+//void PeriodicBoundaryCondition::setPBC(BoxInfo& boxInfo,Coords3D& boxsize) {
+//
+//    boxInfo.boxSize = boxsize;
+//}
 
 void PeriodicBoundaryCondition::extractBoxBoundaries(const vector<Coords3D>& atomPositions, BoxInfo& boxInfo, const string& stateFilename) {
 

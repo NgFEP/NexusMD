@@ -27,6 +27,25 @@ namespace BaseLine {
     };
 
 
+    struct NonbondedParticle {
+        double q, sig, eps;
+    };
+
+    struct NonbondedException {
+        int p1, p2;
+        double q, sig, eps;
+    };
+
+    struct NonbondedParams {
+        double alpha, cutoff, ewaldTolerance, rfDielectric, switchingDistance;
+        int dispersionCorrection, exceptionsUsePeriodic, forceGroup, includeDirectSpace, ljAlpha, ljnx, ljny, ljnz, method, nx, ny, nz, recipForceGroup, useSwitchingFunction, version;
+        std::vector<NonbondedParticle> particles;
+        std::vector<NonbondedException> exceptions;
+    };
+
+
+
+
     class SystemXMLParser {
     public:
 
@@ -40,6 +59,8 @@ namespace BaseLine {
 
         // Parses the system.xml file and returns a vector of HAngleParams structure
         static std::vector<HAngleParams> HAngleParser(const std::string& filename);
+
+        static NonbondedParams NonBondedParser(const std::string& filename);  // New function
 
 
 

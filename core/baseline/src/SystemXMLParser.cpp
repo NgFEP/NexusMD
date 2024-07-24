@@ -129,6 +129,68 @@ vector<HAngleParams> SystemXMLParser::HAngleParser(const string& filename) {
 }
 
 
+NonbondedParams SystemXMLParser::NonBondedParser(const string& filename) {
+    NonbondedParams params;
+    pugi::xml_document doc;
+    pugi::xml_parse_result result = doc.load_file(filename.c_str());
+    if (!result) {
+        cerr << "XML [" << filename << "] parsed with errors, Error description: " << result.description() << "\n";
+        return params;
+    }
+
+    auto forceNode = doc.child("System").find_child_by_attribute("Force", "type", "NonbondedForce");
+    if (!forceNode) {
+        cerr << "No NonbondedForce found in the XML.\n";
+        return params;
+    }
+    else {
+        // Existing code for parsing attributes
+        params.alpha = forceNode.attribute("alpha").as_double();
+        params.cutoff = forceNode.attribute("cutoff").as_double();
+        params.dispersionCorrection = forceNode.attribute("dispersionCorrection").as_int();
+        params.ewaldTolerance = forceNode.attribute("ewaldTolerance").as_double();
+        params.exceptionsUsePeriodic = forceNode.attribute("exceptionsUsePeriodic").as_int();
+        params.forceGroup = forceNode.attribute("forceGroup").as_int();
+        params.includeDirectSpace = forceNode.attribute("includeDirectSpace").as_int();
+        params.ljAlpha = forceNode.attribute("ljAlpha").as_int();
+        params.ljnx = forceNode.attribute("ljnx").as_int();
+        params.ljny = forceNode.attribute("ljny").as_int();
+        params.ljnz = forceNode.attribute("ljnz").as_int();
+        params.method = forceNode.attribute("method").as_int();
+        params.nx = forceNode.attribute("nx").as_int();
+        params.ny = forceNode.attribute("ny").as_int();
+        params.nz = forceNode.attribute("nz").as_int();
+        params.recipForceGroup = forceNode.attribute("recipForceGroup").as_int();
+        params.rfDielectric = forceNode.attribute("rfDielectric").as_double();
+        params.switchingDistance = forceNode.attribute("switchingDistance").as_double();
+        params.useSwitchingFunction = forceNode.attribute("useSwitchingFunction").as_int();
+        params.version = forceNode.attribute("version").as_int();
+
+        // Parse particles
+        for (auto& particle : forceNode.child("Particles").children("Particle")) {
+            NonbondedParticle p;
+            p.q = particle.attribute("q").as_double();
+            p.sig = particle.attribute("sig").as_double();
+            p.eps = particle.attribute("eps").as_double();
+            params.particles.push_back(p);
+        }
+
+        // Parse exceptions
+        for (auto& exception : forceNode.child("Exceptions").children("Exception")) {
+            NonbondedException e;
+            e.p1 = exception.attribute("p1").as_int();
+            e.p2 = exception.attribute("p2").as_int();
+            e.q = exception.attribute("q").as_double();
+            e.sig = exception.attribute("sig").as_double();
+            e.eps = exception.attribute("eps").as_double();
+            params.exceptions.push_back(e);
+        }
+
+        return params;
+    }
+
+
+}
 
 
 

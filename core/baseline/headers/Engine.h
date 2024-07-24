@@ -20,15 +20,16 @@
 
 namespace BaseLine {
 
-    struct BoxInfo {
-        Coords3D lb;// lower boundary
-        Coords3D ub;// upper boundary
-        Coords3D boxSize;
+    //struct BoxInfo {
+    //    Coords3D lb;// lower boundary
+    //    Coords3D ub;// upper boundary
+    //    Coords3D boxSize;
 
-        BoxInfo() : lb(0.0, 0.0, 0.0), ub(0.0, 0.0, 0.0), boxSize(0.0, 0.0, 0.0) {}
-        BoxInfo(const Coords3D& lower, const Coords3D& upper)
-            : lb(lower), ub(upper), boxSize(std::abs(upper[0] - lower[0]), std::abs(upper[1] - lower[1]), std::abs(upper[2] - lower[2])) {}
-    };
+    //    BoxInfo() : lb(0.0, 0.0, 0.0), ub(0.0, 0.0, 0.0), boxSize(0.0, 0.0, 0.0) {}
+    //    BoxInfo(const Coords3D& lower, const Coords3D& upper)
+    //        : lb(lower), ub(upper), boxSize(std::abs(upper[0] - lower[0]), std::abs(upper[1] - lower[1]), std::abs(upper[2] - lower[2])) {}
+    //};
+
 
 
     class Engine {
@@ -42,9 +43,10 @@ namespace BaseLine {
             const std::vector<double>& masses = std::vector<double>(),
             const std::vector<PTorsionParams>& torsionParams = std::vector<PTorsionParams>(),
             const std::vector<HBondParams>& bondParams = std::vector<HBondParams>(),
-            const std::vector<HAngleParams>& angleParams = std::vector<HAngleParams>()
+            const std::vector<HAngleParams>& angleParams = std::vector<HAngleParams>(),
+            const NonbondedParams& nonbondedParams = NonbondedParams(),
+            const PeriodicBoundaryCondition::BoxInfo& boxInfo = PeriodicBoundaryCondition::BoxInfo() // Default empty box info
         );
-
         
         
         //void Inputs(const string& systemFilename, const string& stateFilename);
@@ -62,6 +64,7 @@ namespace BaseLine {
         std::vector<PTorsionParams> _torsionParams;
         std::vector<HBondParams> _bondParams;
         std::vector<HAngleParams> _angleParams;
+        NonbondedParams _nonbondedParams;
         std::vector<Coords3D> _totalForces;
         std::vector<Coords3D> _velocities;
         std::vector<double> _masses;
@@ -90,7 +93,7 @@ namespace BaseLine {
         //pair<vector<Coords3D>, vector<Coords3D>> Initialize(const vector<Coords3D>& atomPositions);
         //void Initialize(std::vector<Coords3D>& atomPositions, std::vector<Coords3D>& totalForces, std::vector<Coords3D>& velocities);
         //std::vector<Coords3D> CalculateForces(const std::vector<Coords3D>& atomPositions, const std::vector<PTorsionParams>& torsionParams, const std::vector<HAngleParams>& angleParams, std::vector<Coords3D>& totalForces);
-        void extractBoxBoundaries(const std::vector<Coords3D>& atomPositions, BoxInfo& boxInfo);
+        void extractBoxBoundaries(const std::vector<Coords3D>& atomPositions, const PeriodicBoundaryCondition::BoxInfo& boxInfo);
 
         void CalculateForces();
         //pair<vector<Coords3D>, vector<Coords3D>> Integrate(int& StepNum, double& StepSize);

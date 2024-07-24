@@ -30,18 +30,18 @@ void Forces::AddPTorsion(vector<Coords3D>& totalForces, const vector<Coords3D>& 
         totalForces[torsion.p3] += forces[2];
         totalForces[torsion.p4] += forces[3];
 
-        if (abs(totalForces[torsion.p1][1]) > 200) {
-            cout << "";
-        }
-        if (abs(totalForces[torsion.p2][1]) > 200) {
-            cout << "";
-        }
-        if (abs(totalForces[torsion.p3][1]) > 200) {
-            cout << "";
-        }
-        if (abs(totalForces[torsion.p4][1]) > 200) {
-            cout << "";
-        }
+        //if (abs(totalForces[torsion.p1][1]) > 200) {
+        //    cout << "";
+        //}
+        //if (abs(totalForces[torsion.p2][1]) > 200) {
+        //    cout << "";
+        //}
+        //if (abs(totalForces[torsion.p3][1]) > 200) {
+        //    cout << "";
+        //}
+        //if (abs(totalForces[torsion.p4][1]) > 200) {
+        //    cout << "";
+        //}
 
 
 
@@ -83,12 +83,12 @@ void Forces::AddHBond(vector<Coords3D>& totalForces, const vector<Coords3D>& ato
         totalForces[bond.p2] += forces[1];
         //}
 
-        if (abs(totalForces[bond.p1][1]) > 200) {
-            cout << "";
-        }
-        if (abs(totalForces[bond.p2][1]) > 200) {
-            cout << "";
-        }
+        //if (abs(totalForces[bond.p1][1]) > 200) {
+        //    cout << "";
+        //}
+        //if (abs(totalForces[bond.p2][1]) > 200) {
+        //    cout << "";
+        //}
 
 
 
@@ -106,19 +106,27 @@ void Forces::AddHAngle(vector<Coords3D>& totalForces, const vector<Coords3D>& at
         totalForces[angle.p2] += forces[1];
         totalForces[angle.p3] += forces[2];
 
-        if (abs(totalForces[angle.p1][1]) > 200) {
-            cout << "";
-        }
-        if (abs(totalForces[angle.p2][1]) > 200) {
-            cout << "";
-        }
-        if (abs(totalForces[angle.p3][1]) > 200) {
-            cout << "";
-        }
-
-
+        //if (abs(totalForces[angle.p1][1]) > 200) {
+        //    cout << "";
+        //}
+        //if (abs(totalForces[angle.p2][1]) > 200) {
+        //    cout << "";
+        //}
+        //if (abs(totalForces[angle.p3][1]) > 200) {
+        //    cout << "";
+        //}
 
     }
 
+}
+
+
+void Forces::AddNonBondElectroPME(vector<Coords3D>& totalForces, const vector<Coords3D>& atomPositions, const NonbondedParams& params, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo) {
+    NonbondedForce nonbondedForce;
+    auto forces = nonbondedForce.calculateForces(atomPositions, totalPEnergy, params, boxInfo);
+
+    for (size_t atom = 0; atom < atomPositions.size(); atom++) {
+        totalForces[atom] += forces[atom];
+    }
 }
 

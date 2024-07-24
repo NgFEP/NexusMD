@@ -21,6 +21,8 @@ namespace BaseLine {
         
         static void extractBoxBoundaries(const std::vector<Coords3D>& atomPositions, BoxInfo& boxInfo, const std::string& stateFilename);
         static Coords3D minimumImageVector(const Coords3D& coords1, const Coords3D& coords2, const BoxInfo& boxInfo);
+        void setPBC(BoxInfo& boxInfo, Coords3D& boxsize);
+
     };
 
 } // namespace BaseLine

@@ -76,18 +76,27 @@ void VerletIntegration::Advance(vector<Coords3D>& atomPositions, vector<Coords3D
                 UpdatedAtomPositions[i][j] = atomPositions[i][j] + velocities[i][j] * dtPos;
 
                 // For PBC: Wrap coordinates to stay within box dimensions
-                while (true) {
-                    if (UpdatedAtomPositions[i][j] < boxInfo.lb[j]) {
-                        UpdatedAtomPositions[i][j] += boxInfo.boxSize[j];
-                    }
-                    else if (UpdatedAtomPositions[i][j] > boxInfo.ub[j]) {
-                        UpdatedAtomPositions[i][j] -= boxInfo.boxSize[j];
-                    }
-                    // loop until the updated position is located in the sim box 
-                    if (UpdatedAtomPositions[i][j] >= boxInfo.lb[j] && UpdatedAtomPositions[i][j] <= boxInfo.ub[j]) {
-                        break;
-                    }
+                if (UpdatedAtomPositions[i][j] < boxInfo.lb[j]) {
+                    UpdatedAtomPositions[i][j] += boxInfo.boxSize[j];
                 }
+                else if (UpdatedAtomPositions[i][j] > boxInfo.ub[j]) {
+                    UpdatedAtomPositions[i][j] -= boxInfo.boxSize[j];
+                }
+                // loop version which is not desired
+                //while (true) {
+                    //if (UpdatedAtomPositions[i][j] < boxInfo.lb[j]) {
+                    //    UpdatedAtomPositions[i][j] += boxInfo.boxSize[j];
+                    //}
+                    //else if (UpdatedAtomPositions[i][j] > boxInfo.ub[j]) {
+                    //    UpdatedAtomPositions[i][j] -= boxInfo.boxSize[j];
+                    //}
+                    // loop until the updated position is located in the sim box 
+                    //if (UpdatedAtomPositions[i][j] >= boxInfo.lb[j] && UpdatedAtomPositions[i][j] <= boxInfo.ub[j]) {
+                    //    break;
+                    //}
+                //}
+
+                // ***create an error to ask the user for smaller step sizes if particles move more than one box size at one step***
 
 
 

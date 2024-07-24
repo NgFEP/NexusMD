@@ -8,6 +8,7 @@
 #include "PeriodicTorsionForce.h"
 #include "HarmonicBondForce.h" // To use the HarmonicBondForce class
 #include "HarmonicAngleForce.h"
+#include "NonbondedForce.h"
 #include "PeriodicBoundaryCondition.h"
 //#include <string>
 #include <vector>
@@ -20,6 +21,7 @@ namespace BaseLine {
         static void AddPTorsion(std::vector<Coords3D>& totalForces, const std::vector<Coords3D>& atomPositions, const std::vector<PTorsionParams>& torsionParams, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo);
         static void AddHBond(std::vector<Coords3D>& totalForces, const std::vector<Coords3D>& atomPositions, const std::vector<HBondParams>& bondParams, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo); // New function declaration
         static void AddHAngle(std::vector<Coords3D>& totalForces, const std::vector<Coords3D>& atomPositions, const std::vector<HAngleParams>& angleParams, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo);
+        static void AddNonBondElectroPME(std::vector<Coords3D>& totalForces, const std::vector<Coords3D>& atomPositions, const NonbondedParams& params, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo);
 
     private:
 

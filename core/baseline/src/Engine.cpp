@@ -20,21 +20,29 @@ using namespace BaseLine;;
 //    InitializeSimulationParameters();
 //}
 Engine::Engine(
-    const string& systemFilename,
-    const string& stateFilename,
-    const vector<Coords3D>& atomPositions,
-    const vector<double>& masses,
-    const vector<PTorsionParams>& torsionParams,
-    const vector<HBondParams>& bondParams,
-    const vector<HAngleParams>& angleParams
+    const std::string& systemFilename,
+    const std::string& stateFilename,
+    const std::vector<Coords3D>& atomPositions,
+    const std::vector<double>& masses,
+    const std::vector<PTorsionParams>& torsionParams,
+    const std::vector<HBondParams>& bondParams,
+    const std::vector<HAngleParams>& angleParams,
+    const NonbondedParams& nonbondedParams,
+    const PeriodicBoundaryCondition::BoxInfo& boxInfo
 ) : _systemFilename(systemFilename),
 _stateFilename(stateFilename),
 _atomPositions(atomPositions),
 _masses(masses),
 _torsionParams(torsionParams),
 _bondParams(bondParams),
-_angleParams(angleParams)
+_angleParams(angleParams),
+_nonbondedParams(nonbondedParams),
+_boxInfo(boxInfo)
 {
+    if (_boxInfo.boxSize == Coords3D(0, 0, 0)) { // Check if box size is uninitialized
+        // Extract box size from XML if not provided
+        _boxInfo.boxSize = StateXMLParser::extractBoxSize(_stateFilename);
+    }
     InitializeSimulationParameters();
 }
 
@@ -69,11 +77,12 @@ void Engine::InitializeSimulationParameters() {
         _torsionParams = SystemXMLParser::PTorsionParser(_systemFilename);
         _bondParams = SystemXMLParser::HBondParser(_systemFilename);// ****
         _angleParams = SystemXMLParser::HAngleParser(_systemFilename);
+        _nonbondedParams = SystemXMLParser::NonBondedParser(_systemFilename);
         _RealSimRun = true;
 
     }
     else {// in this case we're dealing with test files which
-        _boxInfo.boxSize = { 100,100,100 };
+        //_boxInfo.boxSize = { 100,100,100 };
     }
 
     // Extract box boundaries from the initial atom positions
@@ -120,14 +129,19 @@ void Engine::CalculateForces() {
     
     // Forces calculation logic here, updating `totalForces` by adding PtorsionForces
     if (!_torsionParams.empty()) {
-        Forces::AddPTorsion(_totalForces, _atomPositions, _torsionParams, _totalPEnergy, _boxInfo);
+        // Forces::AddPTorsion(_totalForces, _atomPositions, _torsionParams, _totalPEnergy, _boxInfo);
     }
     if (!_bondParams.empty()) {
-        Forces::AddHBond(_totalForces, _atomPositions, _bondParams, _totalPEnergy, _boxInfo);
+        // Forces::AddHBond(_totalForces, _atomPositions, _bondParams, _totalPEnergy, _boxInfo);
     }
     if (!_angleParams.empty()) {
-        Forces::AddHAngle(_totalForces, _atomPositions, _angleParams, _totalPEnergy, _boxInfo);
+        // Forces::AddHAngle(_totalForces, _atomPositions, _angleParams, _totalPEnergy, _boxInfo);
     }
+    if (!_nonbondedParams.particles.empty()) {// if there is no particle infor available to perform the NonBondCalculations
+        Forces::AddNonBondElectroPME(_totalForces, _atomPositions, _nonbondedParams, _totalPEnergy,  _boxInfo);
+    }
+
+
 
 }
 
