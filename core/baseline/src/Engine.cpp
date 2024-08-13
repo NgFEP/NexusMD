@@ -138,7 +138,7 @@ void Engine::CalculateForces() {
         // Forces::AddHAngle(_totalForces, _atomPositions, _angleParams, _totalPEnergy, _boxInfo);
     }
     if (!_nonbondedParams.particles.empty()) {// if there is no particle infor available to perform the NonBondCalculations
-        Forces::AddNonBondElectroPME(_totalForces, _atomPositions, _nonbondedParams, _totalPEnergy,  _boxInfo);
+        Forces::AddNonBondElectroPME(_totalForces, _atomPositions, _nonbondedParams, _totalPEnergy,  _boxInfo,_exclusions);
     }
 
 
@@ -213,6 +213,13 @@ void Engine::RunSimulation(const string& inputFilename, const string& outputFile
     // Initialize(atomPositions, totalForces, velocities);
     _numAtoms = _atomPositions.size();
     _dt = { timestep ,timestep };
+
+    // Initialize _exclusions with the size of _numAtoms
+    _exclusions.resize(_numAtoms);
+
+    // Exclusions::createExclusions(_numAtoms, _bondParams, _angleParams, _torsionParams, _exclusions, _bondCutoff);
+    Exclusions::createExclusions(_numAtoms, _bondParams, _exclusions, _bondCutoff);
+
     // Loop through each simulation step
     for (int currentStep = 0; currentStep < numSteps; ++currentStep) {
 

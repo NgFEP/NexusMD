@@ -16,9 +16,124 @@ int main() {
     vector<Coords3D> atomPositions;
     vector<double> masses;
 
-    vector<PTorsionParams> torsionParams = {};//order p1, p2, p3, p4, k double, phase double, periodicity int
-    vector<HBondParams> bondParams{};//p1,p2,d,k //double d; // Ideal bond distance and double k; // Force constant
-    vector<HAngleParams> angleParams{};//empty as in here we only want to test the accuracy of software result for 1 periodic torsion force
+    //vector<PTorsionParams> torsionParams = {};//order p1, p2, p3, p4, k double, phase double, periodicity int
+    //vector<HBondParams> bondParams{};//p1,p2,d,k //double d; // Ideal bond distance and double k; // Force constant
+    //vector<HAngleParams> angleParams{};//empty as in here we only want to test the accuracy of software result for 1 periodic torsion force
+
+    vector<HBondParams> bondParams{// this is added here purely for creating exclusions
+    {4, 1, 0.1522, 265265.6},     // p1, p2, d, k
+    {4, 5, 0.1229, 476976.0},     // p1, p2, d, k
+    {1, 0, 0.109, 284512.0},      // p1, p2, d, k
+    {1, 2, 0.109, 284512.0},      // p1, p2, d, k
+    {1, 3, 0.109, 284512.0},      // p1, p2, d, k
+    {4, 6, 0.1335, 410032.0},     // p1, p2, d, k
+    {14, 8, 0.1522, 265265.6},    // p1, p2, d, k
+    {14, 15, 0.1229, 476976.0},   // p1, p2, d, k
+    {8, 10, 0.1526, 259408.0},    // p1, p2, d, k
+    {8, 9, 0.109, 284512.0},      // p1, p2, d, k
+    {8, 6, 0.1449, 282001.6},     // p1, p2, d, k
+    {10, 11, 0.109, 284512.0},    // p1, p2, d, k
+    {10, 12, 0.109, 284512.0},    // p1, p2, d, k
+    {10, 13, 0.109, 284512.0},    // p1, p2, d, k
+    {7, 6, 0.101, 363171.2},      // p1, p2, d, k
+    {14, 16, 0.1335, 410032.0},   // p1, p2, d, k
+    {18, 19, 0.109, 284512.0},    // p1, p2, d, k
+    {18, 20, 0.109, 284512.0},    // p1, p2, d, k
+    {18, 21, 0.109, 284512.0},    // p1, p2, d, k
+    {18, 16, 0.1449, 282001.6},   // p1, p2, d, k
+    {17, 16, 0.101, 363171.2}     // p1, p2, d, k
+    };
+
+
+    vector<HAngleParams> angleParams = {// this is added here purely for creating exclusions
+    {0, 1, 2, 1.911135530933791, 292.88},     // p1, p2, p3, angle, k
+    {0, 1, 3, 1.911135530933791, 292.88},     // p1, p2, p3, angle, k
+    {0, 1, 4, 1.911135530933791, 418.40000000000003},     // p1, p2, p3, angle, k
+    {1, 4, 5, 2.101376419401173, 669.44},     // p1, p2, p3, angle, k
+    {1, 4, 6, 2.035053907825388, 585.76},     // p1, p2, p3, angle, k
+    {2, 1, 3, 1.911135530933791, 292.88},     // p1, p2, p3, angle, k
+    {2, 1, 4, 1.911135530933791, 418.40000000000003},     // p1, p2, p3, angle, k
+    {3, 1, 4, 1.911135530933791, 418.40000000000003},     // p1, p2, p3, angle, k
+    {4, 6, 7, 2.0943951023931953, 418.40000000000003},    // p1, p2, p3, angle, k
+    {4, 6, 8, 2.1275563581810877, 418.40000000000003},    // p1, p2, p3, angle, k
+    {5, 4, 6, 2.1450096507010312, 669.44},    // p1, p2, p3, angle, k
+    {6, 8, 9, 1.911135530933791, 418.40000000000003},     // p1, p2, p3, angle, k
+    {6, 8, 10, 1.9146261894377796, 669.44},   // p1, p2, p3, angle, k
+    {6, 8, 14, 1.9216075064457567, 527.184},  // p1, p2, p3, angle, k
+    {7, 6, 8, 2.0601866490541068, 418.40000000000003},    // p1, p2, p3, angle, k
+    {8, 10, 11, 1.911135530933791, 418.40000000000003},   // p1, p2, p3, angle, k
+    {8, 10, 12, 1.911135530933791, 418.40000000000003},   // p1, p2, p3, angle, k
+    {8, 10, 13, 1.911135530933791, 418.40000000000003},   // p1, p2, p3, angle, k
+    {8, 14, 15, 2.101376419401173, 669.44},   // p1, p2, p3, angle, k
+    {8, 14, 16, 2.035053907825388, 585.76},   // p1, p2, p3, angle, k
+    {9, 8, 10, 1.911135530933791, 418.40000000000003},    // p1, p2, p3, angle, k
+    {9, 8, 14, 1.911135530933791, 418.40000000000003},    // p1, p2, p3, angle, k
+    {10, 8, 14, 1.9390607989657, 527.184},    // p1, p2, p3, angle, k
+    {11, 10, 12, 1.911135530933791, 292.88},  // p1, p2, p3, angle, k
+    {11, 10, 13, 1.911135530933791, 292.88},  // p1, p2, p3, angle, k
+    {12, 10, 13, 1.911135530933791, 292.88},  // p1, p2, p3, angle, k
+    {14, 16, 17, 2.0943951023931953, 418.40000000000003}, // p1, p2, p3, angle, k
+    {14, 16, 18, 2.1275563581810877, 418.40000000000003}, // p1, p2, p3, angle, k
+    {15, 14, 16, 2.1450096507010312, 669.44}, // p1, p2, p3, angle, k
+    {16, 18, 19, 1.911135530933791, 418.40000000000003},  // p1, p2, p3, angle, k
+    {16, 18, 20, 1.911135530933791, 418.40000000000003},  // p1, p2, p3, angle, k
+    {16, 18, 21, 1.911135530933791, 418.40000000000003},  // p1, p2, p3, angle, k
+    {17, 16, 18, 2.0601866490541068, 418.40000000000003}, // p1, p2, p3, angle, k
+    {19, 18, 20, 1.911135530933791, 292.88},  // p1, p2, p3, angle, k
+    {19, 18, 21, 1.911135530933791, 292.88},  // p1, p2, p3, angle, k
+    {20, 18, 21, 1.911135530933791, 292.88}   // p1, p2, p3, angle, k
+    };
+
+
+
+
+    vector<PTorsionParams> torsionParams = {// this is added here purely for creating exclusions
+    {0, 1, 4, 5, 3.3472, 0.0, 1},     // p1, p2, p3, p4, k double, phase double, periodicity int
+    {0, 1, 4, 5, 0.33472, 3.141592653589793, 3},     // p1, p2, p3, p4, k double, phase double, periodicity int
+    {1, 4, 6, 7, 10.46, 3.141592653589793, 2},       // p1, p2, p3, p4, k double, phase double, periodicity int
+    {1, 4, 6, 8, 10.46, 3.141592653589793, 2},       // p1, p2, p3, p4, k double, phase double, periodicity int
+    {2, 1, 4, 5, 3.3472, 0.0, 1},     // p1, p2, p3, p4, k double, phase double, periodicity int
+    {2, 1, 4, 5, 0.33472, 3.141592653589793, 3},     // p1, p2, p3, p4, k double, phase double, periodicity int
+    {3, 1, 4, 5, 3.3472, 0.0, 1},     // p1, p2, p3, p4, k double, phase double, periodicity int
+    {3, 1, 4, 5, 0.33472, 3.141592653589793, 3},     // p1, p2, p3, p4, k double, phase double, periodicity int
+    {4, 6, 8, 10, 3.3472, 0.0, 3},    // p1, p2, p3, p4, k double, phase double, periodicity int
+    {4, 6, 8, 10, 7.5312, 0.0, 2},    // p1, p2, p3, p4, k double, phase double, periodicity int
+    {4, 6, 8, 10, 8.368, 0.0, 1},     // p1, p2, p3, p4, k double, phase double, periodicity int
+    {4, 6, 8, 14, 1.75728, 0.0, 3},   // p1, p2, p3, p4, k double, phase double, periodicity int
+    {4, 6, 8, 14, 1.12968, 0.0, 2},   // p1, p2, p3, p4, k double, phase double, periodicity int
+    {5, 4, 6, 7, 10.46, 3.141592653589793, 2},       // p1, p2, p3, p4, k double, phase double, periodicity int
+    {5, 4, 6, 7, 8.368, 0.0, 1},     // p1, p2, p3, p4, k double, phase double, periodicity int
+    {5, 4, 6, 8, 10.46, 3.141592653589793, 2},       // p1, p2, p3, p4, k double, phase double, periodicity int
+    {6, 8, 10, 11, 0.6508444444444444, 0.0, 3},      // p1, p2, p3, p4, k double, phase double, periodicity int
+    {6, 8, 10, 12, 0.6508444444444444, 0.0, 3},      // p1, p2, p3, p4, k double, phase double, periodicity int
+    {6, 8, 10, 13, 0.6508444444444444, 0.0, 3},      // p1, p2, p3, p4, k double, phase double, periodicity int
+    {6, 8, 14, 16, 2.3012, 3.141592653589793, 3},    // p1, p2, p3, p4, k double, phase double, periodicity int
+    {6, 8, 14, 16, 6.610720000000001, 3.141592653589793, 2}, // p1, p2, p3, p4, k double, phase double, periodicity int
+    {6, 8, 14, 16, 1.8828, 3.141592653589793, 1},    // p1, p2, p3, p4, k double, phase double, periodicity int
+    {8, 14, 16, 17, 10.46, 3.141592653589793, 2},    // p1, p2, p3, p4, k double, phase double, periodicity int
+    {8, 14, 16, 18, 10.46, 3.141592653589793, 2},    // p1, p2, p3, p4, k double, phase double, periodicity int
+    {9, 8, 10, 11, 0.6508444444444444, 0.0, 3},      // p1, p2, p3, p4, k double, phase double, periodicity int
+    {9, 8, 10, 12, 0.6508444444444444, 0.0, 3},      // p1, p2, p3, p4, k double, phase double, periodicity int
+    {9, 8, 10, 13, 0.6508444444444444, 0.0, 3},      // p1, p2, p3, p4, k double, phase double, periodicity int
+    {9, 8, 14, 15, 3.3472, 0.0, 1},     // p1, p2, p3, p4, k double, phase double, periodicity int
+    {9, 8, 14, 15, 0.33472, 3.141592653589793, 3},   // p1, p2, p3, p4, k double, phase double, periodicity int
+    {10, 8, 14, 16, 1.6736, 0.0, 3},    // p1, p2, p3, p4, k double, phase double, periodicity int
+    {10, 8, 14, 16, 0.8368, 0.0, 2},    // p1, p2, p3, p4, k double, phase double, periodicity int
+    {10, 8, 14, 16, 0.8368, 0.0, 1},    // p1, p2, p3, p4, k double, phase double, periodicity int
+    {11, 10, 8, 14, 0.6508444444444444, 0.0, 3},    // p1, p2, p3, p4, k double, phase double, periodicity int
+    {12, 10, 8, 14, 0.6508444444444444, 0.0, 3},    // p1, p2, p3, p4, k double, phase double, periodicity int
+    {13, 10, 8, 14, 0.6508444444444444, 0.0, 3},    // p1, p2, p3, p4, k double, phase double, periodicity int
+    {15, 14, 16, 17, 10.46, 3.141592653589793, 2},   // p1, p2, p3, p4, k double, phase double, periodicity int
+    {15, 14, 16, 17, 8.368, 0.0, 1},    // p1, p2, p3, p4, k double, phase double, periodicity int
+    {15, 14, 16, 18, 10.46, 3.141592653589793, 2},   // p1, p2, p3, p4, k double, phase double, periodicity int
+    {1, 6, 4, 5, 43.932, 3.141592653589793, 2},    // p1, p2, p3, p4, k double, phase double, periodicity int
+    {4, 8, 6, 7, 4.6024, 3.141592653589793, 2},    // p1, p2, p3, p4, k double, phase double, periodicity int
+    {8, 16, 14, 15, 43.932, 3.141592653589793, 2},  // p1, p2, p3, p4, k double, phase double, periodicity int
+    {14, 18, 16, 17, 4.6024, 3.141592653589793, 2}  // p1, p2, p3, p4, k double, phase double, periodicity int
+    };
+
+
+
 
 
     // Initialize nonbonded parameters
@@ -146,6 +261,7 @@ int main() {
     boxInfo.boxSize = { 3.0, 3.0, 3.0 }; // Example manual setting // note that 
     // Initialize the engine with nonbonded parameters
     Engine engine("", "", atomPositions, masses, torsionParams, bondParams, angleParams, nbParams, boxInfo);
+    //Engine engine("", "", atomPositions, masses, {}, {}, {}, nbParams, boxInfo);
 
     string outputFilename = "output_PME_test.txt"; // Output file for reporting
 

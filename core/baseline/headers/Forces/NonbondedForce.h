@@ -1,15 +1,37 @@
-#ifndef NONBONDEDFORCE_H
+﻿#ifndef NONBONDEDFORCE_H
 #define NONBONDEDFORCE_H
 
 #include "Coords3D.h"
 #include "Types.h"
 #include <vector>
+#include <set>
 #include "SystemXMLParser.h" // This includes the definition for NonbondedParams
 #include "PeriodicBoundaryCondition.h"
+#include "NeighborList.h"
+
 
 #ifndef PI
 #define PI 3.14159265358979323846
 #endif
+
+#ifndef SQRT_PI
+#define SQRT_PI 1.77245385090551602729
+#endif
+
+#ifndef TWO_OVER_SQRT_PI
+#define TWO_OVER_SQRT_PI 1.1283791670955126 // Accurate value of 2/sqrt(pi)
+#endif
+
+//#define ONE_4PI_EPS0 8.9875517873681764e9 //​ unit N.m2/c2
+#ifndef ONE_4PI_EPS0
+#define ONE_4PI_EPS0 138.93545764446428693393 // kJ⋅nm/(mol⋅e2)
+#endif
+
+
+
+
+
+
 
 namespace BaseLine {
 
@@ -23,11 +45,10 @@ namespace BaseLine {
         // Constructor
         NonbondedForce();
 
+
         // Calculate forces for all particles based on their positions and nonbonded parameters
-        std::vector<Coords3D> calculateForces(const std::vector<Coords3D>& atomPositions, double& totalPEnergy, const NonbondedParams& params, const PeriodicBoundaryCondition::BoxInfo& boxInfo);
+        std::vector<Coords3D> calculateForces(const std::vector<Coords3D>& atomPositions, double& totalPEnergy, const NonbondedParams& params, const PeriodicBoundaryCondition::BoxInfo& boxInfo, const std::vector<std::set<int>>& exclusions);
         //void DirectAndReciprocalForcesAndEnergy(std::vector<Coords3D>& forces, const std::vector<Coords3D>& atomPositions, const ComplexGrid& pmeGrid, const NonbondedParams& params, const PeriodicBoundaryCondition::BoxInfo& boxInfo, double& totalPEnergy, const int& pmeOrder);
-        void ReciprocalForcesAndEnergy(std::vector<Coords3D>& forces, const std::vector<Coords3D>& atomPositions, const ComplexGrid& pmeGrid, const NonbondedParams& params, const PeriodicBoundaryCondition::BoxInfo& boxInfo, double& totalPEnergy, const int& pmeOrder);
-        //void DirectForcesAndEnergy(std::vector<Coords3D>& forces, const std::vector<Coords3D>& atomPositions, const NonbondedParams& params, const PeriodicBoundaryCondition::BoxInfo& boxInfo, double& totalPEnergy);
 
 
 
@@ -55,7 +76,9 @@ namespace BaseLine {
         std::vector<std::vector<int>> particleIndex;
         std::vector<std::vector<double>> particleFraction;
         double epsilon_r = 1.0;    //epsilon_r   Dielectric coefficient, typically 1.0.
+        NonbondedParams _ModifiedNonbondedParams; // used for direct space calculations
 
+        
         
 
         //std::vector<double> computeBSplineModuli(int pmeOrder);
@@ -87,11 +110,16 @@ namespace BaseLine {
 
         void InitializeAlphaEwald(const NonbondedParams& params);
 
-        void reciprocalConvolution_reference(ComplexGrid& pmeGrid, const NonbondedParams& params, const PeriodicBoundaryCondition::BoxInfo& boxInfo, double& energy);
+        void reciprocalConvolutionAndEnergy(ComplexGrid& pmeGrid, const NonbondedParams& params, const PeriodicBoundaryCondition::BoxInfo& boxInfo, double& energy);
 
         // void computeNeighborList(NeighborList& neighborList, const std::vector<Coords3D>& atomPositions, const PeriodicBoundaryCondition::BoxInfo& boxInfo, double maxDistance, double minDistance, bool usePeriodic);
+        void PMEGridForces(std::vector<Coords3D>& forces, const std::vector<Coords3D>& atomPositions, const ComplexGrid& pmeGrid, const NonbondedParams& params, const PeriodicBoundaryCondition::BoxInfo& boxInfo, double& totalPEnergy, const int& pmeOrder);
+        void ReciprocalPMEcalculateForcesAndEnergy(std::vector<Coords3D>& forces, const std::vector<Coords3D>& atomPositions, double& totalPEnergy, const NonbondedParams& params, const PeriodicBoundaryCondition::BoxInfo& boxInfo);
+        void NonbondedParamsModifier(const std::vector<Coords3D>& atomPositions, const NonbondedParams& params);
+        void CalculateSelfEnergy(const NonbondedParams& params, double& totalPEnergy);
+        void DirectForcesAndEnergy(std::vector<Coords3D>& forces, const std::vector<Coords3D>& atomPositions, const NonbondedParams& params, const PeriodicBoundaryCondition::BoxInfo& boxInfo, const std::vector<std::set<int>>& exclusions, double& totalPEnergy);
+        void CalculateExclusionEnergyAndForces(std::vector<Coords3D>& forces, const std::vector<Coords3D>& atomPositions, const PeriodicBoundaryCondition::BoxInfo& boxInfo, const std::vector < std::set<int >> &exclusions, double& totalPEnergy);
 
-    
     };
 
 } // namespace BaseLine

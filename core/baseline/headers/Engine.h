@@ -15,8 +15,11 @@
 #include <tuple>
 #include <vector>
 #include <utility>
+#include <set>
 #include "Coords3D.h"
 #include "Reporter.h"
+#include "Exclusions.h"
+
 
 namespace BaseLine {
 
@@ -65,6 +68,8 @@ namespace BaseLine {
         std::vector<HBondParams> _bondParams;
         std::vector<HAngleParams> _angleParams;
         NonbondedParams _nonbondedParams;
+        std::vector<std::set<int>> _exclusions;
+        int _bondCutoff = 3;// another case is 3: if bondCutoff is 3, the loop to find _exclusions runs twice to include particles that are 2 bonds away.
         std::vector<Coords3D> _totalForces;
         std::vector<Coords3D> _velocities;
         std::vector<double> _masses;

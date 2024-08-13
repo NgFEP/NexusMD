@@ -11,10 +11,7 @@
 using namespace std;
 using namespace BaseLine;
 
-const double TWO_OVER_SQRT_PI = 1.1283791670955126; // Accurate value of 2/sqrt(pi)
-//#define ONE_4PI_EPS0 8.9875517873681764e9 //​ unit N.m2/c2
-#define ONE_4PI_EPS0 138.93545764446428693393 //kJ⋅nm/(mol⋅e2)
-                     
+
 
 NonbondedForce::NonbondedForce() {}
 
@@ -359,7 +356,7 @@ void NonbondedForce::InitializeAlphaEwald(const NonbondedParams& params) {
     //cout << "Calculated alphaEwald: " << alphaEwald << endl;
 }
 
-void NonbondedForce::reciprocalConvolution_reference(ComplexGrid& pmeGrid, const NonbondedParams& params, const PeriodicBoundaryCondition::BoxInfo& boxInfo, double& energy) {
+void NonbondedForce::reciprocalConvolutionAndEnergy(ComplexGrid& pmeGrid, const NonbondedParams& params, const PeriodicBoundaryCondition::BoxInfo& boxInfo, double& energy) {
     int gridSizeX = gridSize[0];
     int gridSizeY = gridSize[1];
     int gridSizeZ = gridSize[2];
@@ -456,7 +453,7 @@ void NonbondedForce::initializeErfcTable(const NonbondedParams& params) {
 
 
 //new reference version
-void NonbondedForce::ReciprocalForcesAndEnergy(vector<Coords3D>& forces, const vector<Coords3D>& atomPositions, const ComplexGrid& pmeGrid, const NonbondedParams& params, const PeriodicBoundaryCondition::BoxInfo& boxInfo, double& totalPEnergy, const int& pmeOrder) {
+void NonbondedForce::PMEGridForces(vector<Coords3D>& forces, const vector<Coords3D>& atomPositions, const ComplexGrid& pmeGrid, const NonbondedParams& params, const PeriodicBoundaryCondition::BoxInfo& boxInfo, double& totalPEnergy, const int& pmeOrder) {
     int N = atomPositions.size();
     double directEnergy = 0.0;
 
@@ -539,6 +536,71 @@ void NonbondedForce::ReciprocalForcesAndEnergy(vector<Coords3D>& forces, const v
 
 
 
+
+
+void NonbondedForce::ReciprocalPMEcalculateForcesAndEnergy(vector<Coords3D>&forces, const vector<Coords3D>&atomPositions, double& totalPEnergy, const NonbondedParams & params, const PeriodicBoundaryCondition::BoxInfo & boxInfo) {
+
+    
+    // Initialize the PME grid as a complex grid
+    
+    initializeReciprocalVectors(boxInfo);
+    initializeGridSize(boxInfo);
+    const int pmeOrder = 5;//to have cubic b-spline
+    //initializeBSplineModuli(pmeOrder);
+    
+    InitparticleIndexAndFraction(atomPositions);
+    computeBSplineParameters(pmeOrder, atomPositions);
+
+    ComplexGrid pmeGrid(gridSize[0] * gridSize[1] * gridSize[2], Complex(0.0, 0.0));
+    // ComplexGrid pmeGrid(gridSize[0] * gridSize[1] * (gridSize[2] / 2 + 1), Complex(0.0, 0.0)); // bug resolved
+
+
+    gridSpreadCharge_Reference(atomPositions, pmeGrid, params,boxInfo, pmeOrder);//here pmeGrid gets updated
+    //reciprocalConvolution(pmeGrid, params);//here one more time pmeGrid gets updated
+
+    // Perform 3D FFT
+    perform3DFFT(pmeGrid, true);
+
+    InitializeAlphaEwald(params);//required parameter for reciprocalConvolution_reference
+
+    reciprocalConvolutionAndEnergy(pmeGrid, params,  boxInfo, totalPEnergy); // the reciprocal part of the potential energy is calculated here
+
+
+    //// Print the first 20 members of pmeGrid before the convolution
+    //cout << "After Convolution NexaBind:" << endl;
+    //for (int i = 0; i < 40 && i < pmeGrid.size(); ++i) {
+    //    cout << "pmeGrid[" << i << "] = (" << pmeGrid[i].real() << ", " << pmeGrid[i].imag() << ")" << endl;
+    //}
+
+
+
+    // Perform 3D FFT (inverse)
+    perform3DFFT(pmeGrid, false);
+
+    //// Print the first 20 members of pmeGrid before the convolution
+    //cout << "After inverse NexaBind:" << endl;
+    //for (int i = 0; i < 40 && i < pmeGrid.size(); ++i) {
+    //    cout << "pmeGrid[" << i << "] = (" << pmeGrid[i].real() << ", " << pmeGrid[i].imag() << ")" << endl;
+    //}
+
+    // gridInterpolateForce(forces, atomPositions, pmeGrid, params, boxInfo);
+
+    //update totalPEnergy
+    //calculatePMEPotentialEnergy(pmeGrid, params, totalPEnergy);
+    //DirectAndReciprocalForcesAndEnergy(forces, atomPositions,  pmeGrid, params, boxInfo, totalPEnergy, pmeOrder);
+
+
+    initializeErfcTable(params);
+    PMEGridForces(forces, atomPositions, pmeGrid, params, boxInfo, totalPEnergy, pmeOrder); // the direct part of the potential energy is calculated here and is added to the totalPEnergy
+
+    // DirectForcesAndEnergy(forces, atomPositions, params, boxInfo, totalPEnergy);
+
+    //applyExclusions(atomPositions, forces, totalPEnergy, params, boxInfo);
+
+}
+
+// Now Direct Space Calculations
+
 //void computeNeighborList(NeighborList& neighborList, const vector<Coords3D>& atomPositions, const PeriodicBoundaryCondition::BoxInfo& boxInfo, double maxDistance, double minDistance, bool usePeriodic){
 //
 //
@@ -558,136 +620,163 @@ void NonbondedForce::ReciprocalForcesAndEnergy(vector<Coords3D>& forces, const v
 //    }
 //}
 //
-//void NonbondedForce::DirectForcesAndEnergy(vector<Coords3D>& forces, const vector<Coords3D>& atomPositions, const NonbondedParams& params, const PeriodicBoundaryCondition::BoxInfo& boxInfo, double& totalPEnergy) {
-//    int N = atomPositions.size();
-//    double totalVdwEnergy = 0.0;
-//    double totalRealSpaceEwaldEnergy = 0.0;
-//    double switchValue = 1.0, switchDeriv = 0.0;
-//
-//    for (const auto& pair : neighborList) {
-//        int ii = pair.first;
-//        int jj = pair.second;
-//
-//        Coords3D deltaR = atomPositions[jj] - atomPositions[ii];
-//        boxInfo.applyMinimumImage(deltaR);
-//        double r2 = deltaR.dot(deltaR);
-//        double r = sqrt(r2);
-//        double inverseR = 1.0 / r;
-//
-//        // Switch function
-//        if (useSwitch && r > params.switchingDistance) {
-//            double t = (r - params.switchingDistance) / (params.cutoff - params.switchingDistance);
-//            switchValue = 1 + t * t * t * (-10 + t * (15 - t * 6));
-//            switchDeriv = t * t * (-30 + t * (60 - t * 30)) / (params.cutoff - params.switchingDistance);
-//        }
-//
-//        // Electrostatic interaction
-//        double alphaR = alphaEwald * r;
-//        double dEdR = ONE_4PI_EPS0 * params.particles[ii].q * params.particles[jj].q * inverseR * inverseR * inverseR;
-//        dEdR *= (erfc(alphaR) + 2 * alphaR * exp(-alphaR * alphaR) / SQRT_PI);
-//
-//        // van der Waals interaction
-//        double sig = params.particles[ii].sig + params.particles[jj].sig;
-//        double sig2 = sig * inverseR;
-//        sig2 *= sig2;
-//        double sig6 = sig2 * sig2 * sig2;
-//        double eps = params.particles[ii].eps * params.particles[jj].eps;
-//        dEdR += switchValue * eps * (12.0 * sig6 - 6.0) * sig6 * inverseR * inverseR;
-//        double vdwEnergy = eps * (sig6 - 1.0) * sig6;
-//
-//        // Apply switching function to the van der Waals force
-//        if (useSwitch) {
-//            dEdR -= vdwEnergy * switchDeriv * inverseR;
-//            vdwEnergy *= switchValue;
-//        }
-//
-//        // Accumulate forces
-//        Coords3D force = deltaR * dEdR;
-//        forces[ii] += force;
-//        forces[jj] -= force;
-//
-//        // Accumulate energies
-//        totalRealSpaceEwaldEnergy += ONE_4PI_EPS0 * params.particles[ii].q * params.particles[jj].q * inverseR * erfc(alphaR);
-//        totalVdwEnergy += vdwEnergy;
-//    }
-//
-//    totalPEnergy += totalRealSpaceEwaldEnergy + totalVdwEnergy;
-//}
 
 
-
-
-
-
-
-
-
-
-vector<Coords3D> NonbondedForce::calculateForces(const vector<Coords3D>& atomPositions, double& totalPEnergy, const NonbondedParams& params, const PeriodicBoundaryCondition::BoxInfo& boxInfo) {
-    // Initialize the PME grid as a complex grid
+void NonbondedForce::NonbondedParamsModifier(const vector<Coords3D>& atomPositions, const NonbondedParams& params) {
+    int numAtoms = atomPositions.size();
+    _ModifiedNonbondedParams.particles.resize(numAtoms);
     
-    initializeReciprocalVectors(boxInfo);
-    initializeGridSize(boxInfo);
-    const int pmeOrder = 5;//to have cubic b-spline
-    //initializeBSplineModuli(pmeOrder);
-    
+    for (int i = 0; i < numAtoms; i++) {
+        _ModifiedNonbondedParams.particles[i].sig = 0.5 * params.particles[i].sig;
+        _ModifiedNonbondedParams.particles[i].eps = 2.0 * sqrt(params.particles[i].eps);
+        _ModifiedNonbondedParams.particles[i].q = params.particles[i].q;
+    }
+}
+
+void NonbondedForce::CalculateSelfEnergy(const NonbondedParams& params, double& totalPEnergy) {
+    double totalSelfEwaldEnergy = 0.0;
+
+    int numberOfAtoms = params.particles.size();
+
+    for (int atomID = 0; atomID < numberOfAtoms; atomID++) {
+        double selfEwaldEnergy = ONE_4PI_EPS0 * _ModifiedNonbondedParams.particles[atomID].q * _ModifiedNonbondedParams.particles[atomID].q * alphaEwald / SQRT_PI;
+        //if (ljpme) {
+        //    // Dispersion self term
+        //    selfEwaldEnergy -= pow(alphaDispersionEwald, 6.0) * 64.0 * pow(params.particles[atomID].sig, 6.0) * pow(params.particles[atomID].eps, 2.0) / 12.0;
+        //}
+        totalSelfEwaldEnergy -= selfEwaldEnergy;
+    }
+    totalPEnergy += totalSelfEwaldEnergy;
+
+}
 
 
-    InitparticleIndexAndFraction(atomPositions);
-    computeBSplineParameters(pmeOrder, atomPositions);
+void NonbondedForce::DirectForcesAndEnergy(vector<Coords3D>& forces, const vector<Coords3D>& atomPositions, const NonbondedParams& params, const PeriodicBoundaryCondition::BoxInfo& boxInfo, const vector<set<int>>& exclusions, double& totalPEnergy) {
+    NeighborList neighborList;
+    double maxDistance = params.cutoff;
+    double minDistance = 0.0;
+    bool usePeriodic = true;
+
+    obtainNeighborList(neighborList, atomPositions, boxInfo, exclusions, maxDistance, minDistance, usePeriodic);
+
+    int N = atomPositions.size();
+    double totalVdwEnergy = 0.0;
+    double totalRealSpaceEwaldEnergy = 0.0;
+    double switchValue = 1.0, switchDeriv = 0.0;
+
+    for (const auto& pair : neighborList.pairs) {
+        int ii = pair.first;
+        //int ii = 7;
+        int jj = pair.second;
+
+        Coords3D deltaR = PeriodicBoundaryCondition::minimumImageVector(atomPositions[ii], atomPositions[jj], boxInfo);
+
+        //double r2 = deltaR.dot(deltaR);
+        //double r = sqrt(r2);
+        double r = deltaR.length();
+        double inverseR = 1.0 / r;
+
+        if (params.useSwitchingFunction && r > params.switchingDistance) {
+            double t = (r - params.switchingDistance) / (params.cutoff - params.switchingDistance);
+            switchValue = 1 + t * t * t * (-10 + t * (15 - t * 6));
+            switchDeriv = t * t * (-30 + t * (60 - t * 30)) / (params.cutoff - params.switchingDistance);
+        }
+
+        double alphaR = alphaEwald * r;
+        double dEdR = ONE_4PI_EPS0 * _ModifiedNonbondedParams.particles[ii].q * _ModifiedNonbondedParams.particles[jj].q * inverseR * inverseR * inverseR;
+        dEdR *= (erfc(alphaR) + 2 * alphaR * exp(-alphaR * alphaR) / SQRT_PI);
+
+        double sig = _ModifiedNonbondedParams.particles[ii].sig + _ModifiedNonbondedParams.particles[jj].sig;
+        double sig2 = sig * inverseR;
+        sig2 *= sig2;
+        double sig6 = sig2 * sig2 * sig2;
+        double eps = _ModifiedNonbondedParams.particles[ii].eps * _ModifiedNonbondedParams.particles[jj].eps;
+        dEdR += switchValue * eps * (12.0 * sig6 - 6.0) * sig6 * inverseR * inverseR;
+        double vdwEnergy = eps * (sig6 - 1.0) * sig6;
+
+        if (params.useSwitchingFunction) {
+            dEdR -= vdwEnergy * switchDeriv * inverseR;
+            vdwEnergy *= switchValue;
+        }
+
+        Coords3D force = deltaR * dEdR;
+        forces[ii] += force;
+        forces[jj] -= force;
+
+        totalRealSpaceEwaldEnergy += ONE_4PI_EPS0 * _ModifiedNonbondedParams.particles[ii].q * _ModifiedNonbondedParams.particles[jj].q * inverseR * erfc(alphaR);
+        totalVdwEnergy += vdwEnergy;
+    }
+
+    totalPEnergy += totalRealSpaceEwaldEnergy + totalVdwEnergy;
+}
 
 
 
-    ComplexGrid pmeGrid(gridSize[0] * gridSize[1] * gridSize[2], Complex(0.0, 0.0));
-    // ComplexGrid pmeGrid(gridSize[0] * gridSize[1] * (gridSize[2] / 2 + 1), Complex(0.0, 0.0)); // bug resolved
 
+void NonbondedForce::CalculateExclusionEnergyAndForces(vector<Coords3D>& forces, const vector<Coords3D>& atomPositions,  const PeriodicBoundaryCondition::BoxInfo& boxInfo, const vector<set<int>>& exclusions, double& totalPEnergy) {
+
+    double totalExclusionEnergy = 0.0;
+
+    int numberOfAtoms = atomPositions.size();
+
+    for (int i = 0; i < numberOfAtoms; i++) {
+        for (int exclusion : exclusions[i]) {
+            if (exclusion > i) {
+                int ii = i;
+                int jj = exclusion;
+
+                Coords3D deltaR = PeriodicBoundaryCondition::minimumImageVector(atomPositions[ii], atomPositions[jj], boxInfo);
+
+                //double r2 = deltaR.dot(deltaR);
+                //double r = sqrt(r2);
+
+                double r = deltaR.length(); 
+                double inverseR = 1.0 / r;
+                double alphaR = alphaEwald * r;
+                double ExclusionEnergy = 0.0;
+
+                if (erf(alphaR) > 1e-6) { // very small values close to zero can lead to numerical instability or insignificant contributions,therefore they are effectively ignored here
+                    double dEdR = ONE_4PI_EPS0 * _ModifiedNonbondedParams.particles[ii].q * _ModifiedNonbondedParams.particles[jj].q * inverseR * inverseR * inverseR;
+                    dEdR = dEdR * (erf(alphaR) - 2 * alphaR * exp(-alphaR * alphaR) / SQRT_PI);
+
+                    Coords3D force = deltaR * dEdR;
+                    forces[ii] -= force;
+                    forces[jj] += force;
+
+                    ExclusionEnergy = ONE_4PI_EPS0 * _ModifiedNonbondedParams.particles[ii].q * _ModifiedNonbondedParams.particles[jj].q * inverseR * erf(alphaR);
+                }
+                else {
+                    ExclusionEnergy = alphaEwald * TWO_OVER_SQRT_PI * ONE_4PI_EPS0 * _ModifiedNonbondedParams.particles[ii].q * _ModifiedNonbondedParams.particles[jj].q;
+                }
+
+                //if (ljpme) {
+                //}
+
+                totalExclusionEnergy += ExclusionEnergy;
+            }
+        }
+    }
+    totalPEnergy -= totalExclusionEnergy;
+
+}
+
+
+vector<Coords3D> NonbondedForce::calculateForces(const vector<Coords3D>& atomPositions, double& totalPEnergy, const NonbondedParams& params, const PeriodicBoundaryCondition::BoxInfo& boxInfo, const vector<set<int>>& exclusions) {
     vector<Coords3D> forces(atomPositions.size(), { 0.0, 0.0, 0.0 });
 
+    ReciprocalPMEcalculateForcesAndEnergy(forces, atomPositions, totalPEnergy, params, boxInfo);
+
+    //first nonbonded parameters should be modified based on their mixing rules to be used in self senergy, direct space and exclusion calculations
+    NonbondedParamsModifier(atomPositions, params);
+
+    // adding self energy to the total energy
+    CalculateSelfEnergy(params, totalPEnergy);
+
+    DirectForcesAndEnergy(forces, atomPositions, params, boxInfo, exclusions, totalPEnergy);
+
+    CalculateExclusionEnergyAndForces(forces, atomPositions, boxInfo, exclusions, totalPEnergy);
 
 
-    gridSpreadCharge_Reference(atomPositions, pmeGrid, params,boxInfo, pmeOrder);//here pmeGrid gets updated
-    //reciprocalConvolution(pmeGrid, params);//here one more time pmeGrid gets updated
-
-    // Perform 3D FFT
-    perform3DFFT(pmeGrid, true);
-
-    InitializeAlphaEwald(params);//required parameter for reciprocalConvolution_reference
-
-    reciprocalConvolution_reference(pmeGrid, params,  boxInfo, totalPEnergy); // the reciprocal part of the potential energy is calculated here
-
-
-    // Print the first 20 members of pmeGrid before the convolution
-    cout << "After Convolution NexaBind:" << endl;
-    for (int i = 0; i < 40 && i < pmeGrid.size(); ++i) {
-        cout << "pmeGrid[" << i << "] = (" << pmeGrid[i].real() << ", " << pmeGrid[i].imag() << ")" << endl;
-    }
-
-
-
-    // Perform 3D FFT (inverse)
-    perform3DFFT(pmeGrid, false);
-
-    // Print the first 20 members of pmeGrid before the convolution
-    cout << "After inverse NexaBind:" << endl;
-    for (int i = 0; i < 40 && i < pmeGrid.size(); ++i) {
-        cout << "pmeGrid[" << i << "] = (" << pmeGrid[i].real() << ", " << pmeGrid[i].imag() << ")" << endl;
-    }
-
-    // gridInterpolateForce(forces, atomPositions, pmeGrid, params, boxInfo);
-
-    //update totalPEnergy
-    //calculatePMEPotentialEnergy(pmeGrid, params, totalPEnergy);
-    //DirectAndReciprocalForcesAndEnergy(forces, atomPositions,  pmeGrid, params, boxInfo, totalPEnergy, pmeOrder);
-
-
-    initializeErfcTable(params);
-    ReciprocalForcesAndEnergy(forces, atomPositions, pmeGrid, params, boxInfo, totalPEnergy, pmeOrder); // the direct part of the potential energy is calculated here and is added to the totalPEnergy
-
-    // DirectForcesAndEnergy(forces, atomPositions, params, boxInfo, totalPEnergy);
-
-
-
-    //applyExclusions(atomPositions, forces, totalPEnergy, params, boxInfo);
 
     return forces;
 }

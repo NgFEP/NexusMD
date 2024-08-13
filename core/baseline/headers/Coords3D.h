@@ -149,6 +149,12 @@ public:
         return normalized; // Return the new, normalized vector
     }
 
+
+    // find the length of the vector the vector
+    double length() {
+        return std::sqrt(data[0] * data[0] + data[1] * data[1] + data[2] * data[2]);  // Return the length of the vector
+    }
+
     //// Normalize a vector
     //Coords3D normalize(const Coords3D& vector) {
     //    double len = sqrt(vector.dot(vector));

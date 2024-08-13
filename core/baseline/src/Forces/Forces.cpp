@@ -121,9 +121,9 @@ void Forces::AddHAngle(vector<Coords3D>& totalForces, const vector<Coords3D>& at
 }
 
 
-void Forces::AddNonBondElectroPME(vector<Coords3D>& totalForces, const vector<Coords3D>& atomPositions, const NonbondedParams& params, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo) {
+void Forces::AddNonBondElectroPME(vector<Coords3D>& totalForces, const vector<Coords3D>& atomPositions, const NonbondedParams& params, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo, const vector<set<int>>& exclusions) {
     NonbondedForce nonbondedForce;
-    auto forces = nonbondedForce.calculateForces(atomPositions, totalPEnergy, params, boxInfo);
+    auto forces = nonbondedForce.calculateForces(atomPositions, totalPEnergy, params, boxInfo, exclusions);
 
     for (size_t atom = 0; atom < atomPositions.size(); atom++) {
         totalForces[atom] += forces[atom];
