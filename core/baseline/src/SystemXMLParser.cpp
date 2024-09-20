@@ -15,7 +15,6 @@
 
 
 using namespace std;
-using namespace BaseLine;
 
 
 vector<double> SystemXMLParser::MassesParser(const string& filename) {
@@ -138,7 +137,14 @@ NonbondedParams SystemXMLParser::NonBondedParser(const string& filename) {
         return params;
     }
 
-    auto forceNode = doc.child("System").find_child_by_attribute("Force", "type", "NonbondedForce");
+    // Updated logic to search for nonbonded force
+    auto forcesNode = doc.child("System").child("Forces");
+    if (!forcesNode) {
+        cerr << "No Forces node found in the XML.\n";
+        return params;
+    }
+
+    auto forceNode = forcesNode.find_child_by_attribute("Force", "type", "NonbondedForce");
     if (!forceNode) {
         cerr << "No NonbondedForce found in the XML.\n";
         return params;

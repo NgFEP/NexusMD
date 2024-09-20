@@ -38,7 +38,7 @@ void VerletIntegration::InverseMasses(vector<double>& masses, vector<double>& in
     // Initialize inverse masses only once to prevent overcomputation of inverseMasses for every steps
     if (inverseMasses.empty()) {
         inverseMasses.resize(masses.size());
-        for (size_t i = 0; i < masses.size(); ++i) {
+        for (int i = 0; i < masses.size(); ++i) {
             inverseMasses[i] = (masses[i] == 0.0) ? 0.0 : 1.0 / masses[i];
         }
         //cout << "inverseMasses: " << inverseMasses[0] << "   " << inverseMasses[1] << "   " << inverseMasses[2] << "   ";
@@ -202,7 +202,7 @@ void VerletIntegration::SelectVerletStepSize(vector<Coords3D>& velocities, vecto
     double totalError = 0.0;
     double scale = 1.0; // / (double)0x100000000;
 
-    for (size_t i = 0; i < velocities.size(); ++i) {
+    for (int i = 0; i < velocities.size(); ++i) {
         double invMass = inverseMasses[i];
         if (invMass != 0.0) {
             double err = (scale * totalForces[i][0]) * (scale * totalForces[i][0]) +

@@ -26,16 +26,17 @@ Reporter::Reporter() {
 }
 void Reporter::TestPVFReport(const string& filename, const vector<Coords3D>& positions,
     const vector<Coords3D>& velocities, const vector<Coords3D>& forces, int step, const vector<PTorsionParams>& torsionParams, const vector<HBondParams>& bondParams, const vector<HAngleParams>& angleParams) {
+    string filename_modified = "PVFReport" + filename;
 
 
     // Open the file with the appropriate mode
     ios_base::openmode fileMode = (step == 0) ? (ios::out) : (ios::out | ios::app);
-    ofstream outputFile(filename, fileMode);
+    ofstream outputFile(filename_modified, fileMode);
 
-    //ofstream outputFile(filename, ios::out | ((step == 0) ? ios::trunc : ios::app));
+    //ofstream outputFile(filename_modified, ios::out | ((step == 0) ? ios::trunc : ios::app));
 
     //if (!outputFile.is_open()) {
-    //    throw runtime_error("Unable to open file: " + filename);
+    //    throw runtime_error("Unable to open file: " + filename_modified);
     //}
 
     //outputFile << fixed << setprecision(3);
@@ -44,7 +45,7 @@ void Reporter::TestPVFReport(const string& filename, const vector<Coords3D>& pos
 
     // Check if the file is successfully opened
     if (!outputFile.is_open()) {
-        cerr << "Unable to open the file: " << filename << endl;
+        cerr << "Unable to open the file: " << filename_modified << endl;
         return;
     }
 
@@ -283,7 +284,7 @@ void Reporter::pdbOutputGeneratorPart1(const string& inputFilename, const string
 
 
 // Main function to read, process, and write PDB file
-void Reporter::pdbOutputGeneratorPart2(const string& outputFilename, vector<PDBAtom>& outputTemplate, const vector<Coords3D>& positions, size_t ModelNum) {
+void Reporter::pdbOutputGeneratorPart2(const string& outputFilename, vector<PDBAtom>& outputTemplate, const vector<Coords3D>& positions, int ModelNum) {
 
     ios_base::openmode fileMode = (ios::out | ios::app);
     ofstream outputFile(outputFilename, fileMode);
@@ -302,7 +303,7 @@ void Reporter::pdbOutputGeneratorPart2(const string& outputFilename, vector<PDBA
     outputFile << "MODEL        " << ModelNum  << endl;//in pdb step starts from 1
 
 
-    for (size_t i = 0; i < outputTemplate.size(); ++i) {
+    for (int i = 0; i < outputTemplate.size(); ++i) {
         const auto& atom = outputTemplate[i];
         PDBAtom updatedAtom = atom;
         // bug fixed: positions are in nm and need to be multiplied to 10 to be in A unit as the output.pdb should be in A

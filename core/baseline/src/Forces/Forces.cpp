@@ -125,7 +125,7 @@ void Forces::AddNonBondElectroPME(vector<Coords3D>& totalForces, const vector<Co
     NonbondedForce nonbondedForce;
     auto forces = nonbondedForce.calculateForces(atomPositions, totalPEnergy, params, boxInfo, exclusions);
 
-    for (size_t atom = 0; atom < atomPositions.size(); atom++) {
+    for (int atom = 0; atom < atomPositions.size(); atom++) {
         totalForces[atom] += forces[atom];
     }
 }

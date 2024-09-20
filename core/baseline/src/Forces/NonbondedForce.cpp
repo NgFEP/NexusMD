@@ -214,7 +214,7 @@ void NonbondedForce::findAtomGridIndex(const vector<Coords3D>& atomPositions, ve
     int gridSizeY = gridSize[1];
     int gridSizeZ = gridSize[2];  // Use the half-complex format size
 
-    for (size_t atom = 0; atom < atomPositions.size(); ++atom) {
+    for (int atom = 0; atom < atomPositions.size(); ++atom) {
         Coords3D pos = atomPositions[atom];
         applyPeriodicBoundary(pos, boxInfo);
 
@@ -442,10 +442,10 @@ void NonbondedForce::reciprocalConvolutionAndEnergy(ComplexGrid& pmeGrid, const 
 
 void NonbondedForce::initializeErfcTable(const NonbondedParams& params) {
     // alphaEwald is already calculated
-    float ewaldDX = params.cutoff / Num_Table_Points;  // Interval between points
+    double ewaldDX = params.cutoff / Num_Table_Points;  // Interval between points
     for (int i = 0; i < Num_Table_Points; ++i) {
-        float r = i * ewaldDX;
-        float alphaR = alphaEwald * r;
+        double r = i * ewaldDX;
+        double alphaR = alphaEwald * r;
         erfcTable.push_back(erfc(alphaR));
     }
 }

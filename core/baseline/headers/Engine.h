@@ -60,7 +60,7 @@ namespace BaseLine {
     private:
         void InitializeSimulationParameters();
         bool _RealSimRun=false;
-        std::size_t _numAtoms;
+        int _numAtoms;
         std::string _systemFilename;
         std::string _stateFilename;
         std::vector<Coords3D> _atomPositions;

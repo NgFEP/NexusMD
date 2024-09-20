@@ -19,6 +19,8 @@
     <Xml Include="state.xml" />
     <Xml Include="state_dialanine.xml" />
     <Xml Include="system_dialanine.xml" />
+    <Xml Include="state_JAC_Protein.xml" />
+    <Xml Include="system_JAC_Protein.xml" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core\baseline\headers\Coords3D.h">
@@ -60,6 +62,75 @@
     <ClInclude Include="core\baseline\headers\PeriodicBoundaryCondition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="core\baseline\headers\Forces\NonbondedForce.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\baseline\headers\Types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\baseline\headers\Forces\NeighborList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\baseline\headers\Forces\Exclusions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Dispatcher\headers\BaseLineTaskDispatcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Dispatcher\headers\TaskDispatcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Cuda\headers\CudaEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Cuda\headers\CudaInitializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Cuda\headers\CudaKineticEnergy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Cuda\headers\CudaReporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Cuda\headers\CudaStateXMLParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Cuda\headers\Cudastdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Cuda\headers\CudaTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Cuda\headers\CudaVerletIntegration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Cuda\headers\Forces\CudaExclusions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Cuda\headers\Forces\CudaForces.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Cuda\headers\Forces\CudaHarmonicAngleForce.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Cuda\headers\Forces\CudaNeighborList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Cuda\headers\Forces\CudaNonbondedForce.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Cuda\headers\Forces\CudaPeriodicTorsionForce.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Dispatcher\headers\CudaTaskDispatcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Cuda\headers\kernels\PeriodicBoundaryConditionKernel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Cuda\headers\Forces\kernels\HarmonicBondForceKernel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core\baseline\src\Engine.cpp">
@@ -83,9 +154,6 @@
     <ClCompile Include="core\baseline\src\Forces\Forces.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\baseline\src\Forces\PeriodicTorsionForce.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="core\baseline\src\Forces\HarmonicAngleForce.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -98,12 +166,75 @@
     <ClCompile Include="core\baseline\src\PeriodicBoundaryCondition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NexaBindRunSimulation_Dialanine_Test.cpp">
+    <ClCompile Include="core\baseline\src\Forces\NonbondedForce.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\baseline\src\Forces\NeighborList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\baseline\src\Forces\Exclusions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\Dispatcher\src\TaskDispatcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\Cuda\src\CudaEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\Cuda\src\CudaInitializer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\Cuda\src\CudaKineticEnergy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\Cuda\src\CudaReporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\Cuda\src\CudaStateXMLParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\Cuda\src\CudaVerletIntegration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\Cuda\src\Forces\CudaExclusions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\Cuda\src\Forces\CudaForces.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\Cuda\src\Forces\CudaHarmonicAngleForce.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\Cuda\src\Forces\CudaNeighborList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\Cuda\src\Forces\CudaNonbondedForce.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\Cuda\src\Forces\CudaPeriodicTorsionForce.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\baseline\src\Forces\PeriodicTorsionForce.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\baseline\Tests\TestBaseline_JAC_Protein.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\Cuda\Tests\TestCuda_JAC_Protein.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="input.pdb" />
     <None Include="dialanine_VMD2.pdb" />
+    <None Include="JAC_Protein.pdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="core\Cuda\src\kernels\PeriodicBoundaryConditionKernel.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
+    <CudaCompile Include="core\Cuda\src\Forces\kernels\HarmonicBondForceKernel.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
   </ItemGroup>
 </Project>

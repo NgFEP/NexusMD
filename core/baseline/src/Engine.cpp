@@ -11,6 +11,8 @@
 #include <utility>
 #include <limits>
 #include "Engine.h"
+#include <chrono>
+
 
 using namespace std;
 using namespace BaseLine;;
@@ -41,7 +43,7 @@ _boxInfo(boxInfo)
 {
     if (_boxInfo.boxSize == Coords3D(0, 0, 0)) { // Check if box size is uninitialized
         // Extract box size from XML if not provided
-        _boxInfo.boxSize = StateXMLParser::extractBoxSize(_stateFilename);
+        //_boxInfo.boxSize = StateXMLParser::extractBoxSize(_stateFilename);
     }
     InitializeSimulationParameters();
 }
@@ -126,22 +128,30 @@ void Engine::CalculateForces() {
 
     //bug found: Forces are calculated from scratch every step and we need to make sure that the vector gets equal to zero on each step before adding up new calculated forces.
     _totalForces.assign(_numAtoms, Coords3D(0, 0, 0));
-    
+
+    //long startTime = clock();
+    auto startTime = chrono::high_resolution_clock::now();
+
     // Forces calculation logic here, updating `totalForces` by adding PtorsionForces
     if (!_torsionParams.empty()) {
-        // Forces::AddPTorsion(_totalForces, _atomPositions, _torsionParams, _totalPEnergy, _boxInfo);
+        //Forces::AddPTorsion(_totalForces, _atomPositions, _torsionParams, _totalPEnergy, _boxInfo);
     }
     if (!_bondParams.empty()) {
-        // Forces::AddHBond(_totalForces, _atomPositions, _bondParams, _totalPEnergy, _boxInfo);
+        Forces::AddHBond(_totalForces, _atomPositions, _bondParams, _totalPEnergy, _boxInfo);
     }
     if (!_angleParams.empty()) {
-        // Forces::AddHAngle(_totalForces, _atomPositions, _angleParams, _totalPEnergy, _boxInfo);
+        //Forces::AddHAngle(_totalForces, _atomPositions, _angleParams, _totalPEnergy, _boxInfo);
     }
     if (!_nonbondedParams.particles.empty()) {// if there is no particle infor available to perform the NonBondCalculations
-        Forces::AddNonBondElectroPME(_totalForces, _atomPositions, _nonbondedParams, _totalPEnergy,  _boxInfo,_exclusions);
+        //Forces::AddNonBondElectroPME(_totalForces, _atomPositions, _nonbondedParams, _totalPEnergy, _boxInfo, _exclusions);
     }
 
+    //long finishTime = clock();
+    auto finishTime = chrono::high_resolution_clock::now();
 
+    // Calculate the elapsed time in microseconds
+    auto duration = chrono::duration_cast<chrono::nanoseconds>(finishTime - startTime).count();
+    cout << "Force Calculation Runtime is " << duration << " nanoseconds" << endl;
 
 }
 
@@ -189,19 +199,25 @@ void Engine::Report(const string& inputFilename, const string& outputFilename, i
 
         if (step == 0 ) {
             //reporter.pdbOutputGenerator(inputFilename, outputFilename, _outputTemplate, _atomPositions, step);
-
             reporter.pdbOutputGeneratorPart1(inputFilename, outputFilename, _outputTemplate);
+            _Modelnum = (step + 1) / interval;//in pdb step starts from 1
+            reporter.pdbOutputGeneratorPart2(outputFilename, _outputTemplate, _atomPositions, _Modelnum);
         }
-        else if (((step + 1) % interval) == 0) {
+        else if ((((step + 1) % interval) == 0) && step != 0) {
             _Modelnum = (step + 1) / interval;//in pdb step starts from 1
             reporter.pdbOutputGeneratorPart2(outputFilename, _outputTemplate, _atomPositions, _Modelnum);
         }
     }
     else {
+        //plotting position, velocity and force values
         reporter.TestPVFReport(outputFilename, _atomPositions, _velocities, _totalForces, step, _torsionParams, _bondParams, _angleParams);
     }
     //ploting energy conservation
     reporter.TotalEnergyReport(outputFilename, _totalKEnergy, _totalPEnergy, _totalEnergy, step);// ******
+    
+    //plotting position, velocity and force values
+    reporter.TestPVFReport(outputFilename, _atomPositions, _velocities, _totalForces, step, _torsionParams, _bondParams, _angleParams);
+
 
 }
 

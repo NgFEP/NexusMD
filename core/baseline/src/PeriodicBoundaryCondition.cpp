@@ -2,7 +2,7 @@
 #include <cmath>       // For abs
 #include <algorithm> // For min and max
 #include <stdexcept>   // For runtime_error
-using namespace BaseLine;
+
 using namespace std;
 
 
@@ -34,13 +34,14 @@ void PeriodicBoundaryCondition::extractBoxBoundaries(const vector<Coords3D>& ato
 
     bool molecule_centered = true; // to test the accuracy of the PBC I position the box in a way that molecule is at the corner of the box, otherwise if true box center is at the center of the molecule 
     bool box_crossing_molecule = false;
+    bool water_availibility = true;
     if (atomPositions.empty()) {
         throw runtime_error("No atom positions available to extract boundaries.");
     }
-    if (!boxInfo.boxSize[0]) {
-        // obtain the box size
-        boxInfo.boxSize = StateXMLParser::extractBoxSize(stateFilename);
-    }
+    //if (!boxInfo.boxSize[0]) {
+    //    // obtain the box size
+    //    boxInfo.boxSize = BaseLine::StateXMLParser::extractBoxSize(stateFilename);
+    //}
 
 
     boxInfo.lb = boxInfo.ub = atomPositions[0];
@@ -52,7 +53,12 @@ void PeriodicBoundaryCondition::extractBoxBoundaries(const vector<Coords3D>& ato
         }
     }
 
-    if ((abs(boxInfo.ub[0] - boxInfo.lb[0])) < 0.95*boxInfo.boxSize[0]) {// this is an indication of the system not having water molecules and we are dealing with a single molecule
+    //updating boxInfo.boxSize to reflect the real size of the box
+    boxInfo.boxSize = Coords3D(abs(boxInfo.ub[0] - boxInfo.lb[0]),
+        abs(boxInfo.ub[1] - boxInfo.lb[1]),
+        abs(boxInfo.ub[2] - boxInfo.lb[2]));
+
+    if (!water_availibility) {// this is an indication of the system not having water molecules and we are dealing with a single molecule (abs(boxInfo.ub[0] - boxInfo.lb[0])) < 0.95*boxInfo.boxSize[0])
         
         if (molecule_centered){
             // Calculate the center of the molecule
@@ -87,43 +93,24 @@ void PeriodicBoundaryCondition::extractBoxBoundaries(const vector<Coords3D>& ato
             for (int i = 0; i < 3; ++i) {
                 boxInfo.lb[i] = moleculeCenter[i]; // lower boundary is located at the center of the molecule
                 boxInfo.ub[i] = boxInfo.lb[i] + boxInfo.boxSize[i];
-
             }
 
         }
     }
-
-
-
     // if water molecules are in the system substracting there's no need to change the box size and .lb and .ub
-    
 
+    // Define a margin (e.g., 1% of the box size)
+    double marginFactor = 0.01;
+    Coords3D margin = Coords3D(marginFactor * boxInfo.boxSize[0],
+        marginFactor * boxInfo.boxSize[1],
+        marginFactor * boxInfo.boxSize[2]);
 
-
-
-    //else {
-    //    boxInfo.boxSize = Coords3D(abs(boxInfo.ub[0] - boxInfo.lb[0]),
-    //        abs(boxInfo.ub[1] - boxInfo.lb[1]),
-    //        abs(boxInfo.ub[2] - boxInfo.lb[2]));
-    //}
-
-
-    //boxInfo.boxSize = Coords3D(abs(boxInfo.ub[0] - boxInfo.lb[0]),
-    //    abs(boxInfo.ub[1] - boxInfo.lb[1]),
-    //    abs(boxInfo.ub[2] - boxInfo.lb[2]));
-
-    //// Define a margin (e.g., 10% of the box size)
-    //double marginFactor = 0.1;
-    //Coords3D margin = Coords3D(marginFactor * boxInfo.boxSize[0],
-    //    marginFactor * boxInfo.boxSize[1],
-    //    marginFactor * boxInfo.boxSize[2]);
-
-    //// Adjust the boundaries by the margin
-    //boxInfo.lb -= margin;
-    //boxInfo.ub += margin;
-    //boxInfo.boxSize = Coords3D(abs(boxInfo.ub[0] - boxInfo.lb[0]),
-    //    abs(boxInfo.ub[1] - boxInfo.lb[1]),
-    //    abs(boxInfo.ub[2] - boxInfo.lb[2]));
+    // Adjust the boundaries by the margin
+    boxInfo.lb -= margin;
+    boxInfo.ub += margin;
+    boxInfo.boxSize = Coords3D(abs(boxInfo.ub[0] - boxInfo.lb[0]),
+        abs(boxInfo.ub[1] - boxInfo.lb[1]),
+        abs(boxInfo.ub[2] - boxInfo.lb[2]));
     
 } 
 

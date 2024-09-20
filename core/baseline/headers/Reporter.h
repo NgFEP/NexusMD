@@ -60,7 +60,7 @@ namespace BaseLine {
         // Main function to read, process, and write PDB file
         //void pdbOutputGenerator(const std::string& inputFilename, const std::string& outputFilename, std::vector<PDBAtom>& outputTemplate,const std::vector<Coords3D>& positions, int step);
         void pdbOutputGeneratorPart1(const std::string& inputFilename, const std::string& outputFilename, std::vector<PDBAtom>& outputTemplate);
-        void pdbOutputGeneratorPart2(const std::string& outputFilename, std::vector<PDBAtom>& outputTemplate, const std::vector<Coords3D>& positions, size_t ModelNum);
+        void pdbOutputGeneratorPart2(const std::string& outputFilename, std::vector<PDBAtom>& outputTemplate, const std::vector<Coords3D>& positions, int ModelNum);
 
 
     private:

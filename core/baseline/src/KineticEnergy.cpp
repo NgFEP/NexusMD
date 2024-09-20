@@ -27,7 +27,7 @@ using namespace BaseLine;;
 
 
 // Calculate kinetic energy with time shift
-void KineticEnergy::calculateKineticEnergy(const vector<Coords3D>& velocities, const vector<double>& masses, const vector<Coords3D>& totalForces, double timeStep, size_t numAtoms, vector<double>& kineticEnergies, double& totalKEnergy) {
+void KineticEnergy::calculateKineticEnergy(const vector<Coords3D>& velocities, const vector<double>& masses, const vector<Coords3D>& totalForces, double timeStep, int numAtoms, vector<double>& kineticEnergies, double& totalKEnergy) {
     const double timeShift = 0.5 * timeStep; // Half of the time step
     //const double scale = timeShift / (double)0x100000000;
 

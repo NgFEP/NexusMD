@@ -82,7 +82,7 @@ using namespace BaseLine;
 
 
 
-void Exclusions::createExclusions(size_t& numParticles, vector<HBondParams>& bonds, vector<set<int>>& exclusions, int& bondCutoff) {
+void Exclusions::createExclusions(int& numParticles, vector<HBondParams>& bonds, vector<set<int>>& exclusions, int& bondCutoff) {
     if (bondCutoff < 1)
         return;
 
@@ -109,7 +109,7 @@ void Exclusions::createExclusions(size_t& numParticles, vector<HBondParams>& bon
     // Expand exclusions based on bondCutoff
     for (int level = 0; level < bondCutoff - 1; level++) {
         vector<set<int>> currentExclusions = exclusions;
-        for (size_t i = 0; i < numParticles; i++) {
+        for (int i = 0; i < numParticles; i++) {
             for (int j : currentExclusions[i]) {
                 for (int bonded : bonded12[i]) {
                     if (bonded != j) {// We need to ensure that we don't add an atom to its own exclusion list
