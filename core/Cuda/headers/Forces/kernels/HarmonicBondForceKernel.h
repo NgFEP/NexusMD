@@ -25,3 +25,4 @@ void launchKernelBondForces(double3* atomPositions,  HBondParams* bondParams,dou
 
 
 //__device__ void minimumImageVector(const Coords3D* pos1, const Coords3D* pos2, Coords3D* delta, const PeriodicBoundaryCondition::BoxInfo* boxInfo);
+void launchKernelBondForces_V2(double3* d_atomPositions, HBondParams* d_bondParams, double3* d_forces, double* d_totalPEnergy, double3* d_boxsize, int _numBonds);

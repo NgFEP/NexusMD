@@ -218,6 +218,109 @@ void launchKernelBondForces(
 
 
 
+
+
+
+
+
+
+
+
+
+__global__ void BondForcesKernel_global_V2(
+    double3* d_atomPositions,
+    HBondParams* d_bondParams,
+    double3* d_forces,
+    double* d_totalPEnergy,
+    int d_numBonds,
+    double3* d_boxsize)  // Periodic boundary conditions info
+{
+    int idx = threadIdx.x + blockIdx.x * blockDim.x;
+
+    if (idx >= d_numBonds) return;  // Ensure we don't access out-of-bounds
+
+    // Load bond parameters from global memory
+    HBondParams& params = d_bondParams[idx];
+
+    // Load atom positions from global memory
+    double3 coords1 = d_atomPositions[params.p1];
+    double3 coords2 = d_atomPositions[params.p2];
+    //printf("params.p1: %f, params.p2: %f\n", params.p2, params.p2);
+    //printf("coords1.x: %f, coords1.y: %f, coords1.z: %f\n", coords1.x, coords1.y, coords1.z);
+
+    // Compute the vector from pos1 to pos2 considering periodic boundary conditions
+    double3 delta;
+    minimumImageVectorDevice(&coords1, &coords2, &delta, d_boxsize);
+
+    // Calculate the distance between the two particles
+    double r = sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
+
+    // Compute the energy contribution
+    double deltaIdeal = r - params.d;
+    double energy = 0.5 * params.k * deltaIdeal * deltaIdeal;
+
+    // Accumulate energy to totalPEnergy using atomicAdd
+    atomicAdd(d_totalPEnergy, energy);  // You can switch back to atomicAdd if needed
+
+    // Compute the derivative of the energy with respect to the distance
+    double dEdR = params.k * deltaIdeal;
+
+    // Normalize the delta vector and scale by dEdR
+    double3 force;
+    if (r > 0) {
+        force.x = delta.x * (dEdR / r);
+        force.y = delta.y * (dEdR / r);
+        force.z = delta.z * (dEdR / r);
+    }
+    else {
+        force = make_double3(0.0, 0.0, 0.0);  // Prevent division by zero
+    }
+
+    // Update forces for both atoms using atomicAdd to avoid race conditions
+    //atomicAdd(&forces[params.p1], force);
+    //atomicAdd(&forces[params.p2], -force);
+
+    //atomicAddCoords(forces[params.p1], force);
+    //atomicAddCoords(forces[params.p2], Coords3D{ -force[0], -force[1], -force[2]});
+    // Update forces for both atoms using atomicAdd to avoid race conditions
+
+
+    atomicAdd(&d_forces[params.p1].x, force.x);
+    atomicAdd(&d_forces[params.p1].y, force.y);
+    atomicAdd(&d_forces[params.p1].z, force.z);
+    atomicAdd(&d_forces[params.p2].x, -force.x);
+    atomicAdd(&d_forces[params.p2].y, -force.y);
+    atomicAdd(&d_forces[params.p2].z, -force.z);
+}
+
+//correct for double
+void launchKernelBondForces_V2(
+    double3* d_atomPositions,  // Host-side Coords3D
+    HBondParams* d_bondParams,
+    double3* d_forces,
+    double* d_totalPEnergy,
+    double3* d_boxsize,
+    int _numBonds
+) {
+
+
+
+    // Define block size and number of blocks
+    int blockSize = 256; // Example block size
+    int numBlocks = (_numBonds + blockSize - 1) / blockSize;
+
+    // Launch the kernel using double3 types on the device
+    BondForcesKernel_global_V2 <<< numBlocks, blockSize >> > (d_atomPositions, d_bondParams, d_forces, d_totalPEnergy, _numBonds, d_boxsize);
+    //BondForcesKernel_global2 << < numBlocks, blockSize >> > (d_atomPositions, d_bondParams,d_forces, d_totalPEnergy, numBonds, d_boxsize);
+
+}
+
+
+
+
+
+
+
 //__global__ void BondForcesKernel_global2(
 //    Coords3D* d_atomPositions,
 //    HBondParams* d_bondParams,

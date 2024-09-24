@@ -34,7 +34,7 @@ void PeriodicBoundaryCondition::extractBoxBoundaries(const vector<Coords3D>& ato
 
     bool molecule_centered = true; // to test the accuracy of the PBC I position the box in a way that molecule is at the corner of the box, otherwise if true box center is at the center of the molecule 
     bool box_crossing_molecule = false;
-    bool water_availibility = true;
+    bool water_availibility = true; // needs attention: do this automatically
     if (atomPositions.empty()) {
         throw runtime_error("No atom positions available to extract boundaries.");
     }
