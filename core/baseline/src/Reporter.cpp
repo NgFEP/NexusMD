@@ -25,7 +25,7 @@ Reporter::Reporter() {
     // Constructor implementation (if necessary, otherwise leave empty)
 }
 void Reporter::TestPVFReport(const string& filename, const vector<Coords3D>& positions,
-    const vector<Coords3D>& velocities, const vector<Coords3D>& forces, int step, const vector<PTorsionParams>& torsionParams, const vector<HBondParams>& bondParams, const vector<HAngleParams>& angleParams) {
+    const vector<Coords3D>& velocities, const vector<Coords3D>& forces, int step, const vector<PTorsionParams>& torsionParams, const vector<BondParams>& bondParams, const vector<AngleParams>& angleParams) {
     string filename_modified = "PVFReport" + filename;
 
 

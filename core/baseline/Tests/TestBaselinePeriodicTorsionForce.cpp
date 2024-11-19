@@ -32,8 +32,8 @@ int main() {
     };
 
     vector<PTorsionParams> torsionParams = { {0, 1, 2, 3, 0.6508444444444444, 0.0, 3} };//order p1, p2, p3, p4, k double, phase double, periodicity int
-    vector<HBondParams> bondParams{};//p1,p2,d,k //double d; // Ideal bond distance and double k; // Force constant
-    vector<HAngleParams> angleParams{};//empty as in here we only want to test the accuracy of software result for 1 periodic torsion force
+    vector<BondParams> bondParams{};//p1,p2,d,k //double d; // Ideal bond distance and double k; // Force constant
+    vector<AngleParams> angleParams{};//empty as in here we only want to test the accuracy of software result for 1 periodic torsion force
     vector<double> masses = { 14.01, 12.01, 12.01, 1.008 };
 
     Engine engine("", "", atomPositions, masses, torsionParams, bondParams, angleParams);//engine construction for test run

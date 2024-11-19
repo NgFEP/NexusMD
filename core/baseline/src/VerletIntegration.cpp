@@ -68,9 +68,6 @@ void VerletIntegration::Advance(vector<Coords3D>& atomPositions, vector<Coords3D
                 //note that the following calculated velocity is at t+StepSize/2 and not t+StepSize
                 velocities[i][j] += inverseMasses[i] * totalForces[i][j] * scale;
 
-                if (velocities[i][j] > 200) {
-                    cout << "";
-                }
 
                 //note that the following calculated atompositions is at t+StepSize
                 UpdatedAtomPositions[i][j] = atomPositions[i][j] + velocities[i][j] * dtPos;

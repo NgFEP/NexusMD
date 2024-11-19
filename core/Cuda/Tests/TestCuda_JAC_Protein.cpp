@@ -11,17 +11,17 @@ int main() {
     string outputFilename = "output_SimRun_JAC_Protein_HBond.pdb";
     string inputFilename = "JAC_Protein.pdb";
     double stepSize = 0.001;//0.001 pico s =1 femto s
-    int totalSteps = 3;
-    int interval = 1;
+    int totalSteps = 10;
+    int interval = 10;
 
 
     vector<Coords3D> atomPositions = {};
 
     vector<PTorsionParams> torsionParams = {};//empty as in here we only want to test the accuracy of software result for 1 harmonic bond force
 
-    vector<HBondParams> bondParams{};
+    vector<BondParams> bondParams{};
 
-    vector<HAngleParams> angleParams = {};//empty as in here we only want to test the accuracy of software result for 1 harmonic bond force
+    vector<AngleParams> angleParams = {};//empty as in here we only want to test the accuracy of software result for 1 harmonic bond force
     NonbondedParams nonbondedParams;// in this case nonbondedParams.particles = {} is automatically equal to zero
 
     vector<double> masses = {};  // Specific masses for the particles

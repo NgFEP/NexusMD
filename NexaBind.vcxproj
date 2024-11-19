@@ -92,7 +92,7 @@
     <ClCompile>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>core\fftw-3.3.5-dll64;core\baseline\headers;core\pugixml-1.14\src;core\baseline\headers\Forces;core\Dispatcher\headers;core\Cuda\headers;core\Cuda\headers\Forces;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\include;core\Cuda\headers\Forces\kernels;core\Cuda\headers\kernels;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>core\fftw-3.3.5-dll64;core\baseline\headers;core\pugixml-1.14\src;core\baseline\headers\Forces;core\Dispatcher\headers;core\Cuda\headers;core\Cuda\headers\Forces;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\include;core\Cuda\headers\Forces\kernels;core\Cuda\headers\kernels;core\common\headers;core\common\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -161,14 +161,14 @@
     <ClInclude Include="core\baseline\headers\SystemXMLParser.h" />
     <ClInclude Include="core\baseline\headers\Types.h" />
     <ClInclude Include="core\baseline\headers\VerletIntegration.h" />
+    <ClInclude Include="core\common\headers\PDBSegmentParser.h" />
+    <ClInclude Include="core\common\headers\SegmentForceMapper.h" />
     <ClInclude Include="core\Cuda\headers\CudaEngine.h" />
     <ClInclude Include="core\Cuda\headers\CudaInitializer.h" />
-    <ClInclude Include="core\Cuda\headers\CudaKineticEnergy.h" />
     <ClInclude Include="core\Cuda\headers\CudaReporter.h" />
     <ClInclude Include="core\Cuda\headers\CudaStateXMLParser.h" />
     <ClInclude Include="core\Cuda\headers\Cudastdafx.h" />
     <ClInclude Include="core\Cuda\headers\CudaTypes.h" />
-    <ClInclude Include="core\Cuda\headers\CudaVerletIntegration.h" />
     <ClInclude Include="core\Cuda\headers\Forces\CudaExclusions.h" />
     <ClInclude Include="core\Cuda\headers\Forces\CudaForces.h" />
     <ClInclude Include="core\Cuda\headers\Forces\CudaHarmonicAngleForce.h" />
@@ -176,7 +176,10 @@
     <ClInclude Include="core\Cuda\headers\Forces\CudaNonbondedForce.h" />
     <ClInclude Include="core\Cuda\headers\Forces\CudaPeriodicTorsionForce.h" />
     <ClInclude Include="core\Cuda\headers\Forces\kernels\HarmonicBondForceKernel.h" />
+    <ClInclude Include="core\Cuda\headers\kernels\InverseMassesKernel.h" />
+    <ClInclude Include="core\Cuda\headers\kernels\KineticEnergyKernel.h" />
     <ClInclude Include="core\Cuda\headers\kernels\PeriodicBoundaryConditionKernel.h" />
+    <ClInclude Include="core\Cuda\headers\kernels\VerletIntegrationKernel.h" />
     <ClInclude Include="core\Dispatcher\headers\BaseLineTaskDispatcher.h" />
     <ClInclude Include="core\Dispatcher\headers\CudaTaskDispatcher.h" />
     <ClInclude Include="core\Dispatcher\headers\TaskDispatcher.h" />
@@ -197,13 +200,12 @@
     <ClCompile Include="core\baseline\src\StateXMLParser.cpp" />
     <ClCompile Include="core\baseline\src\SystemXMLParser.cpp" />
     <ClCompile Include="core\baseline\src\VerletIntegration.cpp" />
-    <ClCompile Include="core\baseline\Tests\TestBaseline_JAC_Protein.cpp" />
+    <ClCompile Include="core\common\src\PDBSegmentParser.cpp" />
+    <ClCompile Include="core\common\src\SegmentForceMapper.cpp" />
     <ClCompile Include="core\Cuda\src\CudaEngine.cpp" />
     <ClCompile Include="core\Cuda\src\CudaInitializer.cpp" />
-    <ClCompile Include="core\Cuda\src\CudaKineticEnergy.cpp" />
     <ClCompile Include="core\Cuda\src\CudaReporter.cpp" />
     <ClCompile Include="core\Cuda\src\CudaStateXMLParser.cpp" />
-    <ClCompile Include="core\Cuda\src\CudaVerletIntegration.cpp" />
     <ClCompile Include="core\Cuda\src\Forces\CudaExclusions.cpp" />
     <ClCompile Include="core\Cuda\src\Forces\CudaForces.cpp" />
     <ClCompile Include="core\Cuda\src\Forces\CudaHarmonicAngleForce.cpp" />
@@ -220,7 +222,10 @@
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="core\Cuda\src\Forces\kernels\HarmonicBondForceKernel.cu" />
+    <CudaCompile Include="core\Cuda\src\kernels\InverseMassesKernel.cu" />
+    <CudaCompile Include="core\Cuda\src\kernels\KineticEnergyKernel.cu" />
     <CudaCompile Include="core\Cuda\src\kernels\PeriodicBoundaryConditionKernel.cu" />
+    <CudaCompile Include="core\Cuda\src\kernels\VerletIntegrationKernel.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

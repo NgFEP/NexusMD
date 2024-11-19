@@ -74,14 +74,14 @@ void Forces::AddPTorsion(vector<Coords3D>& totalForces, const vector<Coords3D>& 
 
 
 
-void Forces::AddHBond(vector<Coords3D>& totalForces, const vector<Coords3D>& atomPositions, const vector<HBondParams>& bondParams, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo) {
+void Forces::AddHBond(vector<Coords3D>& totalForces, const vector<Coords3D>& atomPositions, const vector<BondParams>& bondParams, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo) {
     
 
 
     //// No need for manual conversion from Coords3D to double3, pass data directly
     //Coords3D* atomPositions_ptr = const_cast<Coords3D*>(atomPositions.data());
     //Coords3D* forces_ptr = totalForces.data();
-    //HBondParams* bondParams_ptr = const_cast<HBondParams*>(bondParams.data());
+    //BondParams* bondParams_ptr = const_cast<BondParams*>(bondParams.data());
 
     //// Convert boxInfo into Coords3D for the kernel
     //Coords3D boxSize = { boxInfo.boxSize[0], boxInfo.boxSize[1], boxInfo.boxSize[2] };
@@ -93,7 +93,7 @@ void Forces::AddHBond(vector<Coords3D>& totalForces, const vector<Coords3D>& ato
     // Convert Coords3D (host) to double3 (device)
     double3* atomPositions_double3 = new double3[atomPositions.size()];
     double3* forces_double3 = new double3[totalForces.size()];
-    HBondParams* bondParams_ptr = new HBondParams[bondParams.size()];
+    BondParams* bondParams_ptr = new BondParams[bondParams.size()];
     double* totalPEnergy_double = new double;
     double3* h_boxSize_double3 = new double3;
     *h_boxSize_double3 = make_double3(boxInfo.boxSize[0], boxInfo.boxSize[1], boxInfo.boxSize[2]);
@@ -108,7 +108,7 @@ void Forces::AddHBond(vector<Coords3D>& totalForces, const vector<Coords3D>& ato
         bondParams_ptr[j] = bondParams[j];
     }
 
-    launchKernelBondForces(atomPositions_double3, bondParams_ptr, forces_double3, totalPEnergy_double, h_boxSize_double3, atomPositions.size(), bondParams.size());
+    //launchKernelBondForces(atomPositions_double3, bondParams_ptr, forces_double3, totalPEnergy_double, h_boxSize_double3, atomPositions.size(), bondParams.size());
 
     // Convert double3 results back to Coords3D
     for (size_t i = 0; i < atomPositions.size(); ++i) {
@@ -128,7 +128,8 @@ void Forces::AddHBond(vector<Coords3D>& totalForces, const vector<Coords3D>& ato
     //// Use smart pointers for memory management
     //std::unique_ptr<double3[]> atomPositions_double3(new double3[atomPositions.size()]);
     //std::unique_ptr<double3[]> forces_double3(new double3[totalForces.size()]);
-    //std::unique_ptr<HBondParams[]> bondParams_ptr(new HBondParams[bondParams.size()]);
+    //std::unique_ptr<
+    // []> bondParams_ptr(new BondParams[bondParams.size()]);
     //std::unique_ptr<double> totalPEnergy_double(new double);
     //std::unique_ptr<double3> h_boxSize_double3(new double3(make_double3(boxInfo.boxSize[0], boxInfo.boxSize[1], boxInfo.boxSize[2])));
 
@@ -140,7 +141,7 @@ void Forces::AddHBond(vector<Coords3D>& totalForces, const vector<Coords3D>& ato
     //    forces_double3[i] = make_double3(totalForces[i][0], totalForces[i][1], totalForces[i][2]);
     //}
 
-    //// Bulk copy HBondParams using std::copy
+    //// Bulk copy BondParams using std::copy
     //std::copy(bondParams.begin(), bondParams.end(), bondParams_ptr.get());
 
     //// Launch the kernel with converted data
@@ -166,7 +167,7 @@ void Forces::AddHBond(vector<Coords3D>& totalForces, const vector<Coords3D>& ato
     //// Convert Coords3D (host) to double3 (device)
     //Coords3D* atomPositions_ptr = new Coords3D[atomPositions.size()];
     //Coords3D* forces_ptr = new Coords3D[totalForces.size()];
-    //HBondParams* bondParams_ptr = new HBondParams[bondParams.size()];
+    //BondParams* bondParams_ptr = new BondParams[bondParams.size()];
     //double* totalPEnergy_ptr = new double;
     //Coords3D* h_boxSize_ptr = new Coords3D;
 
@@ -194,7 +195,7 @@ void Forces::AddHBond(vector<Coords3D>& totalForces, const vector<Coords3D>& ato
 
 }
 
-void Forces::AddHAngle(vector<Coords3D>& totalForces, const vector<Coords3D>& atomPositions, const vector<HAngleParams>& angleParams, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo) {
+void Forces::AddHAngle(vector<Coords3D>& totalForces, const vector<Coords3D>& atomPositions, const vector<AngleParams>& angleParams, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo) {
 
     for (const auto& angle : angleParams) {
         vector<Coords3D> AP = { atomPositions[angle.p1], atomPositions[angle.p2], atomPositions[angle.p3] };

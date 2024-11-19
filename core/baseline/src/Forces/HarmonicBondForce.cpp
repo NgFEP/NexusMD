@@ -17,7 +17,7 @@ using namespace std;
 using namespace BaseLine;
 
 
-vector<Coords3D> HarmonicBondForce::calculateForces(const vector<Coords3D>& ap, const HBondParams& params, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo) {
+vector<Coords3D> HarmonicBondForce::calculateForces(const vector<Coords3D>& ap, const BondParams& params, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo) {
     // assert(params.p1 < atomPositions.size() && params.p2 < atomPositions.size());
 
     //bug: this step of assigning positions of the specific potential has been already taken care of in the forces step 

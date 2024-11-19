@@ -86,9 +86,6 @@
     <ClInclude Include="core\Cuda\headers\CudaInitializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="core\Cuda\headers\CudaKineticEnergy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="core\Cuda\headers\CudaReporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -99,9 +96,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\Cuda\headers\CudaTypes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="core\Cuda\headers\CudaVerletIntegration.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\Cuda\headers\Forces\CudaExclusions.h">
@@ -129,6 +123,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="core\Cuda\headers\Forces\kernels\HarmonicBondForceKernel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Cuda\headers\kernels\VerletIntegrationKernel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Cuda\headers\kernels\KineticEnergyKernel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\Cuda\headers\kernels\InverseMassesKernel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\common\headers\PDBSegmentParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="core\common\headers\SegmentForceMapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -184,16 +193,10 @@
     <ClCompile Include="core\Cuda\src\CudaInitializer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\Cuda\src\CudaKineticEnergy.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="core\Cuda\src\CudaReporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="core\Cuda\src\CudaStateXMLParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="core\Cuda\src\CudaVerletIntegration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="core\Cuda\src\Forces\CudaExclusions.cpp">
@@ -217,10 +220,13 @@
     <ClCompile Include="core\baseline\src\Forces\PeriodicTorsionForce.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\baseline\Tests\TestBaseline_JAC_Protein.cpp">
+    <ClCompile Include="core\Cuda\Tests\TestCuda_JAC_Protein.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core\Cuda\Tests\TestCuda_JAC_Protein.cpp">
+    <ClCompile Include="core\common\src\PDBSegmentParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="core\common\src\SegmentForceMapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -234,6 +240,15 @@
       <Filter>Source Files</Filter>
     </CudaCompile>
     <CudaCompile Include="core\Cuda\src\Forces\kernels\HarmonicBondForceKernel.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
+    <CudaCompile Include="core\Cuda\src\kernels\VerletIntegrationKernel.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
+    <CudaCompile Include="core\Cuda\src\kernels\KineticEnergyKernel.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
+    <CudaCompile Include="core\Cuda\src\kernels\InverseMassesKernel.cu">
       <Filter>Source Files</Filter>
     </CudaCompile>
   </ItemGroup>

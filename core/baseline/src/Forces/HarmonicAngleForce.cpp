@@ -35,7 +35,7 @@ double HarmonicAngleForce::calculateAngle(const Coords3D& p1, const Coords3D& p2
     return theta;
 }
 
-vector<Coords3D> HarmonicAngleForce::calculateForces(const vector<Coords3D>& atomPositions, const HAngleParams& params, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo) {
+vector<Coords3D> HarmonicAngleForce::calculateForces(const vector<Coords3D>& atomPositions, const AngleParams& params, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo) {
     double theta = calculateAngle(atomPositions[0], atomPositions[1], atomPositions[2], boxInfo);
     double deltaIdeal = theta - params.a;
     double energy = 0.5 * params.k * deltaIdeal * deltaIdeal;

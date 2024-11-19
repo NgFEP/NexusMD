@@ -3,7 +3,8 @@
 using namespace std;
 using namespace BaseLine;
 
-//void Exclusions::createExclusions(size_t& numParticles, vector<HBondParams>& bonds,  vector<HAngleParams>& angles,  vector<PTorsionParams>& torsions, vector<set<int>>& exclusions) {
+//void Exclusions::createExclusions(size_t& numParticles, vector<
+// >& bonds,  vector<AngleParams>& angles,  vector<PTorsionParams>& torsions, vector<set<int>>& exclusions) {
 //    
 //    //if (bondCutoff < 1) return;
 //
@@ -39,7 +40,7 @@ using namespace BaseLine;
 //
 //}
 
-//void Exclusions::createExclusions(size_t& numParticles, vector<HBondParams>& bonds, vector<HAngleParams>& angles, vector<PTorsionParams>& torsions, vector<set<int>>& exclusions, int& bondCutoff) {
+//void Exclusions::createExclusions(size_t& numParticles, vector<BondParams>& bonds, vector<AngleParams>& angles, vector<PTorsionParams>& torsions, vector<set<int>>& exclusions, int& bondCutoff) {
 //    if (bondCutoff < 1) return;
 //
 //    // Process bonds
@@ -82,7 +83,7 @@ using namespace BaseLine;
 
 
 
-void Exclusions::createExclusions(int& numParticles, vector<HBondParams>& bonds, vector<set<int>>& exclusions, int& bondCutoff) {
+void Exclusions::createExclusions(int& numParticles, vector<BondParams>& bonds, vector<set<int>>& exclusions, int& bondCutoff) {
     if (bondCutoff < 1)
         return;
 

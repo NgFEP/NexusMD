@@ -27,8 +27,8 @@ Engine::Engine(
     const std::vector<Coords3D>& atomPositions,
     const std::vector<double>& masses,
     const std::vector<PTorsionParams>& torsionParams,
-    const std::vector<HBondParams>& bondParams,
-    const std::vector<HAngleParams>& angleParams,
+    const std::vector<BondParams>& bondParams,
+    const std::vector<AngleParams>& angleParams,
     const NonbondedParams& nonbondedParams,
     const PeriodicBoundaryCondition::BoxInfo& boxInfo
 ) : _systemFilename(systemFilename),
@@ -153,6 +153,7 @@ void Engine::CalculateForces() {
     auto duration = chrono::duration_cast<chrono::nanoseconds>(finishTime - startTime).count();
     cout << "Force Calculation Runtime is " << duration << " nanoseconds" << endl;
 
+
 }
 
 //pair<vector<Coords3D>, vector<Coords3D>> Engine::Integrate2(vector<Coords3D>& atomPositions, vector<Coords3D>& velocities, vector<Coords3D>& totalForces, vector<double>& masses, int& Step, double& StepSize) {
@@ -189,10 +190,17 @@ void Engine::TotalEnergy(double& timestep) {
 
 }
 
-void Engine::Report(const string& inputFilename, const string& outputFilename, int& step, int& interval) {
+void Engine::Report(const string& inputFilename, const string& outputFilename, int& step,double& timestep, int& interval) {
     // Reporting logic here, potentially writing to `outputFilename` for the current `step`
     Reporter reporter;
     if (_RealSimRun){
+
+
+        if ((((step + 1) % interval) == 0) || step == 0) {
+
+            //kinetic energy and total energy are calculated only a report of sata is requested at each interval
+            TotalEnergy(timestep);
+        }
 
         // Write the REMARK line with the current date
         // Model number is different than step number. it's step divided by interval (the interval at which the reporters will save data)
@@ -202,22 +210,27 @@ void Engine::Report(const string& inputFilename, const string& outputFilename, i
             reporter.pdbOutputGeneratorPart1(inputFilename, outputFilename, _outputTemplate);
             _Modelnum = (step + 1) / interval;//in pdb step starts from 1
             reporter.pdbOutputGeneratorPart2(outputFilename, _outputTemplate, _atomPositions, _Modelnum);
+            reporter.TotalEnergyReport(outputFilename, _totalKEnergy, _totalPEnergy, _totalEnergy, step);// ******
+            //plotting position, velocity and force values
+            reporter.TestPVFReport(outputFilename, _atomPositions, _velocities, _totalForces, step, _torsionParams, _bondParams, _angleParams);
         }
         else if ((((step + 1) % interval) == 0) && step != 0) {
             _Modelnum = (step + 1) / interval;//in pdb step starts from 1
             reporter.pdbOutputGeneratorPart2(outputFilename, _outputTemplate, _atomPositions, _Modelnum);
+            reporter.TotalEnergyReport(outputFilename, _totalKEnergy, _totalPEnergy, _totalEnergy, step);// ******
+            //plotting position, velocity and force values
+            reporter.TestPVFReport(outputFilename, _atomPositions, _velocities, _totalForces, step, _torsionParams, _bondParams, _angleParams);
+        }
+
+    }
+    else {// if it's a test
+        if ((((step + 1) % interval) == 0) || step == 0) {
+            //ploting energy conservation
+            reporter.TotalEnergyReport(outputFilename, _totalKEnergy, _totalPEnergy, _totalEnergy, step);// ******
+            //plotting position, velocity and force values
+            reporter.TestPVFReport(outputFilename, _atomPositions, _velocities, _totalForces, step, _torsionParams, _bondParams, _angleParams);
         }
     }
-    else {
-        //plotting position, velocity and force values
-        reporter.TestPVFReport(outputFilename, _atomPositions, _velocities, _totalForces, step, _torsionParams, _bondParams, _angleParams);
-    }
-    //ploting energy conservation
-    reporter.TotalEnergyReport(outputFilename, _totalKEnergy, _totalPEnergy, _totalEnergy, step);// ******
-    
-    //plotting position, velocity and force values
-    reporter.TestPVFReport(outputFilename, _atomPositions, _velocities, _totalForces, step, _torsionParams, _bondParams, _angleParams);
-
 
 }
 
@@ -239,14 +252,18 @@ void Engine::RunSimulation(const string& inputFilename, const string& outputFile
     // Loop through each simulation step
     for (int currentStep = 0; currentStep < numSteps; ++currentStep) {
 
+
+        //long startTime = clock();
+        auto startTime2 = chrono::high_resolution_clock::now();
+
+
         // Update forces based on current positions
         CalculateForces();
         //TotalEnergy();
-        TotalEnergy(timestep);
 
         // Report current state, clearing the file only at the first step
         
-        Report(inputFilename, outputFilename, currentStep, interval);
+        Report(inputFilename, outputFilename, currentStep, timestep, interval);
 
         // Update positions and velocities based on new forces
         //auto [updatedPositions, updatedVelocities] = Integrate(atomPositions, velocities, totalForces, masses, currentStep, timestep);
@@ -256,6 +273,11 @@ void Engine::RunSimulation(const string& inputFilename, const string& outputFile
         // Prepare for the next iteration by updating positions and velocities
         // atomPositions = updatedPositions;
         // velocities = updatedVelocities;
+
+        auto finishTime2 = chrono::high_resolution_clock::now();
+        // Calculate the elapsed time in microseconds
+        auto duration = chrono::duration_cast<chrono::nanoseconds>(finishTime2 - startTime2).count();
+        cout << "1 step simulation Runtime is " << duration << " nanoseconds" << endl;
 
     }
 }

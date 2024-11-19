@@ -3,18 +3,10 @@
 //#include "stdafx.h"
 #pragma once
 
-#include <iostream>
-#include <vector>
-#include <string>
-#include <sstream>
-#include <fstream>
-#include <utility>
-#include <limits>
-#include <chrono>
 #include "CudaEngine.h"
 
 using namespace std;
-using namespace Cuda;;
+using namespace Cuda;
 
 
 //Engine::Engine(const string& SystemFilename, const string& StateFilename) : systemFilename(SystemFilename), stateFilename(StateFilename) {
@@ -23,15 +15,17 @@ using namespace Cuda;;
 Engine::Engine(
     const std::string& systemFilename,
     const std::string& stateFilename,
+    const std::string& inputFilename,
     const std::vector<Coords3D>& atomPositions,
     const std::vector<double>& masses,
     const std::vector<PTorsionParams>& torsionParams,
-    const std::vector<HBondParams>& bondParams,
-    const std::vector<HAngleParams>& angleParams,
+    const std::vector<BondParams>& bondParams,
+    const std::vector<AngleParams>& angleParams,
     const NonbondedParams& nonbondedParams,
     const PeriodicBoundaryCondition::BoxInfo& boxInfo
 ) : _systemFilename(systemFilename),
 _stateFilename(stateFilename),
+_inputFilename(inputFilename),
 _atomPositions(atomPositions),
 _masses(masses),
 _torsionParams(torsionParams),
@@ -95,7 +89,7 @@ _boxInfo(boxInfo)
 
 
 void Engine::InitializeSimulationParameters() {
-    if (!_systemFilename.empty() && !_stateFilename.empty()) {
+    if (!_systemFilename.empty() && !_stateFilename.empty() && !_inputFilename.empty()) {
         // Parse data from input files
         _atomPositions = StateXMLParser::parseStateXML(_stateFilename);
         _masses = SystemXMLParser::MassesParser(_systemFilename);
@@ -111,11 +105,34 @@ void Engine::InitializeSimulationParameters() {
         _numTorsions = _torsionParams.size();
         _numNonbonded = _nonbondedParams.particles.size();
 
+        // create _atomsBondLoaded
+        //_numAtomsBondLoaded = _atomsBondLoaded.size();
+
+        PDBSegmentParser pdbSegmentParser;
+        pdbSegmentParser.parseFile(_inputFilename,_residues, _connections, _waterMols);// extracting _residues, _connections, _waterMols
+
+     
+        //long startTime = clock();
+        auto startTime = chrono::high_resolution_clock::now();
+        SegmentForceMapper segmentForceMapper;
+        segmentForceMapper.allocateBonds(_bondParams, _residues, _connections, _waterMols, _remainedBonds);
+
+        //long finishTime = clock();
+        auto finishTime = chrono::high_resolution_clock::now();
+
+        // Calculate the elapsed time in microseconds
+        auto duration = chrono::duration_cast<chrono::nanoseconds>(finishTime - startTime).count();
+        cout << "protein segment finder Runtime is " << duration << " nanoseconds" << endl;
+
+
         // Allocate memory for double3 arrays globally
         _atomPositions_double3 = new double3[_numAtoms];
         _forces_double3 = new double3[_numAtoms];
         _velocities_double3 = new double3[_numAtoms];
         _boxSize_double3 = new double3;
+        _lb_double3 = new double3;
+        _ub_double3 = new double3;
+
 
         // Convert Coords3D (host) to double3 (device)
         for (int i = 0; i < _numAtoms; ++i) {
@@ -125,9 +142,12 @@ void Engine::InitializeSimulationParameters() {
         // Allocate memory on GPU for the simulation parameters
         cudaMalloc(&d_atomPositions, _numAtoms * sizeof(double3));
         cudaMalloc(&d_masses, _numAtoms * sizeof(double));
+        cudaMalloc(&d_inverseMasses, _numAtoms * sizeof(double));
         cudaMalloc(&d_torsionParams, _numTorsions * sizeof(PTorsionParams));  // Assuming TorsionParam is a custom struct
-        cudaMalloc(&d_bondParams, _numBonds * sizeof(HBondParams));  // Assuming BondParam is a custom struct
-        cudaMalloc(&d_angleParams, _numAngles * sizeof(HAngleParams));  // Assuming AngleParam is a custom struct
+        cudaMalloc(&d_bondParams, _numBonds * sizeof(BondParams));  // Assuming BondParam is a custom struct
+        cudaMalloc(&d_angleParams, _numAngles * sizeof(AngleParams));  // Assuming AngleParam is a custom struct
+        //cudaMalloc(&d_atomsBondLoaded, _numAtomsBondLoaded * sizeof(ModifiedAtomBondInfo));  // Assuming BondParam is a custom struct
+
         //cudaMalloc(&d_nonbondedParams, numNonbonded * sizeof(NonbondedParam));  // Assuming NonbondedParam is a custom struct
         cudaMalloc(&d_numAtoms, sizeof(int));
         cudaMalloc(&d_numBonds, sizeof(int));
@@ -140,8 +160,9 @@ void Engine::InitializeSimulationParameters() {
         cudaMemcpy(d_atomPositions, _atomPositions_double3, _numAtoms * sizeof(double3), cudaMemcpyHostToDevice);
         cudaMemcpy(d_masses, _masses.data(), _numAtoms * sizeof(double), cudaMemcpyHostToDevice);
         cudaMemcpy(d_torsionParams, _torsionParams.data(), _numTorsions * sizeof(PTorsionParams), cudaMemcpyHostToDevice);
-        cudaMemcpy(d_bondParams, _bondParams.data(), _numBonds * sizeof(HBondParams), cudaMemcpyHostToDevice);
-        cudaMemcpy(d_angleParams, _angleParams.data(), _numAngles * sizeof(HAngleParams), cudaMemcpyHostToDevice);
+        cudaMemcpy(d_bondParams, _bondParams.data(), _numBonds * sizeof(BondParams), cudaMemcpyHostToDevice);
+        cudaMemcpy(d_angleParams, _angleParams.data(), _numAngles * sizeof(AngleParams), cudaMemcpyHostToDevice);
+        //cudaMemcpy(d_atomsBondLoaded, _atomsBondLoaded.data(), _numAtomsBondLoaded * sizeof(ModifiedAtomBondInfo), cudaMemcpyHostToDevice);
         //cudaMemcpy(d_nonbondedParams, _nonbondedParams.data(), numNonbonded * sizeof(NonbondedParam), cudaMemcpyHostToDevice);
         cudaMemcpy(d_numAtoms, &_numAtoms, sizeof(int), cudaMemcpyHostToDevice);
         cudaMemcpy(d_numBonds, &_numBonds, sizeof(int), cudaMemcpyHostToDevice);
@@ -149,6 +170,11 @@ void Engine::InitializeSimulationParameters() {
         cudaMemcpy(d_numTorsions, &_numTorsions, sizeof(int), cudaMemcpyHostToDevice);
         cudaMemcpy(d_numNonbonded, &_numNonbonded, sizeof(int), cudaMemcpyHostToDevice);
 
+        // instead of copying 
+        cudaMemset(d_inverseMasses, 0, _numAtoms * sizeof(double));
+
+        //inverse masses initialization
+        launchComputeInverseMassesKernel(d_masses, d_inverseMasses, _numAtoms);
 
     }
     else {
@@ -159,6 +185,8 @@ void Engine::InitializeSimulationParameters() {
     PeriodicBoundaryCondition::extractBoxBoundaries(_atomPositions, _boxInfo, _stateFilename);
 
     *_boxSize_double3 = make_double3(_boxInfo.boxSize[0], _boxInfo.boxSize[1], _boxInfo.boxSize[2]);
+    *_lb_double3 = make_double3(_boxInfo.lb[0], _boxInfo.lb[1], _boxInfo.lb[2]);
+    *_ub_double3 = make_double3(_boxInfo.ub[0], _boxInfo.ub[1], _boxInfo.ub[2]);
 
 
     // Initialize velocities and forces on CPU (may eventually move to GPU if needed)
@@ -166,24 +194,49 @@ void Engine::InitializeSimulationParameters() {
     initializer.InitializeForcesAndVelocities(_atomPositions, _totalForces, _velocities);
 
 
-    // Convert Coords3D (forces) to double3 for GPU
+    //// Convert Coords3D (forces) to double3 for GPU
+    //for (int i = 0; i < _numAtoms; ++i) {
+    //    _forces_double3[i] = make_double3(_totalForces[i][0], _totalForces[i][1], _totalForces[i][2]);
+    //    _velocities_double3[i] = make_double3(_velocities[i][0], _velocities[i][1], _velocities[i][2]);
+    //}
+
+    // Initialize forces and velocities to zero for all atoms
     for (int i = 0; i < _numAtoms; ++i) {
-        _forces_double3[i] = make_double3(_totalForces[i][0], _totalForces[i][1], _totalForces[i][2]);
-        _velocities_double3[i] = make_double3(_velocities[i][0], _velocities[i][1], _velocities[i][2]);
+        _forces_double3[i] = make_double3(0.0, 0.0, 0.0);     // Initialize forces to zero
+        _velocities_double3[i] = make_double3(0.0, 0.0, 0.0); // Initialize velocities to zero
     }
+
 
     // Allocate and copy velocities and forces to GPU
     cudaMalloc(&d_totalForces, _numAtoms * sizeof(double3));
     cudaMalloc(&d_velocities, _numAtoms * sizeof(double3));
+    cudaMalloc(&d_kineticEnergies, _numAtoms * sizeof(double));
+    cudaMalloc(&d_totalKEnergy, sizeof(double));
     cudaMalloc(&d_totalPEnergy, sizeof(double));
+    cudaMalloc(&d_totalEnergy, sizeof(double));
+
+
+
     cudaMalloc(&d_boxsize, sizeof(double3));
+    cudaMalloc(&d_lb, sizeof(double3));
+    cudaMalloc(&d_ub, sizeof(double3));
     // no need to initialize d_totalForces as it gets initialized every step using cudaMemset in CalculateForces
     //cudaMemcpy(d_totalForces, _forces_double3, _numAtoms * sizeof(double3), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_velocities, _velocities_double3, _numAtoms * sizeof(double3), cudaMemcpyHostToDevice);
+    //cudaMemcpy(d_velocities, _velocities_double3, _numAtoms * sizeof(double3), cudaMemcpyHostToDevice);
     // cudaMemcpy(d_totalPEnergy, &_totalPEnergy, sizeof(double), cudaMemcpyHostToDevice);
     cudaMemcpy(d_boxsize, _boxSize_double3, sizeof(double3), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_lb, _lb_double3, sizeof(double3), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_ub, _ub_double3, sizeof(double3), cudaMemcpyHostToDevice);
 
 
+    // instead of copying 
+    cudaMemset(d_totalPEnergy, 0, sizeof(double));
+    cudaMemset(d_totalKEnergy, 0, sizeof(double));
+    cudaMemset(d_totalEnergy, 0, sizeof(double));
+    cudaMemset(d_kineticEnergies, 0, _numAtoms * sizeof(double));
+
+    cudaMemset(d_velocities, 0, _numAtoms * sizeof(double3));
+    cudaMemset(d_totalForces, 0, _numAtoms * sizeof(double3));
 
     // Free allocated memory for global arrays on the host
     //delete[] _atomPositions_double3;
@@ -231,13 +284,11 @@ void Engine::CalculateForces() {
 
     //everystep d_atomPositions should be updated since the data comes from verletintegration and it's still on CPU
 
-    for (int i = 0; i < _numAtoms; ++i) {
-        _atomPositions_double3[i] = make_double3(_atomPositions[i][0], _atomPositions[i][1], _atomPositions[i][2]);
-    }
-    // Copy data from host to device
-    cudaMemcpy(d_atomPositions, _atomPositions_double3, _numAtoms * sizeof(double3), cudaMemcpyHostToDevice);
-
-
+    //for (int i = 0; i < _numAtoms; ++i) {
+    //    _atomPositions_double3[i] = make_double3(_atomPositions[i][0], _atomPositions[i][1], _atomPositions[i][2]);
+    //}
+    //// Copy data from host to device
+    //cudaMemcpy(d_atomPositions, _atomPositions_double3, _numAtoms * sizeof(double3), cudaMemcpyHostToDevice);
 
 
     //long startTime = clock();
@@ -249,9 +300,8 @@ void Engine::CalculateForces() {
     }
     if (!_bondParams.empty()) {
         // Forces::AddHBond(_totalForces, _atomPositions, _bondParams, _totalPEnergy, _boxInfo);
-
-        launchKernelBondForces_V2(d_atomPositions, d_bondParams, d_totalForces, d_totalPEnergy,d_boxsize, _numBonds);
-
+        launchKernelBondForcesGlobal(d_atomPositions, d_bondParams, d_totalForces, d_totalPEnergy,d_boxsize, _numBonds);
+        //launchKernelBondForcesShared(d_atomPositions, d_bondParams, d_totalForces, d_totalPEnergy,d_boxsize, d_atomsBondLoaded, _numAtomsBondLoaded);
     }
     if (!_angleParams.empty()) {
         //Forces::AddHAngle(_totalForces, _atomPositions, _angleParams, _totalPEnergy, _boxInfo);
@@ -260,25 +310,15 @@ void Engine::CalculateForces() {
         //Forces::AddNonBondElectroPME(_totalForces, _atomPositions, _nonbondedParams, _totalPEnergy,  _boxInfo,_exclusions);
     }
 
-    //for now _totalForces and _totalPEnergy should be updated every step since kinetic energy and verlet integration are in cpu and need the updated values
-    // if the interval applies, the _atomPositions, _velocities, _totalPEnergy,_totalKEnergy, _totalEnergy, _totalForces should be updated 
-    // Copy results back to host
-    cudaMemcpy(_forces_double3, d_totalForces, _numAtoms * sizeof(double3), cudaMemcpyDeviceToHost);
-    cudaMemcpy(&_totalPEnergy, d_totalPEnergy, sizeof(double), cudaMemcpyDeviceToHost);
-
-    // Convert double3 results back to Coords3D
-    for (size_t i = 0; i < _numAtoms; ++i) {
-        _totalForces[i] = Coords3D{ _forces_double3[i].x, _forces_double3[i].y, _forces_double3[i].z };
-    }
-
-
-
     //long finishTime = clock();
     auto finishTime = chrono::high_resolution_clock::now();
 
     // Calculate the elapsed time in microseconds
     auto duration = chrono::duration_cast<chrono::nanoseconds>(finishTime - startTime).count();
     cout << "Force Calculation Runtime is " << duration << " nanoseconds" << endl;
+
+
+
 
 }
 
@@ -290,50 +330,81 @@ void Engine::CalculateForces() {
 
 void Engine::Integrate(int& Step) {
     // Integration logic here, updating `atomPositions` and `velocities`
+ 
 
-    VerletIntegration::InverseMasses(_masses, _inverseMasses);
-    //VerletIntegration::Advance(_dt, _atomPositions, _velocities, _totalForces, _inverseMasses, _posDelta);
-    VerletIntegration::Advance(_atomPositions, _velocities, _totalForces, _inverseMasses, Step, _dt, _boxInfo);
-    //VerletIntegration::SelectVerletStepSize(_velocities, _totalForces, _inverseMasses, _dt,  errorTol,  maxStepSize);
 
-   // VerletIntegration::advance(_atomPositions, _velocities, _totalForces, _masses, Step, StepSize);
+    // Function to launch the Verlet integration kernel
+    launchVerletIntegrationKernel(d_atomPositions, d_velocities, d_totalForces, d_inverseMasses, d_boxsize, d_lb, d_ub, _numAtoms,  _dt[0]);
+
+
+
+
+    //if (Step == 0) {
+    //    VerletIntegration::InverseMasses(_masses, _inverseMasses);
+    //}
+    //VerletIntegration::Advance(_atomPositions, _velocities, _totalForces, _inverseMasses, Step, _dt, _boxInfo);
+
+
+
 }
 
 void Engine::TotalEnergy(double& timestep) {
     _totalKEnergy = 0.0;
     _totalEnergy = 0.0;
     _kineticEnergies.assign(_numAtoms, 0.0);
+    cudaMemset(d_totalKEnergy, 0, sizeof(double));
 
-    //KineticEnergy::calculateKineticEnergy(_velocities, _masses,_numAtoms, _kineticEnergies, _totalKEnergy);
-    KineticEnergy::calculateKineticEnergy(_velocities, _masses, _totalForces, timestep, _numAtoms, _kineticEnergies, _totalKEnergy);
 
-    _totalEnergy = _totalPEnergy + _totalKEnergy;
-    if (_totalEnergy > 200) {
-        cout << "";
-    }
-    //vector<double> _kineticEnergies;// a vector of _kineticEnergy for each atom
-    //vector<double> _potentialEnergies;// a vector of _potentialEnergy for each atom
+    //KineticEnergy::calculateKineticEnergy(_velocities, _masses, _totalForces, timestep, _numAtoms, _kineticEnergies, _totalKEnergy);
+
+    //_totalEnergy = _totalPEnergy + _totalKEnergy;
+
+    launchKineticEnergyKernel(d_velocities, d_masses, d_inverseMasses, d_totalForces, timestep, _numAtoms, d_kineticEnergies, d_totalKEnergy);
 
 }
 
-void Engine::Report(const string& inputFilename, const string& outputFilename, int& step, int& interval) {
+void Engine::Report(const string& inputFilename, const string& outputFilename, int& step, double& timestep, int& interval) {
     // Reporting logic here, potentially writing to `outputFilename` for the current `step`
     Reporter reporter;
+
+    //update global parameters for final results reports
+    if ((((step + 1) % interval) == 0) || step == 0) {
+
+        //kinetic energy and total energy are calculated only a report of sata is requested at each interval
+        TotalEnergy(timestep);
+
+        // Copy results back to host
+        cudaMemcpy(_velocities_double3, d_velocities, _numAtoms * sizeof(double3), cudaMemcpyDeviceToHost);
+        cudaMemcpy(_atomPositions_double3, d_atomPositions, _numAtoms * sizeof(double3), cudaMemcpyDeviceToHost);
+        cudaMemcpy(_forces_double3, d_totalForces, _numAtoms * sizeof(double3), cudaMemcpyDeviceToHost);
+        cudaMemcpy(&_totalPEnergy, d_totalPEnergy, sizeof(double), cudaMemcpyDeviceToHost);
+        cudaMemcpy(&_totalKEnergy, d_totalKEnergy, sizeof(double), cudaMemcpyDeviceToHost);
+        //cudaMemcpy(&_kineticEnergies, d_kineticEnergies, _numAtoms * sizeof(double), cudaMemcpyDeviceToHost);
+
+        // Convert double3 results back to Coords3D
+        for (size_t i = 0; i < _numAtoms; ++i) {
+            _velocities[i] = Coords3D{ _velocities_double3[i].x, _velocities_double3[i].y, _velocities_double3[i].z };
+            _atomPositions[i] = Coords3D{ _atomPositions_double3[i].x, _atomPositions_double3[i].y, _atomPositions_double3[i].z };
+            _totalForces[i] = Coords3D{ _forces_double3[i].x, _forces_double3[i].y, _forces_double3[i].z };
+        }
+        _totalEnergy = _totalPEnergy + _totalKEnergy;
+
+    }
+
+
+
     if (_RealSimRun) {
 
         // Write the REMARK line with the current date
         // Model number is different than step number. it's step divided by interval (the interval at which the reporters will save data)
 
         if (step == 0) {
-
             //reporter.pdbOutputGenerator(inputFilename, outputFilename, _outputTemplate, _atomPositions, step);
             reporter.pdbOutputGeneratorPart1(inputFilename, outputFilename, _outputTemplate);
             _Modelnum = (step + 1) / interval;//in pdb step starts from 1
             reporter.pdbOutputGeneratorPart2(outputFilename, _outputTemplate, _atomPositions, _Modelnum);
-
-            //ploting energy conservation
+            //plotting energy conservation
             reporter.TotalEnergyReport(outputFilename, _totalKEnergy, _totalPEnergy, _totalEnergy, step);// ******
-
             //plotting position, velocity and force values
             reporter.TestPVFReport(outputFilename, _atomPositions, _velocities, _totalForces, step, _torsionParams, _bondParams, _angleParams);
         }
@@ -341,15 +412,97 @@ void Engine::Report(const string& inputFilename, const string& outputFilename, i
 
             _Modelnum = (step + 1) / interval;//in pdb step starts from 1
             reporter.pdbOutputGeneratorPart2(outputFilename, _outputTemplate, _atomPositions, _Modelnum);
-            //ploting energy conservation
+            //plotting energy conservation
             reporter.TotalEnergyReport(outputFilename, _totalKEnergy, _totalPEnergy, _totalEnergy, step);// ******
-
             //plotting position, velocity and force values
             reporter.TestPVFReport(outputFilename, _atomPositions, _velocities, _totalForces, step, _torsionParams, _bondParams, _angleParams);
         }
     }
+    else {// if it's a test
+        if (step == 0) {
+            //ploting energy conservation
+            reporter.TotalEnergyReport(outputFilename, _totalKEnergy, _totalPEnergy, _totalEnergy, step);// ******
+            //plotting position, velocity and force values
+            reporter.TestPVFReport(outputFilename, _atomPositions, _velocities, _totalForces, step, _torsionParams, _bondParams, _angleParams);
+        }
+        else if ((((step + 1) % interval) == 0) && step != 0) {
+            //ploting energy conservation
+            reporter.TotalEnergyReport(outputFilename, _totalKEnergy, _totalPEnergy, _totalEnergy, step);// ******
+            //plotting position, velocity and force values
+            reporter.TestPVFReport(outputFilename, _atomPositions, _velocities, _totalForces, step, _torsionParams, _bondParams, _angleParams);
+        }
+    }
+
 }
 
+// Destructor or cleanup function to free GPU memory
+void Engine::CleanupGPU() {
+    // Free host-side memory if allocated
+    if (_atomPositions_double3 != nullptr) {
+        delete[] _atomPositions_double3;
+        _atomPositions_double3 = nullptr;
+    }
+    if (_forces_double3 != nullptr) {
+        delete[] _forces_double3;
+        _forces_double3 = nullptr;
+    }
+    if (_velocities_double3 != nullptr) {
+        delete[] _velocities_double3;
+        _velocities_double3 = nullptr;
+    }
+    if (_boxSize_double3 != nullptr) {
+        delete[] _boxSize_double3;
+        _boxSize_double3 = nullptr;
+    }
+    if (_lb_double3 != nullptr) {
+        delete[] _lb_double3;
+        _lb_double3 = nullptr;
+    }
+    if (_ub_double3 != nullptr) {
+        delete[] _ub_double3;
+        _ub_double3 = nullptr;
+    }
+
+    // Free GPU memory
+    cudaFree(d_atomPositions);
+    cudaFree(d_masses);
+    cudaFree(d_inverseMasses);
+    cudaFree(d_velocities);
+    cudaFree(d_totalForces);
+    cudaFree(d_bondParams);
+    cudaFree(d_torsionParams);
+    cudaFree(d_angleParams);
+    cudaFree(d_nonbondedParams);
+    cudaFree(d_totalPEnergy);
+    cudaFree(d_boxsize);
+    cudaFree(d_lb);
+    cudaFree(d_ub);
+    cudaFree(d_numAtoms);
+    cudaFree(d_numBonds);
+    cudaFree(d_numAngles);
+    cudaFree(d_numTorsions);
+    cudaFree(d_numNonbonded);
+
+    // Set all GPU pointers to nullptr after freeing
+    d_atomPositions = nullptr;
+    d_masses = nullptr;
+    d_inverseMasses = nullptr;
+    d_velocities = nullptr;
+    d_totalForces = nullptr;
+    d_bondParams = nullptr;
+    d_torsionParams = nullptr;
+    d_angleParams = nullptr;
+    d_nonbondedParams = nullptr;
+    d_totalPEnergy = nullptr;
+    d_boxsize = nullptr;
+    d_lb = nullptr;
+    d_ub = nullptr;
+    d_numAtoms = nullptr;
+    d_numBonds = nullptr;
+    d_numAngles = nullptr;
+    d_numTorsions = nullptr;
+    d_numNonbonded = nullptr;
+}
 
 
 void Engine::RunSimulation(const string& inputFilename, const string& outputFilename, double& timestep, int& numSteps, int& interval){ // const string& systemFilename, const string& stateFilename, vector<Coords3D>& totalForces, vector<Coords3D>& velocities) {    // Unpack the tuple returned by Inputs
@@ -368,23 +521,30 @@ void Engine::RunSimulation(const string& inputFilename, const string& outputFile
     // Loop through each simulation step
     for (int currentStep = 0; currentStep < numSteps; ++currentStep) {
 
+        //long startTime = clock();
+        auto startTime2 = chrono::high_resolution_clock::now();
+
         // Update forces based on current positions
         CalculateForces();
         //TotalEnergy();
-        TotalEnergy(timestep);
-
+        
         // Report current state, clearing the file only at the first step
         // in Report if the interval applies, the _atomPositions, _velocities, _totalPEnergy,_totalKEnergy, _totalEnergy, _totalForces should be updated by CUDA to RAM memory copying 
-        Report(inputFilename, outputFilename, currentStep, interval);
+        Report(inputFilename, outputFilename, currentStep, timestep, interval);
 
         // Update positions and velocities based on new forces
         //auto [updatedPositions, updatedVelocities] = Integrate(atomPositions, velocities, totalForces, masses, currentStep, timestep);
         Integrate(currentStep);
 
-
         // Prepare for the next iteration by updating positions and velocities
         // atomPositions = updatedPositions;
         // velocities = updatedVelocities;
+
+        auto finishTime2 = chrono::high_resolution_clock::now();
+
+        // Calculate the elapsed time in microseconds
+        auto duration = chrono::duration_cast<chrono::nanoseconds>(finishTime2 - startTime2).count();
+        cout << "1 step simulation Runtime is " << duration << " nanoseconds" << endl;
 
     }
 
@@ -399,11 +559,7 @@ void Engine::RunSimulation(const string& inputFilename, const string& outputFile
     }
 
     // Free device memory
-    cudaFree(d_atomPositions);
-    cudaFree(d_bondParams);
-    cudaFree(d_totalForces);
-    cudaFree(d_totalPEnergy);
-    cudaFree(d_boxsize);
+    CleanupGPU();
 
 }
 

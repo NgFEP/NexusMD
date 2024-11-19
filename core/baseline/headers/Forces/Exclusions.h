@@ -11,8 +11,9 @@ namespace BaseLine {
 
     class Exclusions {
     public:
-        //static void createExclusions(std::size_t& numParticles, std::vector<HBondParams>& bonds, std::vector<HAngleParams>& angles, std::vector<PTorsionParams>& torsions, std::vector<std::set<int>>& exclusions, int& bondCutoff);
-        static void createExclusions(int& numParticles, std::vector<HBondParams>& bonds, std::vector<std::set<int>>& exclusions, int& bondCutoff);
+        //static void createExclusions(std::size_t& numParticles, std::vector<
+        // >& bonds, std::vector<AngleParams>& angles, std::vector<PTorsionParams>& torsions, std::vector<std::set<int>>& exclusions, int& bondCutoff);
+        static void createExclusions(int& numParticles, std::vector<BondParams>& bonds, std::vector<std::set<int>>& exclusions, int& bondCutoff);
 
     private:
 

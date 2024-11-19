@@ -48,9 +48,7 @@ void KineticEnergy::calculateKineticEnergy(const vector<Coords3D>& velocities, c
 
         kineticEnergies[i] = ke;
         totalKEnergy += ke;
-        if (ke > 200) {
-            cout << "";
-        }
+
     }
 
 }

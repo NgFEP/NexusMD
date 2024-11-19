@@ -11,7 +11,7 @@ namespace BaseLine {
 
     class HarmonicBondForce {
     public:
-        static std::vector<Coords3D> calculateForces(const std::vector<Coords3D>& atomPositions, const HBondParams& params, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo);
+        static std::vector<Coords3D> calculateForces(const std::vector<Coords3D>& atomPositions, const BondParams& params, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo);
 
 
     private:

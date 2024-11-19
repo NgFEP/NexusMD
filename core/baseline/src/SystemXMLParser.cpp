@@ -67,8 +67,8 @@ vector<PTorsionParams> SystemXMLParser::PTorsionParser(const string& filename) {
     return torsionParameters;
 }
 
-vector<HBondParams> SystemXMLParser::HBondParser(const string& filename) {
-    vector<HBondParams> bondParameters;
+vector<BondParams> SystemXMLParser::HBondParser(const string& filename) {
+    vector<BondParams> bondParameters;
     pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_file(filename.c_str());
 
@@ -83,7 +83,7 @@ vector<HBondParams> SystemXMLParser::HBondParser(const string& filename) {
         if (forceType == "HarmonicBondForce") {
             // Once the correct <Force> element is found, iterate through its <Bond> children
             for (auto& bond : force.child("Bonds").children("Bond")) {
-                HBondParams bp;
+                BondParams bp;
                 bp.p1 = bond.attribute("p1").as_int();
                 bp.p2 = bond.attribute("p2").as_int();
                 bp.d = bond.attribute("d").as_double();
@@ -97,8 +97,8 @@ vector<HBondParams> SystemXMLParser::HBondParser(const string& filename) {
 }
 
 
-vector<HAngleParams> SystemXMLParser::HAngleParser(const string& filename) {
-    vector<HAngleParams> angleParameters;
+vector<AngleParams> SystemXMLParser::HAngleParser(const string& filename) {
+    vector<AngleParams> angleParameters;
     pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_file(filename.c_str());
 
@@ -113,7 +113,7 @@ vector<HAngleParams> SystemXMLParser::HAngleParser(const string& filename) {
         if (forceType == "HarmonicAngleForce") {
             // Once the correct <Force> element is found, iterate through its <Angle> children
             for (auto& angle : force.child("Angles").children("Angle")) {
-                HAngleParams ap;
+                AngleParams ap;
                 ap.p1 = angle.attribute("p1").as_int();
                 ap.p2 = angle.attribute("p2").as_int();
                 ap.p3 = angle.attribute("p3").as_int();

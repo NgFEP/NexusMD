@@ -45,8 +45,8 @@ namespace BaseLine {
             const std::vector<Coords3D>& atomPositions = std::vector<Coords3D>(),
             const std::vector<double>& masses = std::vector<double>(),
             const std::vector<PTorsionParams>& torsionParams = std::vector<PTorsionParams>(),
-            const std::vector<HBondParams>& bondParams = std::vector<HBondParams>(),
-            const std::vector<HAngleParams>& angleParams = std::vector<HAngleParams>(),
+            const std::vector<BondParams>& bondParams = std::vector<BondParams>(),
+            const std::vector<AngleParams>& angleParams = std::vector<AngleParams>(),
             const NonbondedParams& nonbondedParams = NonbondedParams(),
             const PeriodicBoundaryCondition::BoxInfo& boxInfo = PeriodicBoundaryCondition::BoxInfo() // Default empty box info
         );
@@ -65,8 +65,8 @@ namespace BaseLine {
         std::string _stateFilename;
         std::vector<Coords3D> _atomPositions;
         std::vector<PTorsionParams> _torsionParams;
-        std::vector<HBondParams> _bondParams;
-        std::vector<HAngleParams> _angleParams;
+        std::vector<BondParams> _bondParams;
+        std::vector<AngleParams> _angleParams;
         NonbondedParams _nonbondedParams;
         std::vector<std::set<int>> _exclusions;
         int _bondCutoff = 3;// another case is 3: if bondCutoff is 3, the loop to find _exclusions runs twice to include particles that are 2 bonds away.
@@ -97,7 +97,7 @@ namespace BaseLine {
         //void Initialize(const vector<Coords3D>& atomPositions);
         //pair<vector<Coords3D>, vector<Coords3D>> Initialize(const vector<Coords3D>& atomPositions);
         //void Initialize(std::vector<Coords3D>& atomPositions, std::vector<Coords3D>& totalForces, std::vector<Coords3D>& velocities);
-        //std::vector<Coords3D> CalculateForces(const std::vector<Coords3D>& atomPositions, const std::vector<PTorsionParams>& torsionParams, const std::vector<HAngleParams>& angleParams, std::vector<Coords3D>& totalForces);
+        //std::vector<Coords3D> CalculateForces(const std::vector<Coords3D>& atomPositions, const std::vector<PTorsionParams>& torsionParams, const std::vector<AngleParams>& angleParams, std::vector<Coords3D>& totalForces);
         void extractBoxBoundaries(const std::vector<Coords3D>& atomPositions, const PeriodicBoundaryCondition::BoxInfo& boxInfo);
 
         void CalculateForces();
@@ -106,7 +106,7 @@ namespace BaseLine {
         void Integrate(int& Step);
         void TotalEnergy(double& timestep);
         //void Report(const string& outputFilename, int step);
-        void Report(const std::string& inputFilename, const std::string& outputFilename, int& step, int& interval);
+        void Report(const std::string& inputFilename, const std::string& outputFilename, int& step, double& timestep, int& interval);
 
     };
 }

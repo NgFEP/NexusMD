@@ -5,21 +5,30 @@
 
 #include "CudaStateXMLParser.h"
 #include "SystemXMLParser.h"
+#include "PDBSegmentParser.h"
+#include "SegmentForceMapper.h"
 #include "CudaPeriodicTorsionForce.h"
 #include "CudaInitializer.h"
 #include "CudaForces.h"
-#include "CudaVerletIntegration.h"
-#include "CudaKineticEnergy.h"
 #include "PeriodicBoundaryCondition.h"
 #include <string>
 #include <tuple>
 #include <vector>
 #include <utility>
 #include <set>
+#include <iostream>
+#include <sstream>
+#include <fstream>
+#include <limits>
+#include <chrono>
 #include "Coords3D.h"
 #include "CudaReporter.h"
 #include "CudaExclusions.h"
+#include "InverseMassesKernel.h"
+//#include "CudaModifiedForceDataStructures.h"
 #include "HarmonicBondForceKernel.h"
+#include "VerletIntegrationKernel.h"
+#include "KineticEnergyKernel.h"
 
 
 namespace Cuda {
@@ -43,11 +52,12 @@ namespace Cuda {
         Engine(//this decleration allows optional inputs for engine object construction useful for both test and production runs
             const std::string& systemFilename = "",
             const std::string& stateFilename = "",
+            const std::string& inputFile = "",
             const std::vector<Coords3D>& atomPositions = std::vector<Coords3D>(),
             const std::vector<double>& masses = std::vector<double>(),
             const std::vector<PTorsionParams>& torsionParams = std::vector<PTorsionParams>(),
-            const std::vector<HBondParams>& bondParams = std::vector<HBondParams>(),
-            const std::vector<HAngleParams>& angleParams = std::vector<HAngleParams>(),
+            const std::vector<BondParams>& bondParams = std::vector<BondParams>(),
+            const std::vector<AngleParams>& angleParams = std::vector<AngleParams>(),
             const NonbondedParams& nonbondedParams = NonbondedParams(),
             const PeriodicBoundaryCondition::BoxInfo& boxInfo = PeriodicBoundaryCondition::BoxInfo() // Default empty box info
         );
@@ -64,18 +74,28 @@ namespace Cuda {
         void InitializeSimulationParameters();
         bool _RealSimRun=false;
         int _numAtoms;
+        int _numAtomsBondLoaded;
         int _numBonds;
         int _numAngles;
         int _numTorsions;
         int _numNonbonded;
         std::string _systemFilename;
         std::string _stateFilename;
+        std::string _inputFilename;
         std::vector<Coords3D> _atomPositions;
         std::vector<PTorsionParams> _torsionParams;
-        std::vector<HBondParams> _bondParams;
-        std::vector<HAngleParams> _angleParams;
+        std::vector<BondParams> _bondParams;
+        std::vector<AngleParams> _angleParams;
         NonbondedParams _nonbondedParams;
         std::vector<std::set<int>> _exclusions;
+        // PDBSegmentParser
+        std::vector<PResidues> _residues; 
+        std::vector<Connection> _connections;
+        std::vector<WaterMols> _waterMols;
+        // SegmentForceMapper
+        RemainedBonds _remainedBonds;
+
+        //std::vector<ModifiedAtomBondInfo> _atomsBondLoaded;
         int _bondCutoff = 3;// another case is 3: if bondCutoff is 3, the loop to find _exclusions runs twice to include particles that are 2 bonds away.
         std::vector<Coords3D> _totalForces;
         std::vector<Coords3D> _velocities;
@@ -104,26 +124,36 @@ namespace Cuda {
         //void Initialize(const vector<Coords3D>& atomPositions);
         //pair<vector<Coords3D>, vector<Coords3D>> Initialize(const vector<Coords3D>& atomPositions);
         //void Initialize(std::vector<Coords3D>& atomPositions, std::vector<Coords3D>& totalForces, std::vector<Coords3D>& velocities);
-        //std::vector<Coords3D> CalculateForces(const std::vector<Coords3D>& atomPositions, const std::vector<PTorsionParams>& torsionParams, const std::vector<HAngleParams>& angleParams, std::vector<Coords3D>& totalForces);
+        //std::vector<Coords3D> CalculateForces(const std::vector<Coords3D>& atomPositions, const std::vector<PTorsionParams>& torsionParams, const std::vector<AngleParams>& angleParams, std::vector<Coords3D>& totalForces);
         
 
         // Allocate memory on CPU for conversion to double3
         double3* _atomPositions_double3 = nullptr;
-        double3* _boxSize_double3 = nullptr;
         double3* _forces_double3 = nullptr;
         double3* _velocities_double3 = nullptr;
+        double3* _boxSize_double3 = nullptr;
+        double3* _lb_double3 = nullptr;
+        double3* _ub_double3 = nullptr;
 
         // GPU data members
         double3* d_atomPositions;      // Positions of the atoms (GPU)
         double* d_masses;              // Masses of atoms (GPU)
+        double* d_inverseMasses;              // Masses of atoms (GPU)
         double3* d_velocities;         // Velocities of atoms (GPU)
         double3* d_totalForces;        // Total forces on atoms (GPU)
-        HBondParams* d_bondParams;          // Bond parameters (GPU)
+        BondParams* d_bondParams;          // Bond parameters (GPU)
         PTorsionParams* d_torsionParams;       // Torsion parameters (GPU)
-        HAngleParams* d_angleParams;         // Angle parameters (GPU)
+        AngleParams* d_angleParams;         // Angle parameters (GPU)
         NonbondedParams* d_nonbondedParams;     // Nonbonded interaction parameters (GPU)
+        //ModifiedAtomBondInfo* d_atomsBondLoaded;
+
         double* d_totalPEnergy;
+        double* d_kineticEnergies;
+        double* d_totalKEnergy;
+        double* d_totalEnergy;
         double3* d_boxsize;
+        double3* d_lb;
+        double3* d_ub;
         int* d_numAtoms;
         int* d_numBonds;
         int* d_numAngles;
@@ -144,7 +174,8 @@ namespace Cuda {
         void Integrate(int& Step);
         void TotalEnergy(double& timestep);
         //void Report(const string& outputFilename, int step);
-        void Report(const std::string& inputFilename, const std::string& outputFilename, int& step, int& interval);
+        void Report(const std::string& inputFilename, const std::string& outputFilename, int& step, double& timestep, int& interval);
+        void CleanupGPU();
 
     };
 }

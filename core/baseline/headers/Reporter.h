@@ -54,7 +54,7 @@ namespace BaseLine {
         // Update report function to no longer require clearFile parameter
         // for test report and shows positions, velocities and forces of all atoms and for all the steps, used for test purposes
         void TestPVFReport(const std::string& filename, const std::vector<Coords3D>& positions,
-            const std::vector<Coords3D>& velocities, const std::vector<Coords3D>& forces, int step, const std::vector<PTorsionParams>& torsionParams, const std::vector<HBondParams>& bondParams, const std::vector<HAngleParams>& angleParams);
+            const std::vector<Coords3D>& velocities, const std::vector<Coords3D>& forces, int step, const std::vector<PTorsionParams>& torsionParams, const std::vector<BondParams>& bondParams, const std::vector<AngleParams>& angleParams);
         void TotalEnergyReport(const std::string& baseFilename, double& totalKEnergy, double& totalPEnergy, double& totalEnergy, int step);
 
         // Main function to read, process, and write PDB file
@@ -70,6 +70,31 @@ namespace BaseLine {
             "ALA", "ARG", "ASN", "ASP", "CYS", "GLN", "GLU", "GLY", "HIS", "ILE",
             "LEU", "LYS", "MET", "PHE", "PRO", "SER", "THR", "TRP", "TYR", "VAL"
         };
+        const std::set<std::string> dnaNucleotides = {
+            "DA", // Adenine
+            "DT", // Thymine
+            "DG", // Guanine
+            "DC"  // Cytosine
+        };
+        const std::set<std::string> rnaNucleotides = {
+            "A", // Adenine
+            "U", // Uracil
+            "G", // Guanine
+            "C"  // Cytosine
+        };
+
+        const std::set<std::string> standardResidues = {
+            // Standard Amino Acids
+            "ALA", "ARG", "ASN", "ASP", "CYS", "GLN", "GLU", "GLY", "HIS", "ILE",
+            "LEU", "LYS", "MET", "PHE", "PRO", "SER", "THR", "TRP", "TYR", "VAL",
+
+            // DNA Nucleotides
+            "DA", "DT", "DG", "DC",
+
+            // RNA Nucleotides
+            "A", "U", "G", "C"
+        };
+
         //static ofstream outputFile;
         std::string getCurrentDate();
 

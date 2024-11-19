@@ -33,8 +33,8 @@ int main() {
     };
 
     vector<PTorsionParams> torsionParams = {};//empty as in here we only want to test the accuracy of software result for 1 harmonic angle force
-    vector<HBondParams> bondParams{};//p1,p2,d,k //double d; // Ideal bond distance and double k; // Force constant
-    vector<HAngleParams> angleParams{ {0, 1, 2, 1.911135530933791, 418.40000000000003} };//p1,p2,p3,a,k //double a; // Ideal angle in radians and double k; // Force constant
+    vector<BondParams> bondParams{};//p1,p2,d,k //double d; // Ideal bond distance and double k; // Force constant
+    vector<AngleParams> angleParams{ {0, 1, 2, 1.911135530933791, 418.40000000000003} };//p1,p2,p3,a,k //double a; // Ideal angle in radians and double k; // Force constant
     vector<double> masses = { 14.01, 12.01, 1.008 };
     
     Engine engine("", "", atomPositions, masses, torsionParams, bondParams, angleParams);//engine construction for test run

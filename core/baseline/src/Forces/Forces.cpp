@@ -74,7 +74,7 @@ void Forces::AddPTorsion(vector<Coords3D>& totalForces, const vector<Coords3D>& 
 }
 
 
-void Forces::AddHBond(vector<Coords3D>& totalForces, const vector<Coords3D>& atomPositions, const vector<HBondParams>& bondParams, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo) {
+void Forces::AddHBond(vector<Coords3D>& totalForces, const vector<Coords3D>& atomPositions, const vector<BondParams>& bondParams, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo) {
     for (const auto& bond : bondParams) {
         //if (bond.p1 < atomPositions.size() && bond.p2 < atomPositions.size()) {
         vector<Coords3D> AP = { atomPositions[bond.p1], atomPositions[bond.p2] };
@@ -97,7 +97,7 @@ void Forces::AddHBond(vector<Coords3D>& totalForces, const vector<Coords3D>& ato
 
 }
 
-void Forces::AddHAngle(vector<Coords3D>& totalForces, const vector<Coords3D>& atomPositions, const vector<HAngleParams>& angleParams, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo) {
+void Forces::AddHAngle(vector<Coords3D>& totalForces, const vector<Coords3D>& atomPositions, const vector<AngleParams>& angleParams, double& totalPEnergy, const PeriodicBoundaryCondition::BoxInfo& boxInfo) {
 
     for (const auto& angle : angleParams) {
         vector<Coords3D> AP = { atomPositions[angle.p1], atomPositions[angle.p2], atomPositions[angle.p3] };
