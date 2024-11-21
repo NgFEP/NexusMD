@@ -108,21 +108,21 @@ void Engine::InitializeSimulationParameters() {
         // create _atomsBondLoaded
         //_numAtomsBondLoaded = _atomsBondLoaded.size();
 
-        PDBSegmentParser pdbSegmentParser;
-        pdbSegmentParser.parseFile(_inputFilename,_residues, _connections, _waterMols);// extracting _residues, _connections, _waterMols
+        PDBResidueParser pdbResidueParser;
+        pdbResidueParser.parseFile(_inputFilename,_pResidues, _wResidues);// extracting _residues, _connections, _waterMols
 
      
         //long startTime = clock();
         auto startTime = chrono::high_resolution_clock::now();
-        SegmentForceMapper segmentForceMapper;
-        segmentForceMapper.allocateBonds(_bondParams, _residues, _connections, _waterMols, _remainedBonds);
+        ResidueForceMapper ResidueForceMapper;
+        ResidueForceMapper.allocateBonds(_bondParams, _pResidues, _wResidues, _remainedBonds);
 
         //long finishTime = clock();
         auto finishTime = chrono::high_resolution_clock::now();
 
         // Calculate the elapsed time in microseconds
         auto duration = chrono::duration_cast<chrono::nanoseconds>(finishTime - startTime).count();
-        cout << "protein segment finder Runtime is " << duration << " nanoseconds" << endl;
+        cout << "protein Residue finder Runtime is " << duration << " nanoseconds" << endl;
 
 
         // Allocate memory for double3 arrays globally

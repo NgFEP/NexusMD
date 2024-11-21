@@ -5,8 +5,8 @@
 
 #include "CudaStateXMLParser.h"
 #include "SystemXMLParser.h"
-#include "PDBSegmentParser.h"
-#include "SegmentForceMapper.h"
+#include "PDBResidueParser.h"
+#include "ResidueForceMapper.h"
 #include "CudaPeriodicTorsionForce.h"
 #include "CudaInitializer.h"
 #include "CudaForces.h"
@@ -88,11 +88,11 @@ namespace Cuda {
         std::vector<AngleParams> _angleParams;
         NonbondedParams _nonbondedParams;
         std::vector<std::set<int>> _exclusions;
-        // PDBSegmentParser
-        std::vector<PResidues> _residues; 
-        std::vector<Connection> _connections;
-        std::vector<WaterMols> _waterMols;
-        // SegmentForceMapper
+        // PDBResidueParser
+        std::vector<PResidues> _pResidues; 
+        //std::vector<Connection> _connections;
+        std::vector<WResidues> _wResidues;
+        // ResidueForceMapper
         RemainedBonds _remainedBonds;
 
         //std::vector<ModifiedAtomBondInfo> _atomsBondLoaded;
