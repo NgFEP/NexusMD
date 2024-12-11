@@ -7,6 +7,8 @@
 #include "SystemXMLParser.h"
 #include "PDBResidueParser.h"
 #include "ResidueForceMapper.h"
+#include "CudaDataStructures.h"
+#include "CudaBridge.h"
 #include "CudaPeriodicTorsionForce.h"
 #include "CudaInitializer.h"
 #include "CudaForces.h"
@@ -79,6 +81,11 @@ namespace Cuda {
         int _numAngles;
         int _numTorsions;
         int _numNonbonded;
+        int _numResidues;
+        //int _maxResidueSize;
+        int _totalBondsInResidues = 0;
+        int _totalResiduesSize = 0;
+
         std::string _systemFilename;
         std::string _stateFilename;
         std::string _inputFilename;
@@ -89,11 +96,17 @@ namespace Cuda {
         NonbondedParams _nonbondedParams;
         std::vector<std::set<int>> _exclusions;
         // PDBResidueParser
-        std::vector<PResidues> _pResidues; 
-        //std::vector<Connection> _connections;
-        std::vector<WResidues> _wResidues;
+        std::vector<Residues> _residues; 
         // ResidueForceMapper
         RemainedBonds _remainedBonds;
+        // CudaDatastructures
+        std::vector<int> _startResidues;
+        std::vector<int> _endResidues;
+        //std::vector<D_PResidues> _pResiduesBond;
+        //std::vector<D_WResidues> _wResiduesBond;
+
+
+
 
         //std::vector<ModifiedAtomBondInfo> _atomsBondLoaded;
         int _bondCutoff = 3;// another case is 3: if bondCutoff is 3, the loop to find _exclusions runs twice to include particles that are 2 bonds away.
@@ -146,6 +159,11 @@ namespace Cuda {
         AngleParams* d_angleParams;         // Angle parameters (GPU)
         NonbondedParams* d_nonbondedParams;     // Nonbonded interaction parameters (GPU)
         //ModifiedAtomBondInfo* d_atomsBondLoaded;
+        D_Residues* d_residues = nullptr; //protein residue device pointer
+
+        // CudaDatastructures
+        int* d_startResidues;
+        int* d_endResidues;
 
         double* d_totalPEnergy;
         double* d_kineticEnergies;

@@ -136,88 +136,74 @@ PDBAtomInfo PDBResidueParser::parsePDBLine(const std::string& line) {
 
 
 // Main function to parse the PDB file
-void PDBResidueParser::parseFile(const string& filename, vector<PResidues>& pResidues, vector<WResidues>& wResidues) {
+void PDBResidueParser::parseFile(const string& filename, vector<Residues>& residues) {
     ifstream pdbFile(filename);
     string line;
-    int atomIndex = 0;
+    vector<int> atomIndices; // To store indices of atoms for the current residue
     string currentResName;
     int currentResSeq = -1;
-    int resStartIdx = 0;
-    //bool withinProtein = true;
 
     while (getline(pdbFile, line)) {
-
-        //if (line.substr(0, 3) == "TER" || line.substr(0, 3) == "END") {
-        //    if (withinProtein && !currentResName.empty()) {
-        //        processResidue(resStartIdx, atomIndex - 1, currentResName, residues, connections, waterMols);
-        //    }
-        //    withinProtein = false;
-        //    continue;
-        //}
-
         if (line.substr(0, 4) == "ATOM") {
             PDBAtomInfo atom = parsePDBLine(line);
             atoms.push_back(atom);
 
-            if (currentResSeq != atom.resSeq-1 || currentResName != atom.resName) {
-                if (!currentResName.empty()) {
-                    processResidue(resStartIdx, atomIndex - 1, currentResName, pResidues, wResidues);
+            // Check if the residue has changed
+            if (currentResSeq != atom.resSeq || currentResName != atom.resName) {
+                // If there was a previous residue, process it
+                if (!atomIndices.empty()) {
+                    processResidue(atomIndices, currentResName, residues);
                 }
-                resStartIdx = atomIndex;
+
+                // Start a new residue
+                atomIndices.clear(); // Clear the indices for the new residue
                 currentResName = atom.resName;
-                currentResSeq = atom.resSeq-1;//residue sequence starts from 1 
+                currentResSeq = atom.resSeq;
             }
 
-            atomIndex++;
+            // Add the atom index to the current residue's indices
+            atomIndices.push_back(atom.atomNum - 1);
         }
     }
 
     // Final residue processing
-    if (!currentResName.empty()) {
-        processResidue(resStartIdx, atomIndex - 1, currentResName, pResidues, wResidues);
+    if (!atomIndices.empty()) {
+        processResidue(atomIndices, currentResName, residues);
     }
 
     pdbFile.close();
 }
 
+
 // Helper function to process each residue and identify connections
-void PDBResidueParser::processResidue(int startIdx, int endIdx, const string& currentResName, vector<PResidues>& pResidues, vector<WResidues>& wResidues) {
+void PDBResidueParser::processResidue(vector<int> atomIndices, string currentResName, vector<Residues>& residues) {
     if (currentResName == "WAT") { // Process water molecules
-        WResidues water;
-        water.lowBound = startIdx;
-        water.highBound = endIdx;
+        Residues wResidue;
+        wResidue.resName = currentResName;
+        wResidue.AllAtomsIndices = atomIndices;//atomNum starts from 1
 
-        // Extract Hydrogen atoms and their indices
-        for (int i = startIdx; i <= endIdx; ++i) {
-            if (atoms[i].element == "H") {
-                water.HAtomsIDs.push_back(atoms[i].atomNum-1);// atomNum starts from 1 in pdb
-                //water.HAtomsIDs.insert(atoms[i].atomNum - 1);// atomNum starts from 1 in pdb
-
-            }
-        }
-
-        // Leave HBonds empty for now
-        // Push the water molecule without bond information
-        wResidues.push_back(water);
+        residues.push_back(wResidue);
     }
     else { // Process protein or other residues
-        PResidues pResidue;
-        pResidue.lowBound = startIdx;
-        pResidue.highBound = endIdx;
-        pResidue.resName = atoms[startIdx].resName;
+        Residues pResidue;
+        pResidue.AllAtomsIndices = atomIndices;//atomNum starts from 1
 
-        // Extract Hydrogen atoms
-        for (int i = startIdx; i <= endIdx; ++i) {
+        pResidue.resName = currentResName;
+
+        // Extract Hydrogen Atoms
+        for (int i = pResidue.AllAtomsIndices[0]; i < pResidue.AllAtomsIndices.size(); ++i) {
             if (atoms[i].element == "H") {
-                pResidue.HAtomsIDs.push_back(atoms[i].atomNum-1);// atomNum starts from 1 in pdb
-                //residue.HAtomsIDs.insert(atoms[i].atomNum - 1);// atomNum starts from 1 in pdb
+                pResidue.HAtomsIndices.push_back(atoms[i].atomNum-1);
+            }
+            else {
+                pResidue.NonHAtomsIndices.push_back(atoms[i].atomNum - 1);// atomNum starts from 1 in pdb
 
             }
         }
 
         // Leave bond lists empty
         // Push the residue without bond information
-        pResidues.push_back(pResidue);
+        residues.push_back(pResidue);
 
         //// Check for standard amino acids to establish connections
         //if (standardAminoAcids.find(currentResName) != standardAminoAcids.end()) {

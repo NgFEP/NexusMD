@@ -6,39 +6,71 @@ ResidueForceMapper::ResidueForceMapper() {};
 ResidueForceMapper::~ResidueForceMapper() {};
 
 
-void ResidueForceMapper::allocateBonds(const vector<BondParams>& bondParams,vector<PResidues>& pResidues,vector<WResidues>& wResidues,RemainedBonds& remainedBonds) {
+int ResidueForceMapper::calculateResidueMemory(const Residues& residue) {
+    // Size of mandatory vector members
+    int atomMemory = residue.AllAtomsIndices.size() * sizeof(int);
+    int hAtomMemory = residue.HAtomsIndices.size() * sizeof(int);
+    int nonHAtomMemory = residue.NonHAtomsIndices.size() * sizeof(int);
 
-    set<int> assignedConnections;
+    // Size of optional vector members (check if they have a value before accessing)
+    int bondMemory = residue.AllBondsIndices ? residue.AllBondsIndices->size() * sizeof(int) : 0;
+    int hBondMemory = residue.HBondsIndices ? residue.HBondsIndices->size() * sizeof(int) : 0;
+    int nonHBondMemory = residue.NonHBondsIndices ? residue.NonHBondsIndices->size() * sizeof(int) : 0;
+    int nonResBondAtomMemory = residue.NonResBondAtoms ? residue.NonResBondAtoms->size() * sizeof(int) : 0;
+
+    int angleMemory = residue.AngleIndices ? residue.AngleIndices->size() * sizeof(int) : 0;
+    int torsionMemory = residue.TorsionIndices ? residue.TorsionIndices->size() * sizeof(int) : 0;
+
+    // Memory for the string (capacity, since it allocates memory dynamically)
+    int staticMemory = residue.resName.capacity() * sizeof(char);
+
+    // Total memory for this residue
+    int totalMemory = atomMemory + hAtomMemory + nonHAtomMemory +
+        bondMemory + hBondMemory + nonHBondMemory +
+        nonResBondAtomMemory + staticMemory;// +angleMemory + torsionMemory;
+
+    return totalMemory;
+}
+
+
+void ResidueForceMapper::allocateBonds(const vector<BondParams>& bondParams,vector<Residues>& residues,RemainedBonds& remainedBonds, int& totalResiduesSize, int& totalBondsInResidues, vector<int>& startResidues, vector<int>& endResidues) {
+
+    //set<int> assignedConnections;
     set<int> assignedwResidues;
+    int numResidues = residues.size();
 
-    wResidueCounter = 0;
+    //wResidueCounter = 0;
     //connectionCounter = 0;
     //pResidueCounter = 0;
-    //bondAtomInRangeCounter = 0;
+    //bondAtomInResidue = 0;
 
 
     for (size_t bondIndex = 0; bondIndex < bondParams.size(); ++bondIndex) {
         const auto& bond = bondParams[bondIndex];
         isAssigned = 0;
-
         // Check if the bond belongs to any residue
         //if (wResidueCounter==0) {// as soon as water molecules start residue checking ends
-        for (size_t i = 0; i < pResidues.size(); ++i) {
-            bondInRangePResidue(bond.p1, bond.p2, pResidues[i].lowBound, pResidues[i].highBound);
-            if (bondAtomInRangeCounter == 2) {
-                allocateToResidue(pResidues[i], bondIndex, bond);
+        for (size_t i = 0; i < residues.size(); ++i) {
+            if (i >= ResAtomIndicesMaxElement.size()) {
+                ResAtomIndicesMaxElement.push_back(*std::max_element(residues[i].AllAtomsIndices.begin(), residues[i].AllAtomsIndices.end()));
             }
-            else if (bondAtomInRangeCounter == 1) {
-                if (!pResidues[i].NonResBondAtoms) {
-                    pResidues[i].NonResBondAtoms.emplace();
+            if (bond.p1 <= ResAtomIndicesMaxElement[i] || bond.p2 <= ResAtomIndicesMaxElement[i]) {// || ensures connecting bonds are covered in both of the involving residues
+                bondInResidue(bond.p1, bond.p2, residues[i].AllAtomsIndices);
+                if (bondAtomInResidue == 2) {
+                    allocateToResidue(residues[i], bondIndex, bond);
                 }
-                pResidues[i].NonResBondAtoms->push_back(nonResAtomInx);
-                allocateToResidue(pResidues[i], bondIndex, bond);
+                else if (bondAtomInResidue == 1) {
+                    if (!residues[i].NonResBondAtoms) {
+                        residues[i].NonResBondAtoms.emplace();
+                    }
+                    residues[i].NonResBondAtoms->push_back(nonResAtomInx);
+                    allocateToResidue(residues[i], bondIndex, bond);
 
-            }
-            if (isAssigned == 2) {
-                break;
-            }
+                }
+                if (isAssigned == 2) {
+                    break;
+                }
+            }    
         }
         //}
         if (isAssigned==2) {
@@ -63,28 +95,28 @@ void ResidueForceMapper::allocateBonds(const vector<BondParams>& bondParams,vect
         //    continue; // Move to the next bond
         //}
         // Check if the bond belongs to any water molecule
-        if (isAssigned==0 && wResidueCounter < wResidues.size()) {
-            for (size_t i = wResidueCounter; i < wResidues.size(); ++i) {
-                if (assignedwResidues.find(i) == assignedwResidues.end() && bondInRangeWResidue(bond.p1, bond.p2, wResidues[i].lowBound, wResidues[i].highBound)) {
+        //if (isAssigned==0 && wResidueCounter < wResidues.size()) {
+        //    for (size_t i = wResidueCounter; i < wResidues.size(); ++i) {
+        //        if (assignedwResidues.find(i) == assignedwResidues.end() && bondInRangeWResidue(bond.p1, bond.p2, wResidues[i].lowBound, wResidues[i].highBound)) {
 
-                    if (!wResidues[i].BondsIndices) {
-                        wResidues[i].BondsIndices.emplace();
-                    }
+        //            if (!wResidues[i].BondsIndices) {
+        //                wResidues[i].BondsIndices.emplace();
+        //            }
 
-                    // Store the bond index, not the atom indices
-                    wResidues[i].BondsIndices->push_back(bondIndex);
-                    if (wResidues[i].BondsIndices->size()==2) {//2 bonds alocated to a water molecule
-                        assignedwResidues.insert(i);
-                        wResidueCounter++;
-                    }
-                    isAssigned = 2;
-                    break;
-                }
-            }
-        }
-        if (isAssigned==2) {
-            continue; // Move to the next bond
-        }
+        //            // Store the bond index, not the atom indices
+        //            wResidues[i].BondsIndices->push_back(bondIndex);
+        //            if (wResidues[i].BondsIndices->size()==2) {//2 bonds alocated to a water molecule
+        //                assignedwResidues.insert(i);
+        //                wResidueCounter++;
+        //            }
+        //            isAssigned = 2;
+        //            break;
+        //        }
+        //    }
+        //}
+        //if (isAssigned==2) {
+        //    continue; // Move to the next bond
+        //}
         // If bond is not assigned, add it to RemainedBonds
         if (isAssigned==0) {
             remainedBonds.atomIDs.insert(bond.p1);
@@ -95,67 +127,130 @@ void ResidueForceMapper::allocateBonds(const vector<BondParams>& bondParams,vect
             remainedBonds.BondsIndices->push_back(bondIndex);
         }
     }
+
+    // Sorting residues in Descending Order
+    std::sort(residues.begin(), residues.end(), [](const Residues& a, const Residues& b) {
+        auto sizeA = a.AllBondsIndices ? a.AllBondsIndices->size() : 0;
+        auto sizeB = b.AllBondsIndices ? b.AllBondsIndices->size() : 0;
+        return sizeA > sizeB; // Change comparison to greater-than
+        });
+
+
+
+    for (size_t i = 0; i < residues.size(); ++i) {
+        int residueMemory = calculateResidueMemory(residues[i]); // Calculate memory for this residue
+        residues[i].resMemSize = residueMemory;
+        totalResiduesSize += residueMemory;                // Accumulate total memory
+    }
+
+
+    for (int i = 0; i < numResidues; ++i) {
+        totalBondsInResidues += residues[i].AllBondsIndices ? residues[i].AllBondsIndices->size() : 0;
+    }
+
+    int deviceId;
+    cudaGetDevice(&deviceId);
+
+    int sharedMemPerBlock;
+    cudaDeviceGetAttribute(&sharedMemPerBlock, cudaDevAttrMaxSharedMemoryPerBlock, deviceId);
+
+
+    // Calculate sizes of static components
+    const int sizeOfPositions = sizeof(double3);
+    const int sizeOfBondParams = sizeof(BondParams);
+
+    int totalMemoryAllBonds = totalBondsInResidues * (2 * sizeOfPositions + sizeOfBondParams) + totalResiduesSize;
+    int numBlocks = 1.1 * totalMemoryAllBonds / sharedMemPerBlock; // 10% margin
+
+    // Example of precomputing residue ranges on the host
+
+
+    int residueIdx = 0;
+    while(residueIdx < numResidues){
+        startResidues.push_back(residueIdx);
+
+        int sharedMemoryUsed = 0;
+        while (residueIdx < numResidues && (sharedMemoryUsed + residues[residueIdx].AllBondsIndices->size()*(2 * sizeOfPositions + sizeOfBondParams) + residues[residueIdx].resMemSize <= 0.95 * sharedMemPerBlock)) {//0.95 to keep a safe margin of unused sharedMemPerBlock
+            sharedMemoryUsed += residues[residueIdx].AllBondsIndices->size() * (2 * sizeOfPositions + sizeOfBondParams) + residues[residueIdx].resMemSize;
+            residueIdx++;
+        }
+        endResidues.push_back(residueIdx-1);
+    }
+
+
+
+    //cout << ResAtomIndicesMaxElement.size() << "/n" << residues.size();
+
+
+
 }
 
 
 // Utility function to check if a bond is within a specific range of PResidue
-void ResidueForceMapper::bondInRangePResidue(int p1, int p2, int low, int high) {
-    if ((p1 >= low && p1 <= high) && (p2 >= low && p2 <= high)) {
-        bondAtomInRangeCounter = 2;
+
+void ResidueForceMapper::bondInResidue(int p1, int p2, const vector<int>& allAtomsIndices) {
+    // Create a hash set for efficient lookup
+    std::unordered_set<int> atomSet(allAtomsIndices.begin(), allAtomsIndices.end());
+
+    bool p1InResidue = atomSet.find(p1) != atomSet.end();
+    bool p2InResidue = atomSet.find(p2) != atomSet.end();
+
+    if (p1InResidue && p2InResidue) {
+        bondAtomInResidue = 2;
         isAssigned = 2;
     }
-    else if ((p1 >= low && p1 <= high)) {
-        bondAtomInRangeCounter = 1;
+    else if (p1InResidue) {
+        bondAtomInResidue = 1;
         nonResAtomInx = p2;
         isAssigned++;
     }
-    else if ((p2 >= low && p2 <= high)) {
-        bondAtomInRangeCounter = 1;
+    else if (p2InResidue) {
+        bondAtomInResidue = 1;
         nonResAtomInx = p1;
         isAssigned++;
     }
     else {
-        bondAtomInRangeCounter = 0;
+        bondAtomInResidue = 0;
     }
 }
 
+
 // Utility function to check if a bond is within a specific range od WResidue
-bool ResidueForceMapper::bondInRangeWResidue(int p1, int p2, int low, int high) {
-    return (p1 >= low && p1 <= high) && (p2 >= low && p2 <= high);
-}
+//bool ResidueForceMapper::bondInRangeWResidue(int p1, int p2, int low, int high) {
+//    return (p1 >= low && p1 <= high) && (p2 >= low && p2 <= high);
+//}
 
 // Utility function to check if a bond is between two specific atoms
-bool ResidueForceMapper::bondBetweenAtoms(const BondParams& bond, int atom1, int atom2) const {
-    return (bond.p1 == atom1 && bond.p2 == atom2) || (bond.p1 == atom2 && bond.p2 == atom1);
-}
+//bool ResidueForceMapper::bondBetweenAtoms(const BondParams& bond, int atom1, int atom2) const {
+//    return (bond.p1 == atom1 && bond.p2 == atom2) || (bond.p1 == atom2 && bond.p2 == atom1);
+//}
 
 // Utility function to allocate bonds to a residue
-void ResidueForceMapper::allocateToResidue(PResidues& pResidue,const int& bondIndex, const BondParams& bond) {
+void ResidueForceMapper::allocateToResidue(Residues& residue,const int& bondIndex, const BondParams& bond) {
     // Check if bond.p1 or bond.p2 is a hydrogen atom in this residue
-    bool p1IsHydrogen = find(pResidue.HAtomsIDs.begin(), pResidue.HAtomsIDs.end(), bond.p1) != pResidue.HAtomsIDs.end();
-    bool p2IsHydrogen = find(pResidue.HAtomsIDs.begin(), pResidue.HAtomsIDs.end(), bond.p2) != pResidue.HAtomsIDs.end();
+    bool p1IsHydrogen = find(residue.HAtomsIndices.begin(), residue.HAtomsIndices.end(), bond.p1) != residue.HAtomsIndices.end();
+    bool p2IsHydrogen = find(residue.HAtomsIndices.begin(), residue.HAtomsIndices.end(), bond.p2) != residue.HAtomsIndices.end();
 
 
     // Ensure AllBondsIndices is initialized
-    if (!pResidue.AllBondsIndices) {
+    if (!residue.AllBondsIndices) {
         //residue.AllBondsIndices = {};
-        pResidue.AllBondsIndices.emplace();
+        residue.AllBondsIndices.emplace();
 
     }
-    pResidue.AllBondsIndices->push_back(bondIndex);
+    residue.AllBondsIndices->push_back(bondIndex);
 
     // If either atom is a hydrogen atom, classify as a hydrogen bond
     if (p1IsHydrogen || p2IsHydrogen) {
-        if (!pResidue.HBondsIndices) {
-            pResidue.HBondsIndices.emplace();
+        if (!residue.HBondsIndices) {
+            residue.HBondsIndices.emplace();
         }
-        pResidue.HBondsIndices->push_back(bondIndex);
+        residue.HBondsIndices->push_back(bondIndex);
     }
-
     else { // Otherwise, classify as a non-hydrogen bond
-        if (!pResidue.NonHBondsIndices) {
-            pResidue.NonHBondsIndices.emplace();
+        if (!residue.NonHBondsIndices) {
+            residue.NonHBondsIndices.emplace();
         }
-        pResidue.NonHBondsIndices->push_back(bondIndex);
+        residue.NonHBondsIndices->push_back(bondIndex);
     }
 }

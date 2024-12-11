@@ -28,21 +28,21 @@ struct PDBAtomInfo {
     std::string element;
 };
 
-// Struct for storing residue information
-struct PResidues {
-    int lowBound;
-    int highBound;
+// Unified host Residue Struct for storing residue information of Protein, water, ...
+struct Residues {
+    std::vector<int> AllAtomsIndices; // List of atom indices
     std::string resName;
-    //std::vector<int> AtomsIDs; // List of atom indices
-    std::vector<int> HAtomsIDs; // List of Hydrogen atom indices
-    //std::unordered_set<int> HAtomsIDs;
+    std::vector<int> HAtomsIndices; // List of Hydrogen atom indices
+    std::vector<int> NonHAtomsIndices; // List of Non Hydrogen atom indices
     std::optional<std::vector<int>> AllBondsIndices; // List of all bond indices
     std::optional<std::vector<int>> HBondsIndices; // List of Hydrogen bond indices
     std::optional<std::vector<int>> NonHBondsIndices;// List of non-Hydrogen bond indices
-    std::optional<std::vector<int>> NonResBondAtoms; // List of all atoms in bonds that not belong to the currect residue
+    std::optional<std::vector<int>> NonResBondAtoms; // List of all atoms in bonds that not belong to the current residue
     std::optional<std::vector<int>> AngleIndices;
     std::optional<std::vector<int>> TorsionIndices;
+    int resMemSize = 0; // residue memory size
 };
+
 
 //// Struct for storing connection between residues
 //struct Connection {
@@ -52,22 +52,23 @@ struct PResidues {
 //    std::optional<int> BondIndex; // bond index, each connection has a single bond
 //};
 
-// Struct for storing water information
-struct WResidues {
-    int lowBound;
-    int highBound;
-    //std::vector<int> AtomsIDs; // List of atom indices
-    std::vector<int> HAtomsIDs; // List of Hydrogen atom indices in water
-    //std::unordered_set<int> HAtomsIDs;
-    std::optional<std::vector<int>> BondsIndices; // List of Hydrogen bond indices
-};
+//// Struct for storing water information
+//struct WResidues {
+//    int lowBound;
+//    int highBound;
+//    //std::vector<int> AtomsIDs; // List of atom indices
+//    //std::vector<int> HAtomsIDs; // List of Hydrogen atom indices in water
+//    //std::vector<int> NonHAtomsIDs; // List of Non Hydrogen atom indices
+//    //std::unordered_set<int> HAtomsIDs;
+//    std::optional<std::vector<int>> BondsIndices; // List of Hydrogen bond indices
+//};
 
 // Main PDB Parser class
 class PDBResidueParser {
 public:
     PDBResidueParser();
     ~PDBResidueParser();
-    void parseFile(const std::string& filename, std::vector<PResidues>& pResidues, std::vector<WResidues>& wResidues);
+    void parseFile(const std::string& filename, std::vector<Residues>& Residues);
     //const std::vector<PResidues>& getResidues() const { return residues; }
     //const std::vector<Connection>& getConnections() const { return connections; }
     //const std::vector<wResidues>& getWaters() const { return wResidues; }
@@ -85,7 +86,7 @@ private:
     };
 
     PDBAtomInfo parsePDBLine(const std::string& line);
-    void processResidue(int startIdx, int endIdx, const std::string& currentResName, std::vector<PResidues>& pResidues, std::vector<WResidues>& wResidues);
+    void processResidue(std::vector<int> atomIndices, std::string currentResName, std::vector<Residues>& Residues);
 
     // Utility function to infer element from atom name
     std::string inferElementFromAtomName(const std::string& atomName);

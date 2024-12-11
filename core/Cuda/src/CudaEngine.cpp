@@ -88,6 +88,7 @@ _boxInfo(boxInfo)
 //}
 
 
+
 void Engine::InitializeSimulationParameters() {
     if (!_systemFilename.empty() && !_stateFilename.empty() && !_inputFilename.empty()) {
         // Parse data from input files
@@ -109,13 +110,19 @@ void Engine::InitializeSimulationParameters() {
         //_numAtomsBondLoaded = _atomsBondLoaded.size();
 
         PDBResidueParser pdbResidueParser;
-        pdbResidueParser.parseFile(_inputFilename,_pResidues, _wResidues);// extracting _residues, _connections, _waterMols
+        pdbResidueParser.parseFile(_inputFilename,_residues);// extracting _residues
 
+        _numResidues = _residues.size();
      
         //long startTime = clock();
         auto startTime = chrono::high_resolution_clock::now();
         ResidueForceMapper ResidueForceMapper;
-        ResidueForceMapper.allocateBonds(_bondParams, _pResidues, _wResidues, _remainedBonds);
+        ResidueForceMapper.allocateBonds(_bondParams, _residues, _remainedBonds, _totalResiduesSize, _totalBondsInResidues, _startResidues, _endResidues);
+
+        //_maxResidueSize = calculateResidueMemory(_residues[0]); // largest residue
+        //_maxResidueSize = calculateResidueMemory(_residues.back()); // smallest residue
+
+
 
         //long finishTime = clock();
         auto finishTime = chrono::high_resolution_clock::now();
@@ -123,6 +130,107 @@ void Engine::InitializeSimulationParameters() {
         // Calculate the elapsed time in microseconds
         auto duration = chrono::duration_cast<chrono::nanoseconds>(finishTime - startTime).count();
         cout << "protein Residue finder Runtime is " << duration << " nanoseconds" << endl;
+
+        //CudaDataStructures CudaDataStructures;
+        //CudaDataStructures.bondStructures(_pResidues, _wResidues, _pResiduesBond, _wResiduesBond);
+
+        //// Temporary
+        //// verification start
+        //// Access the first member of _pResiduesBond
+        //const D_PResidues& firstResidue = _pResiduesBond[100];
+
+        //std::cout << "AllBondsIndices of the first member of _pResiduesBond:" << std::endl;
+
+        //// Ensure the pointer is not null and count is valid
+        //if (firstResidue.AllBondsIndices != nullptr && firstResidue.AllBondsCount > 0) {
+        //    for (int i = 0; i < firstResidue.AllBondsCount; ++i) {
+        //        std::cout << "AllBondsIndices[" << i << "] = " << firstResidue.AllBondsIndices[i] << std::endl;
+        //    }
+        //}
+        //// verification end
+
+
+        std::cout << "Host residue 0 - AllAtomsIndices size: "
+            << _residues[0].AllAtomsIndices.size()
+            << std::endl;
+
+
+
+        CudaBridge CudaBridge;
+        cudaMalloc(&d_residues, _numResidues * sizeof(D_Residues));
+        CudaBridge.transferResiduesVector(_residues, &d_residues);
+
+
+        // verification
+        //// Define the number of elements to check
+        //int numResiduesToCheck = 1; // Adjust as needed
+
+        //// Step 1: Copy the first residue back to the host
+        //std::vector<D_Residues> h_residuesCheck(numResiduesToCheck);
+        //cudaError_t err = cudaMemcpy(h_residuesCheck.data(), d_residues, numResiduesToCheck * sizeof(D_Residues), cudaMemcpyDeviceToHost);
+        //if (err != cudaSuccess) {
+        //    std::cerr << "CUDA memcpy failed for residues: " << cudaGetErrorString(err) << std::endl;
+        //    cudaFree(d_residues); // Free memory if an error occurs
+        //    return;
+        //}
+
+        //// Step 2: Validate AllAtomsIndices for the first residue
+        //if (h_residuesCheck[0].AllAtomsIndices != nullptr && h_residuesCheck[0].AllAtomsCount > 0) {
+        //    // Step 3: Copy AllAtomsIndices data from device to host
+        //    std::vector<int> h_AllAtomsIndices(h_residuesCheck[0].AllAtomsCount);
+        //    err = cudaMemcpy(h_AllAtomsIndices.data(), h_residuesCheck[0].AllAtomsIndices,
+        //        h_residuesCheck[0].AllAtomsCount * sizeof(int), cudaMemcpyDeviceToHost);
+        //    if (err != cudaSuccess) {
+        //        std::cerr << "CUDA memcpy failed for AllAtomsIndices: " << cudaGetErrorString(err) << std::endl;
+        //        return;
+        //    }
+
+        //    // Step 4: Output AllAtomsIndices data for verification
+        //    std::cout << "AllAtomsIndices for the first residue: ";
+        //    for (int i = 0; i < h_residuesCheck[0].AllAtomsCount; ++i) {
+        //        std::cout << h_AllAtomsIndices[i] << " ";
+        //    }
+        //    std::cout << std::endl;
+
+        //    // Step 5: Print the first atom index as a quick check
+        //    std::cout << "First atom index in AllAtomsIndices: " << h_AllAtomsIndices[0] << std::endl;
+        //}
+        //else {
+        //    std::cerr << "AllAtomsIndices is nullptr or empty for the first residue." << std::endl;
+        //}
+
+        //// Step 6: Print additional details for verification
+        //std::cout << "numAtoms in the first residue: " << h_residuesCheck[0].AllAtomsCount << std::endl;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         // Allocate memory for double3 arrays globally
@@ -147,6 +255,8 @@ void Engine::InitializeSimulationParameters() {
         cudaMalloc(&d_bondParams, _numBonds * sizeof(BondParams));  // Assuming BondParam is a custom struct
         cudaMalloc(&d_angleParams, _numAngles * sizeof(AngleParams));  // Assuming AngleParam is a custom struct
         //cudaMalloc(&d_atomsBondLoaded, _numAtomsBondLoaded * sizeof(ModifiedAtomBondInfo));  // Assuming BondParam is a custom struct
+        cudaMalloc(&d_startResidues, _startResidues.size() * sizeof(int));
+        cudaMalloc(&d_endResidues, _endResidues.size() * sizeof(int));
 
         //cudaMalloc(&d_nonbondedParams, numNonbonded * sizeof(NonbondedParam));  // Assuming NonbondedParam is a custom struct
         cudaMalloc(&d_numAtoms, sizeof(int));
@@ -169,6 +279,12 @@ void Engine::InitializeSimulationParameters() {
         cudaMemcpy(d_numAngles, &_numAngles, sizeof(int), cudaMemcpyHostToDevice);
         cudaMemcpy(d_numTorsions, &_numTorsions, sizeof(int), cudaMemcpyHostToDevice);
         cudaMemcpy(d_numNonbonded, &_numNonbonded, sizeof(int), cudaMemcpyHostToDevice);
+
+        // Copy to device
+        cudaMemcpy(d_startResidues, _startResidues.data(), _startResidues.size() * sizeof(int), cudaMemcpyHostToDevice);
+        cudaMemcpy(d_endResidues, _endResidues.data(), _endResidues.size() * sizeof(int), cudaMemcpyHostToDevice);
+
+
 
         // instead of copying 
         cudaMemset(d_inverseMasses, 0, _numAtoms * sizeof(double));
@@ -300,8 +416,10 @@ void Engine::CalculateForces() {
     }
     if (!_bondParams.empty()) {
         // Forces::AddHBond(_totalForces, _atomPositions, _bondParams, _totalPEnergy, _boxInfo);
-        launchKernelBondForcesGlobal(d_atomPositions, d_bondParams, d_totalForces, d_totalPEnergy,d_boxsize, _numBonds);
-        //launchKernelBondForcesShared(d_atomPositions, d_bondParams, d_totalForces, d_totalPEnergy,d_boxsize, d_atomsBondLoaded, _numAtomsBondLoaded);
+        //launchKernelBondForcesGlobal(d_atomPositions, d_bondParams, d_totalForces, d_totalPEnergy,d_boxsize, _numBonds);
+        launchKernelBondForcesShared(d_atomPositions, d_bondParams, d_totalForces, d_totalPEnergy, d_boxsize, d_residues, d_startResidues, d_endResidues, _startResidues.size(), _totalBondsInResidues );
+
+
     }
     if (!_angleParams.empty()) {
         //Forces::AddHAngle(_totalForces, _atomPositions, _angleParams, _totalPEnergy, _boxInfo);
@@ -482,6 +600,8 @@ void Engine::CleanupGPU() {
     cudaFree(d_numAngles);
     cudaFree(d_numTorsions);
     cudaFree(d_numNonbonded);
+    cudaFree(d_endResidues);
+    cudaFree(d_startResidues);
 
     // Set all GPU pointers to nullptr after freeing
     d_atomPositions = nullptr;
@@ -502,6 +622,14 @@ void Engine::CleanupGPU() {
     d_numAngles = nullptr;
     d_numTorsions = nullptr;
     d_numNonbonded = nullptr;
+    d_endResidues = nullptr;
+    d_startResidues = nullptr;
+
+    // CUDA Data Structures
+    CudaBridge CudaBridge;
+    CudaBridge.cleanupPResiduesBond(d_residues, _residues.size());
+
+
 }
 
 

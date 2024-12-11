@@ -218,13 +218,13 @@ int adjustBlockSize(int blockSize, int maxThreadsPerBlock) {
 //    double3* d_forces,
 //    double* d_totalPEnergy,
 //    double3* d_boxsize,
-//    ModifiedAtomBondInfo* d_atomsBondLoaded,
-//    int numAtomsBondLoaded
+//    D_Residues* d_desidues,
+//    int numResidues
 //) {
 //    // Calculate max bonds per block based on shared memory availability
 //    const int sizeOfPositions = sizeof(double3);
 //    const int sizeOfBondParams = sizeof(BondParams);
-//    const int sizeOfAtomInfo = sizeof(ModifiedAtomBondInfo);
+//    const int sizeOfResidue = sizeof(D_Residues);
 //
 //    int deviceId;
 //    cudaGetDevice(&deviceId); // Get the current device ID
@@ -256,7 +256,7 @@ int adjustBlockSize(int blockSize, int maxThreadsPerBlock) {
 //
 //
 //    // Calculate maxBondsPerBlock with a 10% margin added
-//    int maxBondsPerBlock = (int)(sharedMemPerBlock / (2 * sizeOfPositions + sizeOfBondParams + sizeOfAtomInfo) * 1.1); // Adding 10% margin
+//    int maxBondsPerBlock = (int)(sharedMemPerBlock / (2 * sizeOfPositions + sizeOfBondParams + sizeOfResidue) * 1.1); // Adding 10% margin
 //    int blockSize = maxBondsPerBlock; // Adaptive block size based on memory availability
 //
 //
@@ -264,10 +264,10 @@ int adjustBlockSize(int blockSize, int maxThreadsPerBlock) {
 //    // Calculate shared memory size needed with a 10% margin
 //    int sharedMemorySize = (int)((2 * sizeOfPositions * maxBondsPerBlock) +
 //        (sizeOfBondParams * maxBondsPerBlock) +
-//        sizeOfAtomInfo * 1.1); // Adding 10% margin to the shared memory size
+//        sizeOfResidue * 1.1); // Adding 10% margin to the shared memory size
 //
 //    // Calculate number of blocks
-//    int numBlocks = (numAtomsBondLoaded + blockSize - 1) / blockSize;
+//    int numBlocks = (numResidues + blockSize - 1) / blockSize;
 //
 //
 //    int maxThreadsPerBlock;
@@ -280,9 +280,9 @@ int adjustBlockSize(int blockSize, int maxThreadsPerBlock) {
 //    // Calculate shared memory size needed with a 10% margin
 //    sharedMemorySize = (int)((2 * sizeOfPositions * maxBondsPerBlock) +
 //        (sizeOfBondParams * maxBondsPerBlock) +
-//        sizeOfAtomInfo * 1.1);
+//        sizeOfResidue * 1.1);
 //
-//    numBlocks = (numAtomsBondLoaded + blockSize - 1) / blockSize;
+//    numBlocks = (numResidues + blockSize - 1) / blockSize;
 //
 //
 //    printf("maxBondsPerBlock %d, blockSize %d,maxThreadsPerBlock %d, sharedMemorySize %d, numBlocks %d\n", maxBondsPerBlock, blockSize, maxThreadsPerBlock, sharedMemorySize, numBlocks);
@@ -294,8 +294,8 @@ int adjustBlockSize(int blockSize, int maxThreadsPerBlock) {
 //        d_forces,
 //        d_totalPEnergy,
 //        d_boxsize,
-//        d_atomsBondLoaded,
-//        numAtomsBondLoaded,
+//        d_residues,
+//        numResidues,
 //        maxBondsPerBlock
 //        );
 //
@@ -305,7 +305,426 @@ int adjustBlockSize(int blockSize, int maxThreadsPerBlock) {
 //        printf("Error launching BondForcesKernel_shared: %s\n", cudaGetErrorString(err));
 //    }
 //}
+//int calculateResidueMemory(const Residues& residue) {
+//    // Calculate dynamic array sizes
+//    int atomMemory = residue.AllAtomsCount * sizeof(int);
+//    int bondMemory = residue.AllBondsCount * sizeof(int);
+//    int hAtomMemory = residue.HAtomsCount * sizeof(int);
+//    int nonHAtomMemory = residue.NonHAtomsCount * sizeof(int);
+//    int hBondMemory = residue.HBondsCount * sizeof(int);
+//    int nonHBondMemory = residue.NonHBondsCount * sizeof(int);
+//    int nonResBondAtomMemory = residue.NonResBondAtomsCount * sizeof(int);
 //
+//    // Pointer and static member contributions
+//    int staticMemory = sizeof(residue.resName);
+//
+//    // Total memory for this residue
+//    int totalMemory = atomMemory + bondMemory + hAtomMemory +
+//        nonHAtomMemory + hBondMemory + nonHBondMemory +
+//        nonResBondAtomMemory + staticMemory;
+//
+//    return totalMemory;
+//}
+
+
+//__global__ void BondForcesKernel_shared(double3* d_atomPositions,
+//    BondParams* d_bondParams,
+//    double3* d_forces,
+//    double* d_totalPEnergy,
+//    double3* d_boxsize,
+//    D_Residues* d_residues, 
+//    int sharedMemorySize,
+//    int* residueBondCounts, 
+//    int numResidues, 
+//    int maxBondsPerBlock) 
+//{
+//    extern __shared__ D_Residues sharedResidues[]; // Shared memory for residues
+//
+//    int blockId = blockIdx.x;
+//    int threadId = threadIdx.x;
+//
+//    // Step 1: Identify range of residues for this block
+//    int startResidue = 0;
+//    int occupiedMemory = 0;
+//
+//    // Locate the starting residue for this block
+//    for (int i = 0; i < numResidues; ++i) {
+//        if (occupiedMemory >= sharedMemorySize) {//blockId * maxBondsPerBlock
+//            startResidue = i;
+//            break;
+//        }
+//        occupiedMemory += d_residues[i].resMemSize;
+//    }
+//
+//    // Accumulate residues for this block while respecting maxBondsPerBlock
+//    int endResidue = startResidue;
+//    occupiedMemory = 0; // Reset for the block
+//    while (endResidue < numResidues && occupiedMemory + residueBondCounts[endResidue] <= maxBondsPerBlock) {
+//        occupiedMemory += residueBondCounts[endResidue];
+//        ++endResidue;
+//    }
+//
+//    // Total number of residues for this block
+//    int blockResidueCount = endResidue - startResidue;
+//
+//    // Step 2: Load residues into shared memory (coalesced access)
+//    for (int i = threadId; i < blockResidueCount; i += blockDim.x) {
+//        sharedResidues[i] = d_residues[startResidue + i];
+//    }
+//
+//    __syncthreads(); // Ensure all data is loaded
+//
+//    // Step 3: Process residues in shared memory
+//    if (threadId < blockResidueCount) {
+//        D_Residues r = sharedResidues[threadId];
+//
+//        if (r.type == 0) {
+//            // Protein residue processing
+//            for (int b = 0; b < r.bondCount; b++) {
+//                int bondIndex = r.bondIndices[b];
+//                // Perform protein-specific computations...
+//            }
+//        }
+//        else if (r.type == 1) {
+//            // Water molecule processing
+//            for (int b = 0; b < r.bondCount; b++) {
+//                int bondIndex = r.bondIndices[b];
+//                // Perform water-specific computations...
+//            }
+//        }
+//    }
+//
+//    __syncthreads(); // Optional: Synchronize before the next block-level operation
+//}
+
+struct AtomPosition {
+    int globalAtomIdx;  // Global atom index
+    double3 position;   // Position of the atom
+};
+
+
+__global__ void BondForcesKernel_shared(
+    double3* d_atomPositions,
+    BondParams* d_bondParams,
+    double3* d_forces,
+    double* d_totalPEnergy,
+    double3* d_boxsize,
+    D_Residues* d_residues,
+    int* d_startResidues,
+    int* d_endResidues
+) {
+    extern __shared__ char sharedMemory[];  // Dynamically allocated shared memory
+    //printf("atom1Pos");
+    int blockId = blockIdx.x;
+    int threadId = threadIdx.x;
+
+    int startResidue = d_startResidues[blockId];
+    int endResidue = d_endResidues[blockId];
+
+    // Shared memory pointers
+    AtomPosition* sharedAtoms = (AtomPosition*)sharedMemory;
+
+
+    for (int resIdx = startResidue; resIdx <= endResidue; ++resIdx) {
+        D_Residues residue = d_residues[resIdx];
+
+        // Copy atom positions and indices for this residue into shared memory
+        for (int i = threadId; i < residue.AllAtomsCount; i += blockDim.x) {
+            int globalAtomIdx = residue.AllAtomsIndices[i];
+            sharedAtoms[i].globalAtomIdx = globalAtomIdx;
+            sharedAtoms[i].position = d_atomPositions[globalAtomIdx];
+        }
+
+        __syncthreads();  // Ensure all threads have loaded data
+
+        // Calculate forces for each bond
+        for (int bondIdx = threadId; bondIdx < residue.AllBondsCount; bondIdx += blockDim.x) {
+            int bondGlobalIdx = residue.AllBondsIndices[bondIdx];
+            BondParams bond = d_bondParams[bondGlobalIdx];
+
+            int atom1Idx = bond.p1;
+            int atom2Idx = bond.p2;
+
+            // Simulating dictionary access by searching for atom1Idx and atom2Idx in shared memory
+            double3 atom1Pos; // = { 0.0, 0.0, 0.0 };
+            double3 atom2Pos; // = { 0.0, 0.0, 0.0 };
+
+            // Search for atom1 position in shared memory
+            for (int i = 0; i < residue.AllAtomsCount; ++i) {
+                if (sharedAtoms[i].globalAtomIdx == atom1Idx) {
+                    atom1Pos = sharedAtoms[i].position;
+                    break;
+                }
+            }
+
+            //printf("atom1Pos.x: %f, atom1Pos.y: %f, atom1Pos.z: %f\n", atom1Pos.x, atom1Pos.y, atom1Pos.y);
+
+
+            // Search for atom2 position in shared memory
+            for (int i = 0; i < residue.AllAtomsCount; ++i) {
+                if (sharedAtoms[i].globalAtomIdx == atom2Idx) {
+                    atom2Pos = sharedAtoms[i].position;
+                    break;
+                }
+            }
+
+            //printf("atom2Pos.x: %f, atom2Pos.y: %f, atom2Pos.z: %f\n", atom2Pos.x, atom2Pos.y, atom2Pos.y);
+
+
+            // Compute forces based on atom positions
+            double3 delta;
+            minimumImageVectorDevice(&atom1Pos, &atom2Pos, &delta, d_boxsize);
+
+            // Calculate the distance between the two particles
+            double r = sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
+
+            // Compute the energy contribution
+            double deltaIdeal = r - bond.d;
+            double energy = 0.5 * bond.k * deltaIdeal * deltaIdeal;
+
+
+
+            // Compute the derivative of the energy with respect to the distance
+            double dEdR = bond.k * deltaIdeal;
+
+            // Normalize the delta vector and scale by dEdR
+            double3 force;
+            if (r > 0) {
+                force.x = delta.x * (dEdR / r);
+                force.y = delta.y * (dEdR / r);
+                force.z = delta.z * (dEdR / r);
+            }
+            else {
+                force = make_double3(0.0, 0.0, 0.0);  // Prevent division by zero
+            }
+
+            if (residue.resName == "WAT") {
+                atomicAdd(&d_forces[atom1Idx].x, force.x);
+                atomicAdd(&d_forces[atom1Idx].y, force.y);
+                atomicAdd(&d_forces[atom1Idx].z, force.z);
+                atomicAdd(&d_forces[atom2Idx].x, -force.x);
+                atomicAdd(&d_forces[atom2Idx].y, -force.y);
+                atomicAdd(&d_forces[atom2Idx].z, -force.z);
+                // Accumulate energy to totalPEnergy using atomicAdd
+                atomicAdd(d_totalPEnergy, energy);  // You can switch back to atomicAdd if needed
+            }
+            else {
+                int counter = 0;
+                for (int i = 0; i < residue.NonResBondAtomsCount; ++i) {
+                    if (residue.NonResBondAtoms[i] == atom2Idx) {
+                        atomicAdd(&d_forces[atom1Idx].x, force.x);
+                        atomicAdd(&d_forces[atom1Idx].y, force.y);
+                        atomicAdd(&d_forces[atom1Idx].z, force.z);
+                        atomicAdd(d_totalPEnergy, 0.5 * energy); 
+                        break;
+                    }
+                    else if (residue.NonResBondAtoms[i] == atom1Idx) {
+                        atomicAdd(&d_forces[atom2Idx].x, -force.x);
+                        atomicAdd(&d_forces[atom2Idx].y, -force.y);
+                        atomicAdd(&d_forces[atom2Idx].z, -force.z);
+                        atomicAdd(d_totalPEnergy, 0.5 * energy);  
+                        break;
+                    }
+                    counter++;
+                }
+                if (counter == residue.NonResBondAtomsCount)
+                {
+                    atomicAdd(&d_forces[atom1Idx].x, force.x);
+                    atomicAdd(&d_forces[atom1Idx].y, force.y);
+                    atomicAdd(&d_forces[atom1Idx].z, force.z);
+                    atomicAdd(&d_forces[atom2Idx].x, -force.x);
+                    atomicAdd(&d_forces[atom2Idx].y, -force.y);
+                    atomicAdd(&d_forces[atom2Idx].z, -force.z);
+                    // Accumulate energy to totalPEnergy using atomicAdd
+                    atomicAdd(d_totalPEnergy, energy);  // You can switch back to atomicAdd if needed
+                }
+            }
+
+
+            //// Accumulate potential energy
+            //if (threadId == 0) {
+            //    atomicAdd(d_totalPEnergy, 0.5 * bond.k * deltaIdeal * deltaIdeal);
+            //}
+        }
+
+        __syncthreads();
+    }
+}
+
+
+
+void launchKernelBondForcesShared(
+    double3* d_atomPositions,
+    BondParams* d_bondParams,
+    double3* d_forces,
+    double* d_totalPEnergy,
+    double3* d_boxsize,
+    D_Residues* d_residues,
+    int* d_startResidues,          // Start indices for residues in each block
+    int* d_endResidues,            // End indices for residues in each block
+    int _numBlocks,
+    int totalBondsInResidues
+
+) {
+    // Calculate sizes of static components
+    const int sizeOfPositions = sizeof(double3);
+    const int sizeOfBondParams = sizeof(BondParams);
+    //const int maxResidueSize= sizeof(h_residue);
+    // Calculate the maximum memory required for a single residue
+    //int maxResidueSize = calculateResidueMemory(h_residue); // Use the first residue (largest)
+
+    // Get current device ID
+    int deviceId;
+    cudaGetDevice(&deviceId);
+
+    //// Obtain shared memory per block from the GPU
+    int sharedMemPerBlock;
+    cudaDeviceGetAttribute(&sharedMemPerBlock, cudaDevAttrMaxSharedMemoryPerBlock, deviceId);
+
+    // Obtain max threads per block for the device
+    int maxThreadsPerBlock;
+    cudaDeviceGetAttribute(&maxThreadsPerBlock, cudaDevAttrMaxThreadsPerBlock, deviceId);
+
+    //// Calculate maximum memory per bond
+    //int maxMemoryPerBond = 2 * sizeOfPositions + sizeOfBondParams + maxResidueSize;
+
+    //// Calculate max bonds per block with a margin (no more than maxThreadsPerBlock)
+    //int maxBondsPerBlock = sharedMemPerBlock / maxMemoryPerBond;
+    //maxBondsPerBlock = std::min(maxBondsPerBlock, maxThreadsPerBlock);
+
+    //// Adaptive block size based on available resources
+    //int blockSize = maxBondsPerBlock;
+
+    //// Calculate shared memory size for the kernel
+    //int sharedMemorySize = blockSize * maxMemoryPerBond;
+    //// Calculate number of blocks required
+    //int numBlocks = (totalBondsInResidues + blockSize - 1) / blockSize;
+
+
+    //int totalMemoryAllBonds = totalBondsInResidues * (2 * sizeOfPositions + sizeOfBondParams) + totalResiduesSize;
+    //int numBlocks = 1.1* totalMemoryAllBonds / sharedMemPerBlock; // 10% margin
+
+    ////numBlocks = (totalBondsInResidues + blockSize - 1) / blockSize;
+    int sharedMemorySize = 0.95* sharedMemPerBlock;
+    int numBlocks = _numBlocks;
+
+    int blockSize = totalBondsInResidues / numBlocks;
+
+    blockSize = adjustBlockSize(blockSize, maxThreadsPerBlock);
+
+
+
+
+
+    // Debugging information
+    //printf("Device ID: %d\n", deviceId);
+    //printf("Shared memory per block: %d bytes\n", sharedMemPerBlock);
+    //printf("Max threads per block: %d\n", maxThreadsPerBlock);
+    //printf("Max bonds per block: %d\n", maxBondsPerBlock);
+    //printf("Block size: %d\n", blockSize);
+    //printf("Shared memory size: %d bytes\n", sharedMemorySize);
+    //printf("Number of blocks: %d\n", numBlocks);
+
+    // Launch the kernel
+    BondForcesKernel_shared << <numBlocks, blockSize, sharedMemorySize >> > (
+        d_atomPositions,
+        d_bondParams,
+        d_forces,
+        d_totalPEnergy,
+        d_boxsize,
+        d_residues,
+        d_startResidues,
+        d_endResidues
+        );
+
+    // Check for errors
+    cudaError_t err = cudaGetLastError();
+    if (err != cudaSuccess) {
+        printf("Error launching BondForcesKernel_shared: %s\n", cudaGetErrorString(err));
+    }
+}
+
+
+//void launchKernelBondForcesShared(
+//    double3* d_atomPositions,
+//    BondParams* d_bondParams,
+//    double3* d_forces,
+//    double* d_totalPEnergy,
+//    double3* d_boxsize,
+//    PResidues* d_pResidues,
+//    WResidues* d_wResidues,
+//    int numPResidues,
+//    int numWResidues
+//) {
+//    // Sizes of main components
+//    const int sizeOfPositions = sizeof(double3);
+//    const int sizeOfBondParams = sizeof(BondParams);
+//    const int sizeOfPResidue = sizeof(PResidues);
+//    const int sizeOfWResidue = sizeof(WResidues);
+//
+//    // Get device properties
+//    int deviceId;
+//    cudaGetDevice(&deviceId);
+//
+//    int sharedMemPerBlock;
+//    cudaDeviceGetAttribute(&sharedMemPerBlock, cudaDevAttrMaxSharedMemoryPerBlock, deviceId);
+//
+//    printf("Shared memory per block for device %d: %d bytes\n", deviceId, sharedMemPerBlock);
+//
+//    // Calculate memory requirements for PResidues and WResidues
+//    int pResidueMem = numPResidues * sizeOfPResidue;
+//    int wResidueMem = numWResidues * sizeOfWResidue;
+//
+//    // Add contributions from optional fields (if required)
+//    // Adjust this if optional fields are stored in global memory or accessed differently
+//    int maxOptionalMem = 0;
+//    maxOptionalMem += sizeof(int) * numPResidues * 6; // Assuming optional vectors with integers in PResidues
+//    maxOptionalMem += sizeof(int) * numWResidues * 3; // Assuming optional vectors with integers in WResidues
+//
+//    // Total shared memory needed per block
+//    int sharedMemorySize = (2 * sizeOfPositions) + sizeOfBondParams + pResidueMem + wResidueMem + maxOptionalMem;
+//
+//    if (sharedMemorySize > sharedMemPerBlock) {
+//        printf("Error: Shared memory requirement (%d bytes) exceeds available memory (%d bytes)\n",
+//            sharedMemorySize, sharedMemPerBlock);
+//        return;
+//    }
+//
+//    // Calculate max bonds per block
+//    int maxBondsPerBlock = sharedMemPerBlock / sharedMemorySize;
+//
+//    // Determine block and grid size
+//    int maxThreadsPerBlock;
+//    cudaDeviceGetAttribute(&maxThreadsPerBlock, cudaDevAttrMaxThreadsPerBlock, deviceId);
+//
+//    int blockSize = adjustBlockSize(maxBondsPerBlock, maxThreadsPerBlock);
+//    int numBlocks = (numPResidues + numWResidues + blockSize - 1) / blockSize;
+//
+//    printf("maxBondsPerBlock: %d, blockSize: %d, numBlocks: %d, sharedMemorySize: %d\n",
+//        maxBondsPerBlock, blockSize, numBlocks, sharedMemorySize);
+//
+//    // Launch the kernel
+//    //BondForcesKernel_shared << <numBlocks, blockSize, sharedMemorySize >> > (
+//    //    d_atomPositions,
+//    //    d_bondParams,
+//    //    d_forces,
+//    //    d_totalPEnergy,
+//    //    d_boxsize,
+//    //    d_pResidues,
+//    //    d_wResidues,
+//    //    numPResidues,
+//    //    numWResidues,
+//    //    maxBondsPerBlock
+//    //    );
+//
+//    // Check for errors
+//    cudaError_t err = cudaGetLastError();
+//    if (err != cudaSuccess) {
+//        printf("Error launching BondForcesKernel_shared: %s\n", cudaGetErrorString(err));
+//    }
+//}
+
+
 
 
 
@@ -767,3 +1186,6 @@ void launchKernelBondForcesGlobal(
 //    cudaFree(d_totalPEnergy);
 //    cudaFree(d_boxsize);
 //}
+
+
+
