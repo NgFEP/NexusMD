@@ -13,9 +13,13 @@
 //};
 
 struct ResBondInfo {
+    double d;       // Ideal bond distance in nanometers
+    double k;
     int bondInx;
-    int p1Inx;
-    int p2Inx;
+    int p1InxLocal;
+    int p2InxLocal;
+    int p1InxGlobal;
+    int p2InxGlobal;
     bool p1InRes = true;
     bool p2InRes = true;
 };
@@ -42,9 +46,13 @@ struct D_Residues {
 };
 
 struct CudaBondInfo {
+    double d;       // Ideal bond distance in nanometers
+    double k;
     int bondInx;
-    int p1Inx;
-    int p2Inx;
+    int p1InxLocal;
+    int p2InxLocal;
+    int p1InxGlobal;
+    int p2InxGlobal;
     bool waterMol = false;// does the bond belong to water?
     bool p1InRes = true;
     bool p2InRes = true;

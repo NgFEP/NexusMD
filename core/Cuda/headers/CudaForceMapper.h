@@ -22,7 +22,7 @@ public:
     CudaForceMapper();
     ~CudaForceMapper();
 
-    void cudaAllocateBonds(std::vector<Residues>& residues, std::vector<CudaBonds>& cudaBonds, std::vector<int>& startResidues, std::vector<int>& endResidues);
+    void cudaAllocateBonds(std::vector<Residues>& residues, std::vector<CudaBonds>& cudaBonds, const std::vector<std::vector<int>>& blockResidues);
 
 
 private:

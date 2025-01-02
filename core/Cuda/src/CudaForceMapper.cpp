@@ -5,39 +5,46 @@ using namespace std;
 CudaForceMapper::CudaForceMapper() {};
 CudaForceMapper::~CudaForceMapper() {};
 
-void CudaForceMapper::cudaAllocateBonds(vector<Residues>& _residues, vector<CudaBonds>& _cudaBonds, vector<int>& _startResidues, vector<int>& _endResidues) {
-    for (int i = 0; i < _startResidues.size(); ++i) {
-        int start = _startResidues[i];
-        int end = _endResidues[i];
-
-
+void CudaForceMapper::cudaAllocateBonds(vector<Residues>& _residues, vector<CudaBonds>& _cudaBonds, const vector<vector<int>>& blockResidues) {
+    for (const auto& block : blockResidues) { // Iterate over each block
         int cumulativeSize = 0; // Tracks cumulative size of AllAtomsIndices from previous residues
 
         CudaBonds cudaBond;
 
-        for (int j = start; j <= end; ++j) {
-            const Residues& res = _residues[j];
+        for (int residueIdx : block) { // Process each residue in the block
+            const Residues& res = _residues[residueIdx];
 
             // Copy AllAtomsIndices
-            cudaBond.AllAtomsIndices.insert(cudaBond.AllAtomsIndices.end(),res.AllAtomsIndices.begin(),res.AllAtomsIndices.end());
+            cudaBond.AllAtomsIndices.insert(cudaBond.AllAtomsIndices.end(),
+                res.AllAtomsIndices.begin(),
+                res.AllAtomsIndices.end());
 
             // Copy HAtomsIndices
-            cudaBond.HAtomsIndices.insert(cudaBond.HAtomsIndices.end(), res.HAtomsIndices.begin(), res.HAtomsIndices.end());
+            cudaBond.HAtomsIndices.insert(cudaBond.HAtomsIndices.end(),
+                res.HAtomsIndices.begin(),
+                res.HAtomsIndices.end());
 
             // Copy NonHAtomsIndices
-            cudaBond.NonHAtomsIndices.insert(cudaBond.NonHAtomsIndices.end(), res.NonHAtomsIndices.begin(), res.NonHAtomsIndices.end());
+            cudaBond.NonHAtomsIndices.insert(cudaBond.NonHAtomsIndices.end(),
+                res.NonHAtomsIndices.begin(),
+                res.NonHAtomsIndices.end());
 
             // Copy AllBondsIndices if it exists
             if (res.AllBondsIndices.has_value()) {
                 const auto& bonds = res.AllBondsIndices.value();
                 for (const auto& bond : bonds) {
                     CudaBondInfo cudaBondInfo = {
+                        bond.d,
+                        bond.k,
                         bond.bondInx,                        // Bond index           
-                        bond.p1Inx + cumulativeSize,         // Adjusted p1Inx
-                        bond.p2Inx + cumulativeSize,         // Adjusted p2Inx
+                        bond.p1InxLocal + cumulativeSize,         // Adjusted p1Inx
+                        bond.p2InxLocal + cumulativeSize,         // Adjusted p2Inx
+                        bond.p1InxGlobal,
+                        bond.p2InxGlobal,
                         (res.resName == "WAT"),
                         bond.p1InRes,                        // Is p1 in residue
                         bond.p2InRes                         // Is p2 in residue
+
                     };
                     cudaBond.AllBondsIndices.push_back(cudaBondInfo);
                 }
@@ -48,12 +55,16 @@ void CudaForceMapper::cudaAllocateBonds(vector<Residues>& _residues, vector<Cuda
                 const auto& hbonds = res.HBondsIndices.value();
                 for (const auto& bond : hbonds) {
                     CudaBondInfo cudaBondInfo = {
-                        bond.bondInx,
-                        bond.p1Inx + cumulativeSize,
-                        bond.p2Inx + cumulativeSize,
+                        bond.d,
+                        bond.k,
+                        bond.bondInx,                        // Bond index           
+                        bond.p1InxLocal + cumulativeSize,         // Adjusted p1Inx
+                        bond.p2InxLocal + cumulativeSize,         // Adjusted p2Inx
+                        bond.p1InxGlobal,
+                        bond.p2InxGlobal,
                         (res.resName == "WAT"),
-                        bond.p1InRes,
-                        bond.p2InRes
+                        bond.p1InRes,                        // Is p1 in residue
+                        bond.p2InRes                         // Is p2 in residue
                     };
                     cudaBond.HBondsIndices.push_back(cudaBondInfo);
                 }
@@ -64,21 +75,26 @@ void CudaForceMapper::cudaAllocateBonds(vector<Residues>& _residues, vector<Cuda
                 const auto& nonHBonds = res.NonHBondsIndices.value();
                 for (const auto& bond : nonHBonds) {
                     CudaBondInfo cudaBondInfo = {
-                        bond.bondInx,
-                        bond.p1Inx + cumulativeSize,
-                        bond.p2Inx + cumulativeSize,
+                        bond.d,
+                        bond.k,
+                        bond.bondInx,                        // Bond index           
+                        bond.p1InxLocal + cumulativeSize,         // Adjusted p1Inx
+                        bond.p2InxLocal + cumulativeSize,         // Adjusted p2Inx
+                        bond.p1InxGlobal,
+                        bond.p2InxGlobal,
                         (res.resName == "WAT"),
-                        bond.p1InRes,
-                        bond.p2InRes
+                        bond.p1InRes,                        // Is p1 in residue
+                        bond.p2InRes                         // Is p2 in residue
                     };
                     cudaBond.NonHBondsIndices.push_back(cudaBondInfo);
                 }
             }
+
             // Update cumulativeSize for the next residue
             cumulativeSize += res.AllAtomsIndices.size();
         }
+
         // Add to _cudaBonds
         _cudaBonds.push_back(move(cudaBond));
     }
 }
-

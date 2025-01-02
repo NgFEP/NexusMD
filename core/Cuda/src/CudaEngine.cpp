@@ -118,8 +118,8 @@ void Engine::InitializeSimulationParameters() {
         auto startTime = chrono::high_resolution_clock::now();
         ResidueForceMapper ResidueForceMapper;
         CudaForceMapper CudaForceMapper;
-        ResidueForceMapper.allocateBonds(_bondParams, _residues, _remainedBonds, _totalResiduesSize, _totalBondsInResidues, _startResidues, _endResidues);
-        CudaForceMapper.cudaAllocateBonds(_residues, _cudaBonds, _startResidues, _endResidues);
+        ResidueForceMapper.allocateBonds(_bondParams, _residues, _remainedBonds, _totalResiduesSize, _totalBondsInResidues, _totalMemoryOfResidues, _blockResidues);
+        CudaForceMapper.cudaAllocateBonds(_residues, _cudaBonds, _blockResidues);
 
         //_maxResidueSize = calculateResidueMemory(_residues[0]); // largest residue
         //_maxResidueSize = calculateResidueMemory(_residues.back()); // smallest residue
@@ -333,8 +333,6 @@ void Engine::InitializeSimulationParameters() {
         cudaMalloc(&d_bondParams, _numBonds * sizeof(BondParams));  // Assuming BondParam is a custom struct
         cudaMalloc(&d_angleParams, _numAngles * sizeof(AngleParams));  // Assuming AngleParam is a custom struct
         //cudaMalloc(&d_atomsBondLoaded, _numAtomsBondLoaded * sizeof(ModifiedAtomBondInfo));  // Assuming BondParam is a custom struct
-        cudaMalloc(&d_startResidues, _startResidues.size() * sizeof(int));
-        cudaMalloc(&d_endResidues, _endResidues.size() * sizeof(int));
 
         //cudaMalloc(&d_nonbondedParams, numNonbonded * sizeof(NonbondedParam));  // Assuming NonbondedParam is a custom struct
         cudaMalloc(&d_numAtoms, sizeof(int));
@@ -358,10 +356,6 @@ void Engine::InitializeSimulationParameters() {
         cudaMemcpy(d_numAngles, &_numAngles, sizeof(int), cudaMemcpyHostToDevice);
         cudaMemcpy(d_numTorsions, &_numTorsions, sizeof(int), cudaMemcpyHostToDevice);
         cudaMemcpy(d_numNonbonded, &_numNonbonded, sizeof(int), cudaMemcpyHostToDevice);
-
-        // Copy to device
-        cudaMemcpy(d_startResidues, _startResidues.data(), _startResidues.size() * sizeof(int), cudaMemcpyHostToDevice);
-        cudaMemcpy(d_endResidues, _endResidues.data(), _endResidues.size() * sizeof(int), cudaMemcpyHostToDevice);
 
 
 
@@ -498,7 +492,7 @@ void Engine::CalculateForces() {
         // launchKernelBondForcesGlobal(d_atomPositions, d_bondParams, d_totalForces, d_totalPEnergy,d_boxsize, _numBonds);
         // launchKernelBondForcesShared(d_atomPositions, d_bondParams, d_totalForces, d_bondPEnergies, d_boxsize, d_residues, d_startResidues, d_endResidues, _startResidues.size(), _totalBondsInResidues );
         // launchKernelBondForcesShared(d_atomPositions, d_bondParams, d_totalForces, d_bondPEnergies, d_totalPEnergy, d_boxsize, d_residues, d_startResidues, d_endResidues, _startResidues.size(), _totalBondsInResidues);
-        launchKernelBondForcesShared(d_atomPositions, d_bondParams, d_totalForces, d_totalPEnergy, d_boxsize, d_cudaBonds, _startResidues.size(), _totalBondsInResidues);
+        launchKernelBondForcesShared(d_atomPositions, d_totalForces, d_totalPEnergy, d_boxsize, d_cudaBonds, _blockResidues.size(), _totalBondsInResidues);
 
     }
     if (!_angleParams.empty()) {
@@ -688,8 +682,6 @@ void Engine::CleanupGPU() {
     cudaFree(d_numAngles);
     cudaFree(d_numTorsions);
     cudaFree(d_numNonbonded);
-    cudaFree(d_endResidues);
-    cudaFree(d_startResidues);
     cudaFree(d_residues);
     cudaFree(d_cudaBonds);
     cudaFree(d_bondPEnergies);
@@ -712,8 +704,7 @@ void Engine::CleanupGPU() {
     d_numAngles = nullptr;
     d_numTorsions = nullptr;
     d_numNonbonded = nullptr;
-    d_endResidues = nullptr;
-    d_startResidues = nullptr;
+
 
     // CUDA Data Structures
     //CudaBridge CudaBridge;

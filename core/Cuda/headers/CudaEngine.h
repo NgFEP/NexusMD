@@ -85,6 +85,8 @@ namespace Cuda {
         int _numResidues;
         //int _maxResidueSize;
         int _totalBondsInResidues = 0;
+        int _totalMemoryOfResidues = 0;
+
         int _totalResiduesSize = 0;
 
         std::string _systemFilename;
@@ -104,8 +106,9 @@ namespace Cuda {
         // ResidueForceMapper
         RemainedBonds _remainedBonds;
         // CudaDatastructures
-        std::vector<int> _startResidues;
-        std::vector<int> _endResidues;
+        //std::vector<int> _startResidues;
+        //std::vector<int> _endResidues;
+        std::vector<std::vector<int>> _blockResidues;
         //std::vector<D_PResidues> _pResiduesBond;
         //std::vector<D_WResidues> _wResiduesBond;
 
@@ -170,8 +173,8 @@ namespace Cuda {
         D_CudaBonds* d_cudaBonds = nullptr; //protein residue device pointer
 
         // CudaDatastructures
-        int* d_startResidues;
-        int* d_endResidues;
+        //int* d_startResidues;
+        //int* d_endResidues;
 
         double* d_totalPEnergy;
         double* d_bondPEnergies;

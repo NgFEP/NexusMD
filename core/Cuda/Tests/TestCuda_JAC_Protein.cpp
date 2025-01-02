@@ -11,8 +11,8 @@ int main() {
     string outputFilename = "output_SimRun_JAC_Protein_HBond.pdb";
     string inputFilename = "JAC_Protein.pdb";
     double stepSize = 0.001;//0.001 pico s =1 femto s
-    int totalSteps = 10;
-    int interval = 10;
+    int totalSteps = 3;
+    int interval = 1;
 
 
     vector<Coords3D> atomPositions = {};

@@ -5,10 +5,13 @@
 
 int adjustBlockSize(int blockSize, int maxThreadsPerBlock) {
     // Find the closest multiple of 32 above or equal to the current block size
-    if (blockSize % 32 != 0) {
-        blockSize = (blockSize / 32) * 32;
-        //blockSize = ((blockSize / 32) - 1) * 32;
-    }
+    
+    blockSize = ((blockSize / 32) - 1) * 32;
+    
+    //if (blockSize % 32 != 0) {
+    //    //blockSize = (blockSize / 32) * 32;
+    //    
+    //}
 
     // Ensure it does not exceed the maximum allowed threads per block
     if (blockSize > maxThreadsPerBlock) {
@@ -1248,7 +1251,6 @@ int adjustBlockSize(int blockSize, int maxThreadsPerBlock) {
 
 __global__ void BondForcesKernel_shared(
     double3* d_atomPositions,
-    BondParams* d_bondParams,
     double3* d_forces,
     double* d_totalPEnergy,
     double3* d_boxsize,
@@ -1313,7 +1315,7 @@ __global__ void BondForcesKernel_shared(
         //int bondGlobalIdx = residue.AllBondsIndices[BondIdx].bondInx;
         int bondGlobalIdx = sharedAllBondsIndices[BondIdx].bondInx;
 
-        BondParams bond = d_bondParams[bondGlobalIdx];
+        //BondParams bond = d_bondParams[bondGlobalIdx];
         //BondParams bond;
         //bond.p1 = 1;          // Atom 1 (index 1)
         //bond.p2 = 2;          // Atom 2 (index 2)
@@ -1321,11 +1323,11 @@ __global__ void BondForcesKernel_shared(
         //bond.k = 450.0;
 
 
-        int globalp1Inx = bond.p1;
-        int globalp2Inx = bond.p2;
+        int globalp1Inx = sharedAllBondsIndices[BondIdx].p1InxGlobal;
+        int globalp2Inx = sharedAllBondsIndices[BondIdx].p2InxGlobal;
 
-        int atom1Idx = sharedAllBondsIndices[BondIdx].p1Inx; // Local index
-        int atom2Idx = sharedAllBondsIndices[BondIdx].p2Inx;
+        int atom1Idx = sharedAllBondsIndices[BondIdx].p1InxLocal; // Local index
+        int atom2Idx = sharedAllBondsIndices[BondIdx].p2InxLocal;
 
         double3 atom1Pos = sharedAtoms[atom1Idx];
         double3 atom2Pos = sharedAtoms[atom2Idx];
@@ -1342,15 +1344,19 @@ __global__ void BondForcesKernel_shared(
         double r = sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
 
         // Compute the energy contribution for the bond
-        double deltaIdeal = r - bond.d;
-        double energy = 0.5 * bond.k * deltaIdeal * deltaIdeal;
+
+        double d = sharedAllBondsIndices[BondIdx].d;
+        double k = sharedAllBondsIndices[BondIdx].k;
+
+        double deltaIdeal = r - d;
+        double energy = 0.5 * k * deltaIdeal * deltaIdeal;
         //if (sharedBondPEnergies[BondIdx]!=0) {
         //    // double energy = 0.5 * bond.k * deltaIdeal * deltaIdeal;
         //    sharedBondPEnergies[BondIdx] = 0.5 * bond.k * deltaIdeal * deltaIdeal;;
         //}
 
         // Compute the derivative of the energy with respect to the distance
-        double dEdR = bond.k * deltaIdeal;
+        double dEdR = k * deltaIdeal;
 
         // Normalize the delta vector and scale by dEdR
         double3 force;
@@ -1424,7 +1430,6 @@ __global__ void BondForcesKernel_shared(
 
 void launchKernelBondForcesShared(
     double3* d_atomPositions,
-    BondParams* d_bondParams,
     double3* d_forces,
     double* d_totalPEnergy,
     double3* d_boxsize,
@@ -1496,7 +1501,6 @@ void launchKernelBondForcesShared(
     // Launch the kernel
     BondForcesKernel_shared <<<numBlocks, blockSize, sharedMemorySize >>> (
         d_atomPositions,
-        d_bondParams,
         d_forces,
         d_totalPEnergy,
         d_boxsize,
