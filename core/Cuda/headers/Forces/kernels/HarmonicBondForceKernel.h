@@ -18,6 +18,7 @@
 #include <cooperative_groups.h>
 #include "CudaDataStructures.h"
 //#include "PDBResidueParser.h" // Include for residues
+//struct ResBondInfo;
 
 
 //void launchKernelBondForces(double3* atomPositions,  BondParams* bondParams,double3* forces,double* totalPEnergy,double3* boxInfo, int numAtoms, int numBonds);
@@ -26,7 +27,7 @@
 
 //__device__ void minimumImageVector(const Coords3D* pos1, const Coords3D* pos2, Coords3D* delta, const PeriodicBoundaryCondition::BoxInfo* boxInfo);
 void launchKernelBondForcesGlobal(double3* d_atomPositions, BondParams* d_bondParams, double3* d_forces, double* d_totalPEnergy, double3* d_boxsize, int _numBonds);
-void launchKernelBondForcesShared(double3* d_atomPositions, BondParams* d_bondParams, double3* d_forces, double* d_totalPEnergy, double3* d_boxsize, D_Residues* d_residues, int* d_startResidues, int* d_endResidues, int _numBlocks, int totalBondsInResidues);
-
+//void launchKernelBondForcesShared(double3* d_atomPositions, BondParams* d_bondParams, double3* d_forces, double* d_bondPEnergies, double* d_totalPEnergy, double3* d_boxsize, D_Residues* d_residues, int* d_startResidues, int* d_endResidues, int _numBlocks, int totalBondsInResidues);
+void launchKernelBondForcesShared(double3* d_atomPositions, BondParams* d_bondParams, double3* d_forces, double* d_totalPEnergy, double3* d_boxsize, D_CudaBonds* d_cudaBonds, int _numBlocks, int totalBondsInResidues);
 
 //void launchKernelBondForcesShared(double3* d_atomPositions, BondParams* d_bondParams, double3* d_forces, double* d_totalPEnergy, double3* d_boxsize, ModifiedAtomBondInfo* d_atomsBondLoaded, int numAtomsBondLoaded);

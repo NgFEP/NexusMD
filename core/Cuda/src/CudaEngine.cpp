@@ -117,7 +117,9 @@ void Engine::InitializeSimulationParameters() {
         //long startTime = clock();
         auto startTime = chrono::high_resolution_clock::now();
         ResidueForceMapper ResidueForceMapper;
+        CudaForceMapper CudaForceMapper;
         ResidueForceMapper.allocateBonds(_bondParams, _residues, _remainedBonds, _totalResiduesSize, _totalBondsInResidues, _startResidues, _endResidues);
+        CudaForceMapper.cudaAllocateBonds(_residues, _cudaBonds, _startResidues, _endResidues);
 
         //_maxResidueSize = calculateResidueMemory(_residues[0]); // largest residue
         //_maxResidueSize = calculateResidueMemory(_residues.back()); // smallest residue
@@ -150,15 +152,113 @@ void Engine::InitializeSimulationParameters() {
         //// verification end
 
 
-        std::cout << "Host residue 0 - AllAtomsIndices size: "
-            << _residues[0].AllAtomsIndices.size()
-            << std::endl;
+        //std::cout << "Host residue 0 - AllAtomsIndices size: "
+        //    << _residues[0].AllAtomsIndices.size()
+        //    << std::endl;
 
 
 
         CudaBridge CudaBridge;
-        cudaMalloc(&d_residues, _numResidues * sizeof(D_Residues));
-        CudaBridge.transferResiduesVector(_residues, &d_residues);
+        //cudaMalloc(&d_residues, _numResidues * sizeof(D_Residues));
+        //CudaBridge.transferResiduesVector(_residues, &d_residues);
+
+        cudaMalloc(&d_cudaBonds, _cudaBonds.size() * sizeof(D_CudaBonds));
+        CudaBridge.transferCudaBondsVector(_cudaBonds, &d_cudaBonds);
+
+        //// Verification of AllBondsIndices in CudaBonds
+
+        //// Define the number of residues to check
+        //int numCudaBondsToCheck = 1; // Adjust as needed
+
+        //// Step 1: Copy the first residue back to the host
+        //std::vector<D_CudaBonds> h_bondsCheck(numCudaBondsToCheck);
+        //cudaError_t err = cudaMemcpy(h_bondsCheck.data(), d_cudaBonds, numCudaBondsToCheck * sizeof(D_CudaBonds), cudaMemcpyDeviceToHost);
+        //if (err != cudaSuccess) {
+        //    std::cerr << "CUDA memcpy failed for residues: " << cudaGetErrorString(err) << std::endl;
+        //    cudaFree(d_residues); // Free memory if an error occurs
+        //    return;
+        //}
+
+        //// Step 2: Validate AllBondsIndices for the first residue
+        //if (h_bondsCheck[0].AllBondsIndices != nullptr && h_bondsCheck[0].AllBondsCount > 0) {
+        //    // Step 3: Copy AllBondsIndices data from device to host
+        //    std::vector<CudaBondInfo> h_AllBondsIndices(h_bondsCheck[0].AllBondsCount);
+        //    err = cudaMemcpy(h_AllBondsIndices.data(), h_bondsCheck[0].AllBondsIndices,
+        //        h_bondsCheck[0].AllBondsCount * sizeof(CudaBondInfo), cudaMemcpyDeviceToHost);
+        //    if (err != cudaSuccess) {
+        //        std::cerr << "CUDA memcpy failed for AllBondsIndices: " << cudaGetErrorString(err) << std::endl;
+        //        return;
+        //    }
+
+        //    // Step 4: Output AllBondsIndices data for verification
+        //    std::cout << "AllBondsIndices for the first residue: " << std::endl;
+        //    for (int i = 0; i < h_bondsCheck[0].AllBondsCount; ++i) {
+        //        std::cout << "Bond Index: " << h_AllBondsIndices[i].bondInx
+        //            << ", resName: " << h_AllBondsIndices[i].waterMol
+        //            << ", P1 Index: " << h_AllBondsIndices[i].p1Inx
+        //            << ", P2 Index: " << h_AllBondsIndices[i].p2Inx
+        //            << ", P1 In Residue: " << h_AllBondsIndices[i].p1InRes
+        //            << ", P2 In Residue: " << h_AllBondsIndices[i].p2InRes << std::endl;
+        //    }
+
+        //    // Step 5: Print the first bond index as a quick check
+        //    std::cout << "First bond index in AllBondsIndices: " << h_AllBondsIndices[0].bondInx << std::endl;
+        //}
+        //else {
+        //    std::cerr << "AllBondsIndices is nullptr or empty for the first residue." << std::endl;
+        //}
+
+        //// Step 6: Print additional details for verification
+        //std::cout << "numBonds in the first residue: " << h_bondsCheck[0].AllBondsCount << std::endl;
+
+
+
+        //// Verification of AllBondsIndices
+
+        //// Define the number of residues to check
+        //int numResiduesToCheck = 1; // Adjust as needed
+
+        //// Step 1: Copy the first residue back to the host
+        //std::vector<D_Residues> h_residuesCheck(numResiduesToCheck);
+        //cudaError_t err = cudaMemcpy(h_residuesCheck.data(), d_residues, numResiduesToCheck * sizeof(D_Residues), cudaMemcpyDeviceToHost);
+        //if (err != cudaSuccess) {
+        //    std::cerr << "CUDA memcpy failed for residues: " << cudaGetErrorString(err) << std::endl;
+        //    cudaFree(d_residues); // Free memory if an error occurs
+        //    return;
+        //}
+
+        //// Step 2: Validate AllBondsIndices for the first residue
+        //if (h_residuesCheck[0].AllBondsIndices != nullptr && h_residuesCheck[0].AllBondsCount > 0) {
+        //    // Step 3: Copy AllBondsIndices data from device to host
+        //    std::vector<ResBondInfo> h_AllBondsIndices(h_residuesCheck[0].AllBondsCount);
+        //    err = cudaMemcpy(h_AllBondsIndices.data(), h_residuesCheck[0].AllBondsIndices,
+        //        h_residuesCheck[0].AllBondsCount * sizeof(ResBondInfo), cudaMemcpyDeviceToHost);
+        //    if (err != cudaSuccess) {
+        //        std::cerr << "CUDA memcpy failed for AllBondsIndices: " << cudaGetErrorString(err) << std::endl;
+        //        return;
+        //    }
+
+        //    // Step 4: Output AllBondsIndices data for verification
+        //    std::cout << "AllBondsIndices for the first residue: " << std::endl;
+        //    for (int i = 0; i < h_residuesCheck[0].AllBondsCount; ++i) {
+        //        std::cout << "Bond Index: " << h_AllBondsIndices[i].bondInx
+        //            << ", P1 Index: " << h_AllBondsIndices[i].p1Inx
+        //            << ", P2 Index: " << h_AllBondsIndices[i].p2Inx
+        //            << ", P1 In Residue: " << h_AllBondsIndices[i].p1InRes
+        //            << ", P2 In Residue: " << h_AllBondsIndices[i].p2InRes << std::endl;
+        //    }
+
+        //    // Step 5: Print the first bond index as a quick check
+        //    std::cout << "First bond index in AllBondsIndices: " << h_AllBondsIndices[0].bondInx << std::endl;
+        //}
+        //else {
+        //    std::cerr << "AllBondsIndices is nullptr or empty for the first residue." << std::endl;
+        //}
+
+        //// Step 6: Print additional details for verification
+        //std::cout << "numBonds in the first residue: " << h_residuesCheck[0].AllBondsCount << std::endl;
+
+
 
 
         // verification
@@ -203,36 +303,6 @@ void Engine::InitializeSimulationParameters() {
         //std::cout << "numAtoms in the first residue: " << h_residuesCheck[0].AllAtomsCount << std::endl;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         // Allocate memory for double3 arrays globally
         _atomPositions_double3 = new double3[_numAtoms];
         _forces_double3 = new double3[_numAtoms];
@@ -240,6 +310,7 @@ void Engine::InitializeSimulationParameters() {
         _boxSize_double3 = new double3;
         _lb_double3 = new double3;
         _ub_double3 = new double3;
+        _bondPEnergies = new double[_numBonds];
 
 
         // Convert Coords3D (host) to double3 (device)
@@ -247,10 +318,17 @@ void Engine::InitializeSimulationParameters() {
             _atomPositions_double3[i] = make_double3(_atomPositions[i][0], _atomPositions[i][1], _atomPositions[i][2]);
         }
 
+        //Initializing _bondPEnergies with zeros
+        for (int i = 0; i < _numBonds; ++i) {
+            _bondPEnergies[i] = 0.0;
+        }
+
+
         // Allocate memory on GPU for the simulation parameters
         cudaMalloc(&d_atomPositions, _numAtoms * sizeof(double3));
         cudaMalloc(&d_masses, _numAtoms * sizeof(double));
         cudaMalloc(&d_inverseMasses, _numAtoms * sizeof(double));
+        cudaMalloc(&d_bondPEnergies, _numBonds * sizeof(double));
         cudaMalloc(&d_torsionParams, _numTorsions * sizeof(PTorsionParams));  // Assuming TorsionParam is a custom struct
         cudaMalloc(&d_bondParams, _numBonds * sizeof(BondParams));  // Assuming BondParam is a custom struct
         cudaMalloc(&d_angleParams, _numAngles * sizeof(AngleParams));  // Assuming AngleParam is a custom struct
@@ -269,6 +347,7 @@ void Engine::InitializeSimulationParameters() {
         // Copy the simulation parameters from CPU to GPU
         cudaMemcpy(d_atomPositions, _atomPositions_double3, _numAtoms * sizeof(double3), cudaMemcpyHostToDevice);
         cudaMemcpy(d_masses, _masses.data(), _numAtoms * sizeof(double), cudaMemcpyHostToDevice);
+        cudaMemcpy(d_bondPEnergies, _bondPEnergies, _numBonds * sizeof(double), cudaMemcpyHostToDevice);
         cudaMemcpy(d_torsionParams, _torsionParams.data(), _numTorsions * sizeof(PTorsionParams), cudaMemcpyHostToDevice);
         cudaMemcpy(d_bondParams, _bondParams.data(), _numBonds * sizeof(BondParams), cudaMemcpyHostToDevice);
         cudaMemcpy(d_angleParams, _angleParams.data(), _numAngles * sizeof(AngleParams), cudaMemcpyHostToDevice);
@@ -416,9 +495,10 @@ void Engine::CalculateForces() {
     }
     if (!_bondParams.empty()) {
         // Forces::AddHBond(_totalForces, _atomPositions, _bondParams, _totalPEnergy, _boxInfo);
-        //launchKernelBondForcesGlobal(d_atomPositions, d_bondParams, d_totalForces, d_totalPEnergy,d_boxsize, _numBonds);
-        launchKernelBondForcesShared(d_atomPositions, d_bondParams, d_totalForces, d_totalPEnergy, d_boxsize, d_residues, d_startResidues, d_endResidues, _startResidues.size(), _totalBondsInResidues );
-
+        // launchKernelBondForcesGlobal(d_atomPositions, d_bondParams, d_totalForces, d_totalPEnergy,d_boxsize, _numBonds);
+        // launchKernelBondForcesShared(d_atomPositions, d_bondParams, d_totalForces, d_bondPEnergies, d_boxsize, d_residues, d_startResidues, d_endResidues, _startResidues.size(), _totalBondsInResidues );
+        // launchKernelBondForcesShared(d_atomPositions, d_bondParams, d_totalForces, d_bondPEnergies, d_totalPEnergy, d_boxsize, d_residues, d_startResidues, d_endResidues, _startResidues.size(), _totalBondsInResidues);
+        launchKernelBondForcesShared(d_atomPositions, d_bondParams, d_totalForces, d_totalPEnergy, d_boxsize, d_cudaBonds, _startResidues.size(), _totalBondsInResidues);
 
     }
     if (!_angleParams.empty()) {
@@ -434,9 +514,6 @@ void Engine::CalculateForces() {
     // Calculate the elapsed time in microseconds
     auto duration = chrono::duration_cast<chrono::nanoseconds>(finishTime - startTime).count();
     cout << "Force Calculation Runtime is " << duration << " nanoseconds" << endl;
-
-
-
 
 }
 
@@ -495,6 +572,7 @@ void Engine::Report(const string& inputFilename, const string& outputFilename, i
         cudaMemcpy(_velocities_double3, d_velocities, _numAtoms * sizeof(double3), cudaMemcpyDeviceToHost);
         cudaMemcpy(_atomPositions_double3, d_atomPositions, _numAtoms * sizeof(double3), cudaMemcpyDeviceToHost);
         cudaMemcpy(_forces_double3, d_totalForces, _numAtoms * sizeof(double3), cudaMemcpyDeviceToHost);
+        cudaMemcpy(_bondPEnergies, d_bondPEnergies,_numBonds*sizeof(double), cudaMemcpyDeviceToHost);
         cudaMemcpy(&_totalPEnergy, d_totalPEnergy, sizeof(double), cudaMemcpyDeviceToHost);
         cudaMemcpy(&_totalKEnergy, d_totalKEnergy, sizeof(double), cudaMemcpyDeviceToHost);
         //cudaMemcpy(&_kineticEnergies, d_kineticEnergies, _numAtoms * sizeof(double), cudaMemcpyDeviceToHost);
@@ -505,6 +583,12 @@ void Engine::Report(const string& inputFilename, const string& outputFilename, i
             _atomPositions[i] = Coords3D{ _atomPositions_double3[i].x, _atomPositions_double3[i].y, _atomPositions_double3[i].z };
             _totalForces[i] = Coords3D{ _forces_double3[i].x, _forces_double3[i].y, _forces_double3[i].z };
         }
+        //_totalPEnergy = 0;
+        //for (size_t i = 0; i < _numBonds; ++i) {
+        //    _totalPEnergy += _bondPEnergies[i];
+        //}
+
+        
         _totalEnergy = _totalPEnergy + _totalKEnergy;
 
     }
@@ -580,6 +664,10 @@ void Engine::CleanupGPU() {
         delete[] _ub_double3;
         _ub_double3 = nullptr;
     }
+    if (_bondPEnergies != nullptr) {
+        delete[] _bondPEnergies;
+        _bondPEnergies = nullptr;
+    }
 
     // Free GPU memory
     cudaFree(d_atomPositions);
@@ -602,7 +690,9 @@ void Engine::CleanupGPU() {
     cudaFree(d_numNonbonded);
     cudaFree(d_endResidues);
     cudaFree(d_startResidues);
-
+    cudaFree(d_residues);
+    cudaFree(d_cudaBonds);
+    cudaFree(d_bondPEnergies);
     // Set all GPU pointers to nullptr after freeing
     d_atomPositions = nullptr;
     d_masses = nullptr;
@@ -626,8 +716,8 @@ void Engine::CleanupGPU() {
     d_startResidues = nullptr;
 
     // CUDA Data Structures
-    CudaBridge CudaBridge;
-    CudaBridge.cleanupPResiduesBond(d_residues, _residues.size());
+    //CudaBridge CudaBridge;
+    //CudaBridge.cleanupPResiduesBond(d_residues, _residues.size());
 
 
 }

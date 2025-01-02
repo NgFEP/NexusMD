@@ -6,7 +6,8 @@
 int adjustBlockSize(int blockSize, int maxThreadsPerBlock) {
     // Find the closest multiple of 32 above or equal to the current block size
     if (blockSize % 32 != 0) {
-        blockSize = ((blockSize / 32) + 1) * 32;
+        blockSize = (blockSize / 32) * 32;
+        //blockSize = ((blockSize / 32) - 1) * 32;
     }
 
     // Ensure it does not exceed the maximum allowed threads per block
@@ -71,8 +72,8 @@ int adjustBlockSize(int blockSize, int maxThreadsPerBlock) {
 //        __syncthreads(); // Ensure the main atom is loaded
 //
 //        // Load all bonds associated with this atom
-//        for (int bondIdx = 0; bondIdx < atomInfo.numBonds && bondsLoaded < maxBondsPerBlock; bondIdx++) {
-//            int bondId = atomInfo.bonds[bondIdx];
+//        for (int BondIdx = 0; BondIdx < atomInfo.numBonds && bondsLoaded < maxBondsPerBlock; BondIdx++) {
+//            int bondId = atomInfo.bonds[BondIdx];
 //
 //            // Load positions for the second atom in the bond
 //            int atom2 = d_bondParams[bondId].p1 == atomInfo.atomIdx ? d_bondParams[bondId].p2 : d_bondParams[bondId].p1;
@@ -163,11 +164,11 @@ int adjustBlockSize(int blockSize, int maxThreadsPerBlock) {
 //    //    __syncthreads();
 //
 //    //    // Load all bonds associated with this atom based on numBonds
-//    //    for (int bondIdx = 0; bondIdx < atomInfo.numBonds && bondsLoaded < maxBondsPerBlock; bondIdx++) {
-//    //        int bondId = atomInfo.bonds[bondIdx];
+//    //    for (int BondIdx = 0; BondIdx < atomInfo.numBonds && bondsLoaded < maxBondsPerBlock; BondIdx++) {
+//    //        int bondId = atomInfo.bonds[BondIdx];
 //
 //    //        // Ensure the bond index is valid (within bounds)
-//    //        if (bondIdx < atomInfo.numBonds) {
+//    //        if (BondIdx < atomInfo.numBonds) {
 //    //            if (tid == bondsLoaded) {
 //    //                sharedPositions[2 * bondsLoaded] = d_atomPositions[d_bondParams[bondId].p1];
 //    //                sharedPositions[2 * bondsLoaded + 1] = d_atomPositions[d_bondParams[bondId].p2];
@@ -397,11 +398,853 @@ int adjustBlockSize(int blockSize, int maxThreadsPerBlock) {
 //    __syncthreads(); // Optional: Synchronize before the next block-level operation
 //}
 
-struct AtomPosition {
-    int globalAtomIdx;  // Global atom index
-    double3 position;   // Position of the atom
-};
 
+
+//last shared version that works
+//struct AtomPosition {
+//    int globalAtomIdx;  // Global atom index
+//    double3 position;   // Position of the atom
+//};
+//
+//
+//__global__ void BondForcesKernel_shared(
+//    double3* d_atomPositions,
+//    BondParams* d_bondParams,
+//    double3* d_forces,
+//    double* d_totalPEnergy,
+//    double3* d_boxsize,
+//    D_Residues* d_residues,
+//    int* d_startResidues,
+//    int* d_endResidues
+//) {
+//    extern __shared__ char sharedMemory[];  // Dynamically allocated shared memory
+//    //printf("atom1Pos");
+//    int blockId = blockIdx.x;
+//    int threadId = threadIdx.x;
+//
+//    int startResidue = d_startResidues[blockId];
+//    int endResidue = d_endResidues[blockId];
+//
+//    // Shared memory pointers
+//    AtomPosition* sharedAtoms = (AtomPosition*)sharedMemory;
+//
+//
+//    for (int resIdx = startResidue; resIdx <= endResidue; ++resIdx) {
+//        D_Residues residue = d_residues[resIdx];
+//
+//        // Copy atom positions and indices for this residue into shared memory
+//        for (int i = threadId; i < residue.AllAtomsCount; i += blockDim.x) {
+//            int globalAtomIdx = residue.AllAtomsIndices[i];
+//            sharedAtoms[i].globalAtomIdx = globalAtomIdx;
+//            sharedAtoms[i].position = d_atomPositions[globalAtomIdx];
+//        }
+//
+//        __syncthreads();  // Ensure all threads have loaded data
+//
+//        // Calculate forces for each bond
+//        for (int BondIdx = threadId; BondIdx < residue.AllBondsCount; BondIdx += blockDim.x) {
+//            int bondGlobalIdx = residue.AllBondsIndices[BondIdx];
+//            BondParams bond = d_bondParams[bondGlobalIdx];
+//
+//            int atom1Idx = bond.p1;
+//            int atom2Idx = bond.p2;
+//
+//            // Simulating dictionary access by searching for atom1Idx and atom2Idx in shared memory
+//            double3 atom1Pos; // = { 0.0, 0.0, 0.0 };
+//            double3 atom2Pos; // = { 0.0, 0.0, 0.0 };
+//
+//            // Search for atom1 position in shared memory
+//            for (int i = 0; i < residue.AllAtomsCount; ++i) {
+//                if (sharedAtoms[i].globalAtomIdx == atom1Idx) {
+//                    atom1Pos = sharedAtoms[i].position;
+//                    break;
+//                }
+//            }
+//
+//            //printf("atom1Pos.x: %f, atom1Pos.y: %f, atom1Pos.z: %f\n", atom1Pos.x, atom1Pos.y, atom1Pos.y);
+//
+//
+//            // Search for atom2 position in shared memory
+//            for (int i = 0; i < residue.AllAtomsCount; ++i) {
+//                if (sharedAtoms[i].globalAtomIdx == atom2Idx) {
+//                    atom2Pos = sharedAtoms[i].position;
+//                    break;
+//                }
+//            }
+//
+//            //printf("atom2Pos.x: %f, atom2Pos.y: %f, atom2Pos.z: %f\n", atom2Pos.x, atom2Pos.y, atom2Pos.y);
+//
+//
+//            // Compute forces based on atom positions
+//            double3 delta;
+//            minimumImageVectorDevice(&atom1Pos, &atom2Pos, &delta, d_boxsize);
+//
+//            // Calculate the distance between the two particles
+//            double r = sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
+//
+//            // Compute the energy contribution
+//            double deltaIdeal = r - bond.d;
+//            double energy = 0.5 * bond.k * deltaIdeal * deltaIdeal;
+//
+//
+//
+//            // Compute the derivative of the energy with respect to the distance
+//            double dEdR = bond.k * deltaIdeal;
+//
+//            // Normalize the delta vector and scale by dEdR
+//            double3 force;
+//            if (r > 0) {
+//                force.x = delta.x * (dEdR / r);
+//                force.y = delta.y * (dEdR / r);
+//                force.z = delta.z * (dEdR / r);
+//            }
+//            else {
+//                force = make_double3(0.0, 0.0, 0.0);  // Prevent division by zero
+//            }
+//
+//            if (residue.resName == "WAT") {
+//                atomicAdd(&d_forces[atom1Idx].x, force.x);
+//                atomicAdd(&d_forces[atom1Idx].y, force.y);
+//                atomicAdd(&d_forces[atom1Idx].z, force.z);
+//                atomicAdd(&d_forces[atom2Idx].x, -force.x);
+//                atomicAdd(&d_forces[atom2Idx].y, -force.y);
+//                atomicAdd(&d_forces[atom2Idx].z, -force.z);
+//                // Accumulate energy to totalPEnergy using atomicAdd
+//                atomicAdd(d_totalPEnergy, energy);  // You can switch back to atomicAdd if needed
+//            }
+//            else {
+//                int counter = 0;
+//                for (int i = 0; i < residue.NonResBondAtomsCount; ++i) {
+//                    if (residue.NonResBondAtoms[i] == atom2Idx) {
+//                        atomicAdd(&d_forces[atom1Idx].x, force.x);
+//                        atomicAdd(&d_forces[atom1Idx].y, force.y);
+//                        atomicAdd(&d_forces[atom1Idx].z, force.z);
+//                        atomicAdd(d_totalPEnergy, 0.5 * energy); 
+//                        break;
+//                    }
+//                    else if (residue.NonResBondAtoms[i] == atom1Idx) {
+//                        atomicAdd(&d_forces[atom2Idx].x, -force.x);
+//                        atomicAdd(&d_forces[atom2Idx].y, -force.y);
+//                        atomicAdd(&d_forces[atom2Idx].z, -force.z);
+//                        atomicAdd(d_totalPEnergy, 0.5 * energy);  
+//                        break;
+//                    }
+//                    counter++;
+//                }
+//                if (counter == residue.NonResBondAtomsCount)
+//                {
+//                    atomicAdd(&d_forces[atom1Idx].x, force.x);
+//                    atomicAdd(&d_forces[atom1Idx].y, force.y);
+//                    atomicAdd(&d_forces[atom1Idx].z, force.z);
+//                    atomicAdd(&d_forces[atom2Idx].x, -force.x);
+//                    atomicAdd(&d_forces[atom2Idx].y, -force.y);
+//                    atomicAdd(&d_forces[atom2Idx].z, -force.z);
+//                    // Accumulate energy to totalPEnergy using atomicAdd
+//                    atomicAdd(d_totalPEnergy, energy);  // You can switch back to atomicAdd if needed
+//                }
+//            }
+//
+//
+//            //// Accumulate potential energy
+//            //if (threadId == 0) {
+//            //    atomicAdd(d_totalPEnergy, 0.5 * bond.k * deltaIdeal * deltaIdeal);
+//            //}
+//        }
+//
+//        __syncthreads();
+//    }
+//}
+
+
+
+//struct AtomPosition {
+//    int globalAtomIdx;  // Global atom index
+//    double3 position;   // Position of the atom
+//};
+
+//latest shared memory imp worked
+//__global__ void BondForcesKernel_shared(
+//    double3* d_atomPositions,
+//    BondParams* d_bondParams,
+//    double3* d_forces,
+//    double* d_totalPEnergy,
+//    double3* d_boxsize,
+//    D_Residues* d_residues,
+//    int* d_startResidues,
+//    int* d_endResidues
+//) {
+//    extern __shared__ char sharedMemory[];  // Dynamically allocated shared memory
+//    int blockId = blockIdx.x;
+//    int threadId = threadIdx.x;
+//
+//    int startResidue = d_startResidues[blockId];
+//    int endResidue = d_endResidues[blockId];
+//
+//    // Shared memory pointers
+//    double3* sharedAtoms = (double3*)sharedMemory;
+//    double localEnergy = 0.0;  // Local energy accumulator
+//
+//    for (int resIdx = startResidue; resIdx <= endResidue; ++resIdx) {
+//        D_Residues residue = d_residues[resIdx];
+//
+//        // Copy atom positions and indices for this residue into shared memory
+//        for (int i = threadId; i < residue.AllAtomsCount; i += blockDim.x) {
+//            int globalAtomIdx = residue.AllAtomsIndices[i];
+//            sharedAtoms[i] = d_atomPositions[globalAtomIdx];
+//        }
+//
+//        __syncthreads();  // Ensuring all threads have loaded data
+//
+//        // Calculate forces for each bond
+//        for (int BondIdx = threadId; BondIdx < residue.AllBondsCount; BondIdx += blockDim.x) {
+//
+//            if (BondIdx >= residue.AllBondsCount) break; // to prevent accessing out of bounds
+//
+//            int bondGlobalIdx = residue.AllBondsIndices[BondIdx].bondInx;
+//            BondParams bond = d_bondParams[bondGlobalIdx];
+//
+//            int atom1Idx = residue.AllBondsIndices[BondIdx].p1Inx; // local index
+//            int atom2Idx = residue.AllBondsIndices[BondIdx].p2Inx;
+//
+//            double3 atom1Pos = sharedAtoms[atom1Idx];
+//            double3 atom2Pos = sharedAtoms[atom2Idx];
+//
+//            // Compute the difference vector between atoms
+//            double3 delta;
+//            minimumImageVectorDevice(&atom1Pos, &atom2Pos, &delta, d_boxsize);
+//
+//            // Calculate the distance between the two particles
+//            double r = sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
+//
+//            // Compute the energy contribution for the bond
+//            double deltaIdeal = r - bond.d;
+//            double energy = 0.5 * bond.k * deltaIdeal * deltaIdeal;
+//
+//            // Compute the derivative of the energy with respect to the distance
+//            double dEdR = bond.k * deltaIdeal;
+//
+//            // Normalize the delta vector and scale by dEdR
+//            double3 force;
+//            if (r > 0) {
+//                force.x = delta.x * (dEdR / r);
+//                force.y = delta.y * (dEdR / r);
+//                force.z = delta.z * (dEdR / r);
+//            }
+//            else {
+//                force = make_double3(0.0, 0.0, 0.0);  // Prevent division by zero
+//            }
+//
+//            // Apply forces and accumulate energy
+//            if (residue.resName == "WAT") {
+//                atomicAdd(&d_forces[bond.p1].x, force.x);
+//                atomicAdd(&d_forces[bond.p1].y, force.y);
+//                atomicAdd(&d_forces[bond.p1].z, force.z);
+//                atomicAdd(&d_forces[bond.p2].x, -force.x);
+//                atomicAdd(&d_forces[bond.p2].y, -force.y);
+//                atomicAdd(&d_forces[bond.p2].z, -force.z);
+//
+//                // Accumulate energy in localEnergy
+//                localEnergy += energy;
+//            }
+//            else {
+//                if (residue.AllBondsIndices[BondIdx].p1InRes) {
+//                    atomicAdd(&d_forces[bond.p1].x, force.x);
+//                    atomicAdd(&d_forces[bond.p1].y, force.y);
+//                    atomicAdd(&d_forces[bond.p1].z, force.z);
+//                    localEnergy += 0.5 * energy;
+//                }
+//                if (residue.AllBondsIndices[BondIdx].p2InRes) {
+//                    atomicAdd(&d_forces[bond.p2].x, -force.x);
+//                    atomicAdd(&d_forces[bond.p2].y, -force.y);
+//                    atomicAdd(&d_forces[bond.p2].z, -force.z);
+//                    localEnergy += 0.5 * energy;
+//                }
+//            }
+//
+//        }
+//        __syncthreads();
+//    }
+//
+//    // Perform block-wide reduction to sum energy
+//    // Reduce within block
+//    //for (int s = blockDim.x / 2; s > 0; s >>= 1) {
+//    //    if (threadId < s) {
+//    //        localEnergy += __shfl_down_sync(0xFFFFFFFF, localEnergy, s);
+//    //    }
+//    //}
+//
+//    // Only thread 0 will write the result of the block
+//    if (threadId == 0) {
+//        atomicAdd(d_totalPEnergy, localEnergy);
+//    }
+//}
+
+
+
+//last last shared implememnattion worked 
+//__global__ void BondForcesKernel_shared(
+//    double3* d_atomPositions,
+//    BondParams* d_bondParams,
+//    double3* d_forces,
+//    double* d_bondPEnergies,  // Array to store potential energy for each bond
+//    double3* d_boxsize,
+//    D_Residues* d_residues,
+//    int* d_startResidues,
+//    int* d_endResidues
+//) {
+//    extern __shared__ char sharedMemory[];  // Dynamically allocated shared memory
+//    int blockId = blockIdx.x;
+//    int threadId = threadIdx.x;
+//
+//    int startResidue = d_startResidues[blockId];
+//    int endResidue = d_endResidues[blockId];
+//
+//    // Shared memory pointers
+//    double3* sharedAtoms = (double3*)sharedMemory;  // Shared memory for atom positions
+//
+//    for (int resIdx = startResidue; resIdx <= endResidue; ++resIdx) {
+//        D_Residues residue = d_residues[resIdx];
+//
+//        // Copy atom positions and indices for this residue into shared memory
+//        for (int i = threadId; i < residue.AllAtomsCount; i += blockDim.x) {
+//            int globalAtomIdx = residue.AllAtomsIndices[i];
+//            sharedAtoms[i] = d_atomPositions[globalAtomIdx];
+//        }
+//
+//        __syncthreads();  // Ensuring all threads have loaded data
+//
+//        // Calculate forces and potential energy for each bond
+//        for (int BondIdx = threadId; BondIdx < residue.AllBondsCount; BondIdx += blockDim.x) {
+//            int bondGlobalIdx = residue.AllBondsIndices[BondIdx].bondInx;
+//            BondParams bond = d_bondParams[bondGlobalIdx];
+//
+//            int globalp1Inx = bond.p1;
+//            int globalp2Inx = bond.p2;
+//
+//            int atom1Idx = residue.AllBondsIndices[BondIdx].p1Inx; // Local index
+//            int atom2Idx = residue.AllBondsIndices[BondIdx].p2Inx;
+//
+//            double3 atom1Pos = sharedAtoms[atom1Idx];
+//            double3 atom2Pos = sharedAtoms[atom2Idx];
+//
+//            // Compute the difference vector between atoms
+//            double3 delta;
+//            minimumImageVectorDevice(&atom1Pos, &atom2Pos, &delta, d_boxsize);
+//
+//            // Calculate the distance between the two particles
+//            double r = sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
+//
+//            // Compute the energy contribution for the bond
+//            double deltaIdeal = r - bond.d;
+//            double energy = 0.5 * bond.k * deltaIdeal * deltaIdeal;
+//
+//            // Compute the derivative of the energy with respect to the distance
+//            double dEdR = bond.k * deltaIdeal;
+//
+//            // Normalize the delta vector and scale by dEdR
+//            double3 force;
+//            if (r > 0) {
+//                force.x = delta.x * (dEdR / r);
+//                force.y = delta.y * (dEdR / r);
+//                force.z = delta.z * (dEdR / r);
+//            }
+//            else {
+//                force = make_double3(0.0, 0.0, 0.0);  // Prevent division by zero
+//            }
+//
+//            // Apply forces and accumulate energy based on residue type and bond indices
+//            if (residue.resName == "WAT") {
+//                atomicAdd(&d_forces[globalp1Inx].x, force.x);
+//                atomicAdd(&d_forces[globalp1Inx].y, force.y);
+//                atomicAdd(&d_forces[globalp1Inx].z, force.z);
+//                atomicAdd(&d_forces[globalp2Inx].x, -force.x);
+//                atomicAdd(&d_forces[globalp2Inx].y, -force.y);
+//                atomicAdd(&d_forces[globalp2Inx].z, -force.z);
+//
+//            }
+//            else {
+//                // Partial energy accumulation for other residues
+//                if (residue.AllBondsIndices[BondIdx].p1InRes) {
+//                    atomicAdd(&d_forces[globalp1Inx].x, force.x);
+//                    atomicAdd(&d_forces[globalp1Inx].y, force.y);
+//                    atomicAdd(&d_forces[globalp1Inx].z, force.z);
+//                }
+//                if (residue.AllBondsIndices[BondIdx].p2InRes) {
+//                    atomicAdd(&d_forces[globalp2Inx].x, -force.x);
+//                    atomicAdd(&d_forces[globalp2Inx].y, -force.y);
+//                    atomicAdd(&d_forces[globalp2Inx].z, -force.z);
+//                }
+//
+//
+//            }
+//            d_bondPEnergies[bondGlobalIdx] = energy;
+//            //printf("d_bondPEnergies[bondGlobalIdx]: %f\n", d_bondPEnergies[bondGlobalIdx]);
+//        }
+//        __syncthreads();
+//    }
+//}
+
+////last working code for residues approach which isnot optimal
+//
+//__global__ void BondForcesKernel_shared(
+//    double3* d_atomPositions,
+//    BondParams* d_bondParams,
+//    double3* d_forces,
+//    double* d_bondPEnergies,  // Array to store potential energy for each bond
+//    double* d_totalPEnergy,
+//    double3* d_boxsize,
+//    D_Residues* d_residues,
+//    int* d_startResidues,
+//    int* d_endResidues
+//) {
+//    extern __shared__ char sharedMemory[];  // Dynamically allocated shared memory
+//    int blockId = blockIdx.x;
+//    int threadId = threadIdx.x;
+//
+//    int startResidue = d_startResidues[blockId];
+//    int endResidue = d_endResidues[blockId];
+//
+//    // Shared memory pointers
+//    double3* sharedAtoms = (double3*)sharedMemory;  // Shared memory for atom positions
+//
+//    double localBlockEnergy = 0.0;  // Accumulator for total block potential energy
+//
+//
+//    for (int resIdx = startResidue; resIdx <= endResidue; ++resIdx) {
+//        //D_Residues residue = d_residues[resIdx];
+//        int AllAtomsCount = d_residues[resIdx].AllAtomsCount;
+//        int AllBondsCount = d_residues[resIdx].AllBondsCount;
+//
+//        //ResBondInfo* sharedAllBondsIndices = (ResBondInfo*)sharedMemory;
+//        ResBondInfo* sharedAllBondsIndices = (ResBondInfo*)(sharedMemory + AllAtomsCount * sizeof(double3));
+//        double* sharedBondPEnergies = (double*)(sharedMemory + AllAtomsCount * sizeof(double3) + AllBondsCount * sizeof(ResBondInfo));
+//        double* sharedResPEnergies = (double*)((char*)sharedBondPEnergies + AllBondsCount * sizeof(double));
+//
+//        //double* sharedResPEnergies = (double*)(sharedMemory + AllBondsCount* sizeof(double) + AllAtomsCount * sizeof(double3) + AllBondsCount * sizeof(ResBondInfo));
+//
+//        //const char* sharedresName = (const char*)(sharedMemory + AllBondsCount * sizeof(ResBondInfo));
+//
+//
+//        // Copy atom positions and indices for this residue into shared memory
+//        for (int i = threadId; i < AllAtomsCount; i += blockDim.x) {
+//            int globalAtomIdx = d_residues[resIdx].AllAtomsIndices[i];
+//            sharedAtoms[i] = d_atomPositions[globalAtomIdx];
+//        }
+//        if (threadId < AllAtomsCount) {
+//            int globalAtomIdx = d_residues[resIdx].AllAtomsIndices[threadId];
+//            sharedAtoms[threadId] = d_atomPositions[globalAtomIdx];
+//
+//        }
+//        __syncthreads();  // Ensuring all threads have loaded data
+//
+//
+//        // Copy atom positions and indices for this residue into shared memory
+//        for (int i = threadId; i < AllBondsCount; i += blockDim.x) {
+//            sharedAllBondsIndices[i] = d_residues[resIdx].AllBondsIndices[i];
+//        }
+//
+//        __syncthreads();  // Ensuring all threads have loaded data
+//
+//        //sharedresName = d_residues[resIdx].resName;
+//
+//
+//        // Copy atom positions and indices for this residue into shared memory
+//        for (int i = threadId; i < AllBondsCount; i += blockDim.x) {
+//            sharedBondPEnergies[i] = 0;
+//        }
+//
+//        //__syncthreads();  // Ensuring all threads have loaded data
+//        //if (threadId == 0) {
+//        //    sharedResPEnergies[resIdx] = 0.0;
+//
+//        //}
+//
+//        __syncthreads();
+//        // Calculate forces and potential energy for each bond
+//        for (int BondIdx = threadId; BondIdx < AllBondsCount; BondIdx += blockDim.x) {
+//            //int bondGlobalIdx = residue.AllBondsIndices[BondIdx].bondInx;
+//            int bondGlobalIdx = sharedAllBondsIndices[BondIdx].bondInx;
+//
+//            BondParams bond = d_bondParams[bondGlobalIdx];
+//
+//            int globalp1Inx = bond.p1;
+//            int globalp2Inx = bond.p2;
+//
+//            int atom1Idx = sharedAllBondsIndices[BondIdx].p1Inx; // Local index
+//            int atom2Idx = sharedAllBondsIndices[BondIdx].p2Inx;
+//
+//            double3 atom1Pos = sharedAtoms[atom1Idx];
+//            double3 atom2Pos = sharedAtoms[atom2Idx];
+//
+//            // Compute the difference vector between atoms
+//            double3 delta;
+//            minimumImageVectorDevice(&atom1Pos, &atom2Pos, &delta, d_boxsize);
+//
+//            // Calculate the distance between the two particles
+//            double r = sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
+//
+//            // Compute the energy contribution for the bond
+//            double deltaIdeal = r - bond.d;
+//            sharedBondPEnergies[BondIdx] = 0.5 * bond.k * deltaIdeal * deltaIdeal;;
+//            //if (sharedBondPEnergies[BondIdx]!=0) {
+//            //    // double energy = 0.5 * bond.k * deltaIdeal * deltaIdeal;
+//            //    sharedBondPEnergies[BondIdx] = 0.5 * bond.k * deltaIdeal * deltaIdeal;;
+//            //}
+//
+//            // Compute the derivative of the energy with respect to the distance
+//            double dEdR = bond.k * deltaIdeal;
+//
+//            // Normalize the delta vector and scale by dEdR
+//            double3 force;
+//            if (r > 0) {
+//                force.x = delta.x * (dEdR / r);
+//                force.y = delta.y * (dEdR / r);
+//                force.z = delta.z * (dEdR / r);
+//            }
+//            else {
+//                force = make_double3(0.0, 0.0, 0.0);  // Prevent division by zero
+//            }
+//
+//            // Apply forces and accumulate energy based on residue type and bond indices
+//            if (d_residues[resIdx].resName == "WAT") {
+//                atomicAdd(&d_forces[globalp1Inx].x, force.x);
+//                atomicAdd(&d_forces[globalp1Inx].y, force.y);
+//                atomicAdd(&d_forces[globalp1Inx].z, force.z);
+//                atomicAdd(&d_forces[globalp2Inx].x, -force.x);
+//                atomicAdd(&d_forces[globalp2Inx].y, -force.y);
+//                atomicAdd(&d_forces[globalp2Inx].z, -force.z);
+//
+//            }
+//            else {
+//                // Partial energy accumulation for other residues
+//                if (sharedAllBondsIndices[BondIdx].p1InRes) {
+//                    atomicAdd(&d_forces[globalp1Inx].x, force.x);
+//                    atomicAdd(&d_forces[globalp1Inx].y, force.y);
+//                    atomicAdd(&d_forces[globalp1Inx].z, force.z);
+//                }
+//                if (sharedAllBondsIndices[BondIdx].p2InRes) {
+//                    atomicAdd(&d_forces[globalp2Inx].x, -force.x);
+//                    atomicAdd(&d_forces[globalp2Inx].y, -force.y);
+//                    atomicAdd(&d_forces[globalp2Inx].z, -force.z);
+//                }
+//
+//
+//            }
+//            //d_bondPEnergies[bondGlobalIdx] = energy;
+//            //printf("d_bondPEnergies[bondGlobalIdx]: %f\n", d_bondPEnergies[bondGlobalIdx]);
+//        }
+//        __syncthreads();
+//
+//        // Reduction to calculate total residue potential energy
+//        for (int stride = blockDim.x / 2; stride > 0; stride /= 2) {
+//            if (threadId < stride && threadId + stride < AllBondsCount) {
+//                sharedBondPEnergies[threadId] += sharedBondPEnergies[threadId + stride];
+//            }
+//            __syncthreads();
+//        }
+//
+//        //// Thread 0 stores the result in global memory
+//        //if (threadId == 0) {
+//        //    sharedResPEnergies[resIdx] = sharedBondPEnergies[0];
+//        //}
+//
+//        //__syncthreads();
+//
+//
+//        //if (threadId == 0) {
+//        //    sharedResPEnergies[resIdx] = sharedBondPEnergies[0];
+//        //    localBlockEnergy += sharedResPEnergies[resIdx];
+//        //    printf("localBlockEnergy: %f\n", localBlockEnergy);
+//
+//        //}
+//
+//        //__syncthreads();
+//
+//        ////atomicAdd(d_totalPEnergy, localBlockEnergy);
+//
+//        //if (threadId == 0) {
+//        //    atomicAdd(d_totalPEnergy, localBlockEnergy);
+//        //    //printf("d_totalPEnergy: %f\n", d_totalPEnergy);
+//        //}
+//    }
+//}
+//
+//
+//void launchKernelBondForcesShared(
+//    double3* d_atomPositions,
+//    BondParams* d_bondParams,
+//    double3* d_forces,
+//    double* d_bondPEnergies,
+//    double* d_totalPEnergy,
+//    double3* d_boxsize,
+//    D_Residues* d_residues,
+//    int* d_startResidues,          // Start indices for residues in each block
+//    int* d_endResidues,            // End indices for residues in each block
+//    int _numBlocks,
+//    int totalBondsInResidues
+//
+//) {
+//    // Calculate sizes of static components
+//    const int sizeOfPositions = sizeof(double3);
+//    const int sizeOfBondParams = sizeof(BondParams);
+//    //const int maxResidueSize= sizeof(h_residue);
+//    // Calculate the maximum memory required for a single residue
+//    //int maxResidueSize = calculateResidueMemory(h_residue); // Use the first residue (largest)
+//
+//    // Get current device ID
+//    int deviceId;
+//    cudaGetDevice(&deviceId);
+//
+//    //// Obtain shared memory per block from the GPU
+//    int sharedMemPerBlock;
+//    cudaDeviceGetAttribute(&sharedMemPerBlock, cudaDevAttrMaxSharedMemoryPerBlock, deviceId);
+//
+//    // Obtain max threads per block for the device
+//    int maxThreadsPerBlock;
+//    cudaDeviceGetAttribute(&maxThreadsPerBlock, cudaDevAttrMaxThreadsPerBlock, deviceId);
+//
+//    //// Calculate maximum memory per bond
+//    //int maxMemoryPerBond = 2 * sizeOfPositions + sizeOfBondParams + maxResidueSize;
+//
+//    //// Calculate max bonds per block with a margin (no more than maxThreadsPerBlock)
+//    //int maxBondsPerBlock = sharedMemPerBlock / maxMemoryPerBond;
+//    //maxBondsPerBlock = std::min(maxBondsPerBlock, maxThreadsPerBlock);
+//
+//    //// Adaptive block size based on available resources
+//    //int blockSize = maxBondsPerBlock;
+//
+//    //// Calculate shared memory size for the kernel
+//    //int sharedMemorySize = blockSize * maxMemoryPerBond;
+//    //// Calculate number of blocks required
+//    //int numBlocks = (totalBondsInResidues + blockSize - 1) / blockSize;
+//
+//
+//    //int totalMemoryAllBonds = totalBondsInResidues * (2 * sizeOfPositions + sizeOfBondParams) + totalResiduesSize;
+//    //int numBlocks = 1.1* totalMemoryAllBonds / sharedMemPerBlock; // 10% margin
+//
+//    ////numBlocks = (totalBondsInResidues + blockSize - 1) / blockSize;
+//    int sharedMemorySize = sharedMemPerBlock;
+//    int numBlocks = _numBlocks;
+//
+//    int blockSize = totalBondsInResidues / numBlocks;
+//
+//    blockSize = adjustBlockSize(blockSize, maxThreadsPerBlock);
+//
+//
+//
+//
+//
+//    // Debugging information
+//    //printf("Device ID: %d\n", deviceId);
+//    //printf("Shared memory per block: %d bytes\n", sharedMemPerBlock);
+//    //printf("Max threads per block: %d\n", maxThreadsPerBlock);
+//    //printf("Max bonds per block: %d\n", maxBondsPerBlock);
+//    //printf("Block size: %d\n", blockSize);
+//    //printf("Shared memory size: %d bytes\n", sharedMemorySize);
+//    //printf("Number of blocks: %d\n", numBlocks);
+//
+//    // Launch the kernel
+//    BondForcesKernel_shared << <numBlocks, blockSize, sharedMemorySize >> > (
+//        d_atomPositions,
+//        d_bondParams,
+//        d_forces,
+//        d_bondPEnergies,
+//        d_totalPEnergy,
+//        d_boxsize,
+//        d_residues,
+//        d_startResidues,
+//        d_endResidues
+//        );
+//
+//    // Check for errors
+//    cudaError_t err = cudaGetLastError();
+//    if (err != cudaSuccess) {
+//        printf("Error launching BondForcesKernel_shared: %s\n", cudaGetErrorString(err));
+//    }
+//}
+
+
+
+
+
+//last working code for cudaBonds approach which is optimal
+
+
+//__global__ void BondForcesKernel_shared(
+//    double3* d_atomPositions,
+//    BondParams* d_bondParams,
+//    double3* d_forces,
+//    double* d_totalPEnergy,
+//    double3* d_boxsize,
+//    D_CudaBonds* d_cudaBonds
+//) {
+//
+//    extern __shared__ char sharedMemory[];  // Dynamically allocated shared memory
+//    int blockId = blockIdx.x;
+//    int threadId = threadIdx.x;
+//
+//    //int startResidue = d_startResidues[blockId];
+//    //int endResidue = d_endResidues[blockId];
+//
+//    // Shared memory pointers
+//    double3* sharedAtoms = (double3*)sharedMemory;  // Shared memory for atom positions
+//
+//    //double localBlockEnergy = 0.0;  // Accumulator for total block potential energy
+//
+//
+//    //D_Residues residue = d_residues[resIdx];
+//    int AllAtomsCount = d_cudaBonds[blockId].AllAtomsCount;
+//    int AllBondsCount = d_cudaBonds[blockId].AllBondsCount;
+//
+//    //ResBondInfo* sharedAllBondsIndices = (ResBondInfo*)sharedMemory;
+//    CudaBondInfo* sharedAllBondsIndices = (CudaBondInfo*)(sharedMemory + AllAtomsCount * sizeof(double3));
+//    //double* sharedBlockEnergy = (double*)(sharedMemory + AllAtomsCount * sizeof(double3) + AllBondsCount * sizeof(CudaBondInfo));
+//
+//    double* sharedBondPEnergies = (double*)(sharedMemory + AllAtomsCount * sizeof(double3) + AllBondsCount * sizeof(CudaBondInfo));
+//    //double* sharedResPEnergies = (double*)((char*)sharedBondPEnergies + AllBondsCount * sizeof(double));
+//
+//    //double* sharedResPEnergies = (double*)(sharedMemory + AllBondsCount* sizeof(double) + AllAtomsCount * sizeof(double3) + AllBondsCount * sizeof(ResBondInfo));
+//
+//    //const char* sharedresName = (const char*)(sharedMemory + AllBondsCount * sizeof(ResBondInfo));
+//
+//
+//    // Copy atom positions and indices for this residue into shared memory
+//    for (int i = threadId; i < AllAtomsCount; i += blockDim.x) {
+//        int globalAtomIdx = d_cudaBonds[blockId].AllAtomsIndices[i];
+//        sharedAtoms[i] = d_atomPositions[globalAtomIdx];
+//    }
+//
+//    __syncthreads();  // Ensuring all threads have loaded data
+//
+//    //if (threadId < AllAtomsCount) {
+//    //    int globalAtomIdx = d_cudaBonds[blockId].AllAtomsIndices[threadId];
+//    //    sharedAtoms[threadId] = d_atomPositions[globalAtomIdx];
+//    //}
+//
+//    //__syncthreads();  // Ensuring all threads have loaded data
+//
+//    // Copy atom positions and indices for this residue into shared memory
+//    for (int i = threadId; i < AllBondsCount; i += blockDim.x) {
+//        sharedAllBondsIndices[i] = d_cudaBonds[blockId].AllBondsIndices[i];
+//        sharedBondPEnergies[i] = 0;
+//
+//    }
+//
+//
+//    __syncthreads();
+//    // Calculate forces and potential energy for each bond
+//    for (int BondIdx = threadId; BondIdx < AllBondsCount; BondIdx += blockDim.x) {
+//        //int bondGlobalIdx = residue.AllBondsIndices[BondIdx].bondInx;
+//        int bondGlobalIdx = sharedAllBondsIndices[BondIdx].bondInx;
+//
+//        BondParams bond = d_bondParams[bondGlobalIdx];
+//        //BondParams bond;
+//        //bond.p1 = 1;          // Atom 1 (index 1)
+//        //bond.p2 = 2;          // Atom 2 (index 2)
+//        //bond.d = 0.152;       // Ideal bond distance (in nanometers) – example: bond length is 0.152 nm
+//        //bond.k = 450.0;
+//
+//
+//        int globalp1Inx = bond.p1;
+//        int globalp2Inx = bond.p2;
+//
+//        int atom1Idx = sharedAllBondsIndices[BondIdx].p1Inx; // Local index
+//        int atom2Idx = sharedAllBondsIndices[BondIdx].p2Inx;
+//
+//        double3 atom1Pos = sharedAtoms[atom1Idx];
+//        double3 atom2Pos = sharedAtoms[atom2Idx];
+//
+//        //printf("atom1Pos.x: %f\n", atom1Pos.x);
+//        //printf("atom2Pos.x: %f\n", atom2Pos.x);
+//
+//
+//        // Compute the difference vector between atoms
+//        double3 delta;
+//        minimumImageVectorDevice(&atom1Pos, &atom2Pos, &delta, d_boxsize);
+//
+//        // Calculate the distance between the two particles
+//        double r = sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
+//
+//        // Compute the energy contribution for the bond
+//        double deltaIdeal = r - bond.d;
+//        double energy = 0.5 * bond.k * deltaIdeal * deltaIdeal;
+//        //if (sharedBondPEnergies[BondIdx]!=0) {
+//        //    // double energy = 0.5 * bond.k * deltaIdeal * deltaIdeal;
+//        //    sharedBondPEnergies[BondIdx] = 0.5 * bond.k * deltaIdeal * deltaIdeal;;
+//        //}
+//
+//        // Compute the derivative of the energy with respect to the distance
+//        double dEdR = bond.k * deltaIdeal;
+//
+//        // Normalize the delta vector and scale by dEdR
+//        double3 force;
+//        if (r > 0) {
+//            force.x = delta.x * (dEdR / r);
+//            force.y = delta.y * (dEdR / r);
+//            force.z = delta.z * (dEdR / r);
+//        }
+//        else {
+//            force = make_double3(0.0, 0.0, 0.0);  // Prevent division by zero
+//        }
+//
+//        // Apply forces and accumulate energy based on residue type and bond indices
+//        if (sharedAllBondsIndices[BondIdx].waterMol) {
+//            atomicAdd(&d_forces[globalp1Inx].x, force.x);
+//            atomicAdd(&d_forces[globalp1Inx].y, force.y);
+//            atomicAdd(&d_forces[globalp1Inx].z, force.z);
+//            atomicAdd(&d_forces[globalp2Inx].x, -force.x);
+//            atomicAdd(&d_forces[globalp2Inx].y, -force.y);
+//            atomicAdd(&d_forces[globalp2Inx].z, -force.z);
+//            //*sharedBlockEnergy += energy;
+//            sharedBondPEnergies[BondIdx] = energy;
+//            //atomicAdd(sharedBlockEnergy, energy);
+//
+//        }
+//        else {
+//            // Partial energy accumulation for other residues
+//            if (sharedAllBondsIndices[BondIdx].p1InRes) {
+//                atomicAdd(&d_forces[globalp1Inx].x, force.x);
+//                atomicAdd(&d_forces[globalp1Inx].y, force.y);
+//                atomicAdd(&d_forces[globalp1Inx].z, force.z);
+//                //*sharedBlockEnergy += 0.5*energy;
+//                //atomicAdd(sharedBlockEnergy, 0.5 * energy);
+//                sharedBondPEnergies[BondIdx] += 0.5* energy;
+//
+//            }
+//            if (sharedAllBondsIndices[BondIdx].p2InRes) {
+//                atomicAdd(&d_forces[globalp2Inx].x, -force.x);
+//                atomicAdd(&d_forces[globalp2Inx].y, -force.y);
+//                atomicAdd(&d_forces[globalp2Inx].z, -force.z);
+//                //*sharedBlockEnergy += 0.5 * energy;
+//                //atomicAdd(sharedBlockEnergy, 0.5 * energy);
+//                sharedBondPEnergies[BondIdx] += 0.5 * energy;
+//
+//
+//            }
+//
+//
+//        }
+//        //d_bondPEnergies[bondGlobalIdx] = energy;
+//        //printf("d_bondPEnergies[bondGlobalIdx]: %f\n", d_bondPEnergies[bondGlobalIdx]);
+//    }
+//
+//    __syncthreads();
+//
+//    // Reduction loop to calculate total residue potential energy
+//    for (int stride = 1; stride < AllBondsCount; stride *= 2) {
+//        int index = 2 * stride * threadId;
+//        if (index + stride < AllBondsCount) {
+//            sharedBondPEnergies[index] += sharedBondPEnergies[index + stride];
+//        }
+//        __syncthreads(); // Synchronize threads after each stride
+//    }
+//
+//
+//    if (threadId == 0) {
+//        atomicAdd(d_totalPEnergy, sharedBondPEnergies[threadId]);
+//        //printf("d_totalPEnergy: %f\n", d_totalPEnergy);
+//    }
+//}
 
 __global__ void BondForcesKernel_shared(
     double3* d_atomPositions,
@@ -409,149 +1252,175 @@ __global__ void BondForcesKernel_shared(
     double3* d_forces,
     double* d_totalPEnergy,
     double3* d_boxsize,
-    D_Residues* d_residues,
-    int* d_startResidues,
-    int* d_endResidues
+    D_CudaBonds* d_cudaBonds
 ) {
+
     extern __shared__ char sharedMemory[];  // Dynamically allocated shared memory
-    //printf("atom1Pos");
     int blockId = blockIdx.x;
     int threadId = threadIdx.x;
 
-    int startResidue = d_startResidues[blockId];
-    int endResidue = d_endResidues[blockId];
+    //int startResidue = d_startResidues[blockId];
+    //int endResidue = d_endResidues[blockId];
 
     // Shared memory pointers
-    AtomPosition* sharedAtoms = (AtomPosition*)sharedMemory;
+    double3* sharedAtoms = (double3*)sharedMemory;  // Shared memory for atom positions
+
+    //double localBlockEnergy = 0.0;  // Accumulator for total block potential energy
 
 
-    for (int resIdx = startResidue; resIdx <= endResidue; ++resIdx) {
-        D_Residues residue = d_residues[resIdx];
+    //D_Residues residue = d_residues[resIdx];
+    int AllAtomsCount = d_cudaBonds[blockId].AllAtomsCount;
+    int AllBondsCount = d_cudaBonds[blockId].AllBondsCount;
 
-        // Copy atom positions and indices for this residue into shared memory
-        for (int i = threadId; i < residue.AllAtomsCount; i += blockDim.x) {
-            int globalAtomIdx = residue.AllAtomsIndices[i];
-            sharedAtoms[i].globalAtomIdx = globalAtomIdx;
-            sharedAtoms[i].position = d_atomPositions[globalAtomIdx];
+    //ResBondInfo* sharedAllBondsIndices = (ResBondInfo*)sharedMemory;
+    CudaBondInfo* sharedAllBondsIndices = (CudaBondInfo*)(sharedMemory + AllAtomsCount * sizeof(double3));
+    //double* sharedBlockEnergy = (double*)(sharedMemory + AllAtomsCount * sizeof(double3) + AllBondsCount * sizeof(CudaBondInfo));
+
+    double* sharedBondPEnergies = (double*)(sharedMemory + AllAtomsCount * sizeof(double3) + AllBondsCount * sizeof(CudaBondInfo));
+    //double* sharedResPEnergies = (double*)((char*)sharedBondPEnergies + AllBondsCount * sizeof(double));
+
+    //double* sharedResPEnergies = (double*)(sharedMemory + AllBondsCount* sizeof(double) + AllAtomsCount * sizeof(double3) + AllBondsCount * sizeof(ResBondInfo));
+
+    //const char* sharedresName = (const char*)(sharedMemory + AllBondsCount * sizeof(ResBondInfo));
+
+
+    // Copy atom positions and indices for this residue into shared memory
+    for (int i = threadId; i < AllAtomsCount; i += blockDim.x) {
+        int globalAtomIdx = d_cudaBonds[blockId].AllAtomsIndices[i];
+        sharedAtoms[i] = d_atomPositions[globalAtomIdx];
+    }
+
+    __syncthreads();  // Ensuring all threads have loaded data
+
+    //if (threadId < AllAtomsCount) {
+    //    int globalAtomIdx = d_cudaBonds[blockId].AllAtomsIndices[threadId];
+    //    sharedAtoms[threadId] = d_atomPositions[globalAtomIdx];
+    //}
+
+    //__syncthreads();  // Ensuring all threads have loaded data
+
+    // Copy atom positions and indices for this residue into shared memory
+    for (int i = threadId; i < AllBondsCount; i += blockDim.x) {
+        sharedAllBondsIndices[i] = d_cudaBonds[blockId].AllBondsIndices[i];
+        sharedBondPEnergies[i] = 0;
+
+    }
+
+
+    __syncthreads();
+    // Calculate forces and potential energy for each bond
+    for (int BondIdx = threadId; BondIdx < AllBondsCount; BondIdx += blockDim.x) {
+        //int bondGlobalIdx = residue.AllBondsIndices[BondIdx].bondInx;
+        int bondGlobalIdx = sharedAllBondsIndices[BondIdx].bondInx;
+
+        BondParams bond = d_bondParams[bondGlobalIdx];
+        //BondParams bond;
+        //bond.p1 = 1;          // Atom 1 (index 1)
+        //bond.p2 = 2;          // Atom 2 (index 2)
+        //bond.d = 0.152;       // Ideal bond distance (in nanometers) – example: bond length is 0.152 nm
+        //bond.k = 450.0;
+
+
+        int globalp1Inx = bond.p1;
+        int globalp2Inx = bond.p2;
+
+        int atom1Idx = sharedAllBondsIndices[BondIdx].p1Inx; // Local index
+        int atom2Idx = sharedAllBondsIndices[BondIdx].p2Inx;
+
+        double3 atom1Pos = sharedAtoms[atom1Idx];
+        double3 atom2Pos = sharedAtoms[atom2Idx];
+
+        //printf("atom1Pos.x: %f\n", atom1Pos.x);
+        //printf("atom2Pos.x: %f\n", atom2Pos.x);
+
+
+        // Compute the difference vector between atoms
+        double3 delta;
+        minimumImageVectorDevice(&atom1Pos, &atom2Pos, &delta, d_boxsize);
+
+        // Calculate the distance between the two particles
+        double r = sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
+
+        // Compute the energy contribution for the bond
+        double deltaIdeal = r - bond.d;
+        double energy = 0.5 * bond.k * deltaIdeal * deltaIdeal;
+        //if (sharedBondPEnergies[BondIdx]!=0) {
+        //    // double energy = 0.5 * bond.k * deltaIdeal * deltaIdeal;
+        //    sharedBondPEnergies[BondIdx] = 0.5 * bond.k * deltaIdeal * deltaIdeal;;
+        //}
+
+        // Compute the derivative of the energy with respect to the distance
+        double dEdR = bond.k * deltaIdeal;
+
+        // Normalize the delta vector and scale by dEdR
+        double3 force;
+        if (r > 0) {
+            force.x = delta.x * (dEdR / r);
+            force.y = delta.y * (dEdR / r);
+            force.z = delta.z * (dEdR / r);
+        }
+        else {
+            force = make_double3(0.0, 0.0, 0.0);  // Prevent division by zero
         }
 
-        __syncthreads();  // Ensure all threads have loaded data
+        // Apply forces and accumulate energy based on residue type and bond indices
+        if (sharedAllBondsIndices[BondIdx].waterMol) {
+            atomicAdd(&d_forces[globalp1Inx].x, force.x);
+            atomicAdd(&d_forces[globalp1Inx].y, force.y);
+            atomicAdd(&d_forces[globalp1Inx].z, force.z);
+            atomicAdd(&d_forces[globalp2Inx].x, -force.x);
+            atomicAdd(&d_forces[globalp2Inx].y, -force.y);
+            atomicAdd(&d_forces[globalp2Inx].z, -force.z);
+            //*sharedBlockEnergy += energy;
+            sharedBondPEnergies[BondIdx] = energy;
+            //atomicAdd(sharedBlockEnergy, energy);
 
-        // Calculate forces for each bond
-        for (int bondIdx = threadId; bondIdx < residue.AllBondsCount; bondIdx += blockDim.x) {
-            int bondGlobalIdx = residue.AllBondsIndices[bondIdx];
-            BondParams bond = d_bondParams[bondGlobalIdx];
-
-            int atom1Idx = bond.p1;
-            int atom2Idx = bond.p2;
-
-            // Simulating dictionary access by searching for atom1Idx and atom2Idx in shared memory
-            double3 atom1Pos; // = { 0.0, 0.0, 0.0 };
-            double3 atom2Pos; // = { 0.0, 0.0, 0.0 };
-
-            // Search for atom1 position in shared memory
-            for (int i = 0; i < residue.AllAtomsCount; ++i) {
-                if (sharedAtoms[i].globalAtomIdx == atom1Idx) {
-                    atom1Pos = sharedAtoms[i].position;
-                    break;
-                }
-            }
-
-            //printf("atom1Pos.x: %f, atom1Pos.y: %f, atom1Pos.z: %f\n", atom1Pos.x, atom1Pos.y, atom1Pos.y);
-
-
-            // Search for atom2 position in shared memory
-            for (int i = 0; i < residue.AllAtomsCount; ++i) {
-                if (sharedAtoms[i].globalAtomIdx == atom2Idx) {
-                    atom2Pos = sharedAtoms[i].position;
-                    break;
-                }
-            }
-
-            //printf("atom2Pos.x: %f, atom2Pos.y: %f, atom2Pos.z: %f\n", atom2Pos.x, atom2Pos.y, atom2Pos.y);
-
-
-            // Compute forces based on atom positions
-            double3 delta;
-            minimumImageVectorDevice(&atom1Pos, &atom2Pos, &delta, d_boxsize);
-
-            // Calculate the distance between the two particles
-            double r = sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
-
-            // Compute the energy contribution
-            double deltaIdeal = r - bond.d;
-            double energy = 0.5 * bond.k * deltaIdeal * deltaIdeal;
-
-
-
-            // Compute the derivative of the energy with respect to the distance
-            double dEdR = bond.k * deltaIdeal;
-
-            // Normalize the delta vector and scale by dEdR
-            double3 force;
-            if (r > 0) {
-                force.x = delta.x * (dEdR / r);
-                force.y = delta.y * (dEdR / r);
-                force.z = delta.z * (dEdR / r);
-            }
-            else {
-                force = make_double3(0.0, 0.0, 0.0);  // Prevent division by zero
-            }
-
-            if (residue.resName == "WAT") {
-                atomicAdd(&d_forces[atom1Idx].x, force.x);
-                atomicAdd(&d_forces[atom1Idx].y, force.y);
-                atomicAdd(&d_forces[atom1Idx].z, force.z);
-                atomicAdd(&d_forces[atom2Idx].x, -force.x);
-                atomicAdd(&d_forces[atom2Idx].y, -force.y);
-                atomicAdd(&d_forces[atom2Idx].z, -force.z);
-                // Accumulate energy to totalPEnergy using atomicAdd
-                atomicAdd(d_totalPEnergy, energy);  // You can switch back to atomicAdd if needed
-            }
-            else {
-                int counter = 0;
-                for (int i = 0; i < residue.NonResBondAtomsCount; ++i) {
-                    if (residue.NonResBondAtoms[i] == atom2Idx) {
-                        atomicAdd(&d_forces[atom1Idx].x, force.x);
-                        atomicAdd(&d_forces[atom1Idx].y, force.y);
-                        atomicAdd(&d_forces[atom1Idx].z, force.z);
-                        atomicAdd(d_totalPEnergy, 0.5 * energy); 
-                        break;
-                    }
-                    else if (residue.NonResBondAtoms[i] == atom1Idx) {
-                        atomicAdd(&d_forces[atom2Idx].x, -force.x);
-                        atomicAdd(&d_forces[atom2Idx].y, -force.y);
-                        atomicAdd(&d_forces[atom2Idx].z, -force.z);
-                        atomicAdd(d_totalPEnergy, 0.5 * energy);  
-                        break;
-                    }
-                    counter++;
-                }
-                if (counter == residue.NonResBondAtomsCount)
-                {
-                    atomicAdd(&d_forces[atom1Idx].x, force.x);
-                    atomicAdd(&d_forces[atom1Idx].y, force.y);
-                    atomicAdd(&d_forces[atom1Idx].z, force.z);
-                    atomicAdd(&d_forces[atom2Idx].x, -force.x);
-                    atomicAdd(&d_forces[atom2Idx].y, -force.y);
-                    atomicAdd(&d_forces[atom2Idx].z, -force.z);
-                    // Accumulate energy to totalPEnergy using atomicAdd
-                    atomicAdd(d_totalPEnergy, energy);  // You can switch back to atomicAdd if needed
-                }
-            }
-
-
-            //// Accumulate potential energy
-            //if (threadId == 0) {
-            //    atomicAdd(d_totalPEnergy, 0.5 * bond.k * deltaIdeal * deltaIdeal);
-            //}
         }
+        else {
+            // Partial energy accumulation for other residues
+            if (sharedAllBondsIndices[BondIdx].p1InRes) {
+                atomicAdd(&d_forces[globalp1Inx].x, force.x);
+                atomicAdd(&d_forces[globalp1Inx].y, force.y);
+                atomicAdd(&d_forces[globalp1Inx].z, force.z);
+                //*sharedBlockEnergy += 0.5*energy;
+                //atomicAdd(sharedBlockEnergy, 0.5 * energy);
+                sharedBondPEnergies[BondIdx] += 0.5 * energy;
 
-        __syncthreads();
+            }
+            if (sharedAllBondsIndices[BondIdx].p2InRes) {
+                atomicAdd(&d_forces[globalp2Inx].x, -force.x);
+                atomicAdd(&d_forces[globalp2Inx].y, -force.y);
+                atomicAdd(&d_forces[globalp2Inx].z, -force.z);
+                //*sharedBlockEnergy += 0.5 * energy;
+                //atomicAdd(sharedBlockEnergy, 0.5 * energy);
+                sharedBondPEnergies[BondIdx] += 0.5 * energy;
+
+
+            }
+
+
+        }
+        //d_bondPEnergies[bondGlobalIdx] = energy;
+        //printf("d_bondPEnergies[bondGlobalIdx]: %f\n", d_bondPEnergies[bondGlobalIdx]);
+    }
+
+    __syncthreads();
+
+    // Reduction loop to calculate total residue potential energy
+    for (int stride = 1; stride < AllBondsCount; stride *= 2) {
+        int index = 2 * stride * threadId;
+        if (index + stride < AllBondsCount) {
+            sharedBondPEnergies[index] += sharedBondPEnergies[index + stride];
+        }
+        __syncthreads(); // Synchronize threads after each stride
+    }
+
+
+    if (threadId == 0) {
+        atomicAdd(d_totalPEnergy, sharedBondPEnergies[threadId]);
+        //printf("d_totalPEnergy: %f\n", d_totalPEnergy);
     }
 }
-
-
 
 void launchKernelBondForcesShared(
     double3* d_atomPositions,
@@ -559,12 +1428,9 @@ void launchKernelBondForcesShared(
     double3* d_forces,
     double* d_totalPEnergy,
     double3* d_boxsize,
-    D_Residues* d_residues,
-    int* d_startResidues,          // Start indices for residues in each block
-    int* d_endResidues,            // End indices for residues in each block
+    D_CudaBonds* d_cudaBonds,
     int _numBlocks,
     int totalBondsInResidues
-
 ) {
     // Calculate sizes of static components
     const int sizeOfPositions = sizeof(double3);
@@ -605,16 +1471,18 @@ void launchKernelBondForcesShared(
     //int numBlocks = 1.1* totalMemoryAllBonds / sharedMemPerBlock; // 10% margin
 
     ////numBlocks = (totalBondsInResidues + blockSize - 1) / blockSize;
-    int sharedMemorySize = 0.95* sharedMemPerBlock;
+    int sharedMemorySize = sharedMemPerBlock;
     int numBlocks = _numBlocks;
 
     int blockSize = totalBondsInResidues / numBlocks;
 
+    //blockSize = adjustBlockSize(blockSize, maxThreadsPerBlock);
+
+    // maxThreadsPerBlock = sharedMemPerBlock / 88;
+    // maxThreadsPerBlock = 762;
     blockSize = adjustBlockSize(blockSize, maxThreadsPerBlock);
 
-
-
-
+    //blockSize = 384;
 
     // Debugging information
     //printf("Device ID: %d\n", deviceId);
@@ -626,15 +1494,13 @@ void launchKernelBondForcesShared(
     //printf("Number of blocks: %d\n", numBlocks);
 
     // Launch the kernel
-    BondForcesKernel_shared << <numBlocks, blockSize, sharedMemorySize >> > (
+    BondForcesKernel_shared <<<numBlocks, blockSize, sharedMemorySize >>> (
         d_atomPositions,
         d_bondParams,
         d_forces,
         d_totalPEnergy,
         d_boxsize,
-        d_residues,
-        d_startResidues,
-        d_endResidues
+        d_cudaBonds
         );
 
     // Check for errors
@@ -643,6 +1509,39 @@ void launchKernelBondForcesShared(
         printf("Error launching BondForcesKernel_shared: %s\n", cudaGetErrorString(err));
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //void launchKernelBondForcesShared(

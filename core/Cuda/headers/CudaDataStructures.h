@@ -5,26 +5,69 @@
 //#include <vector>
 //#include <optional>
 //#include "PDBResidueParser.h"
+//
+//struct ResBondInfo {
+//    int bondInx;
+//    int p1Inx;
+//    int p2Inx;
+//};
 
+struct ResBondInfo {
+    int bondInx;
+    int p1Inx;
+    int p2Inx;
+    bool p1InRes = true;
+    bool p2InRes = true;
+};
 
 //Unified device Residue Struct for Protein, water, ...
 struct D_Residues {
     int* AllAtomsIndices;         // Pointer to all atom indices
     int AllAtomsCount;            // Count of all atoms
     const char* resName;          // 8 bytes (on a 64-bit system)
-    int* AllBondsIndices;         // Pointer to all bond indices
+    ResBondInfo* AllBondsIndices;         // Pointer to all bond indices
     int AllBondsCount;            // Count of all bonds
     int* HAtomsIndices;               // Pointer to Hydrogen atom indices
     int HAtomsCount;              // Count of Hydrogen atoms
     int* NonHAtomsIndices;            // Pointer to Hydrogen atom indices
     int NonHAtomsCount;           // Count of Hydrogen atoms
-    int* HBondsIndices;           // Pointer to Hydrogen bond indices
+    ResBondInfo* HBondsIndices;           // Pointer to Hydrogen bond indices
     int HBondsCount;              // Count of Hydrogen bonds
-    int* NonHBondsIndices;        // Pointer to non-Hydrogen bond indices
+    ResBondInfo* NonHBondsIndices;        // Pointer to non-Hydrogen bond indices
     int NonHBondsCount;           // Count of non-Hydrogen bonds
     int* NonResBondAtoms;         // Pointer to non-residue bond atoms
     int NonResBondAtomsCount;     // Count of non-residue bond atoms
     int resMemSize = 0; // residue memory size
+
+};
+
+struct CudaBondInfo {
+    int bondInx;
+    int p1Inx;
+    int p2Inx;
+    bool waterMol = false;// does the bond belong to water?
+    bool p1InRes = true;
+    bool p2InRes = true;
+};
+
+//Unified device Residue Struct for Protein, water, ...
+struct D_CudaBonds {
+    int* AllAtomsIndices;         // Pointer to all atom indices
+    int AllAtomsCount;            // Count of all atoms
+    CudaBondInfo* AllBondsIndices;         // Pointer to all bond indices
+    int AllBondsCount;            // Count of all bonds
+    int* HAtomsIndices;               // Pointer to Hydrogen atom indices
+    int HAtomsCount;              // Count of Hydrogen atoms
+    int* NonHAtomsIndices;            // Pointer to Hydrogen atom indices
+    int NonHAtomsCount;           // Count of Hydrogen atoms
+    CudaBondInfo* HBondsIndices;           // Pointer to Hydrogen bond indices
+    int HBondsCount;              // Count of Hydrogen bonds
+    CudaBondInfo* NonHBondsIndices;        // Pointer to non-Hydrogen bond indices
+    int NonHBondsCount;           // Count of non-Hydrogen bonds
+
+    // int* NonResBondAtoms;         // Pointer to non-residue bond atoms
+    // int NonResBondAtomsCount;     // Count of non-residue bond atoms
+    //int resMemSize = 0; // residue memory size
 
 };
 

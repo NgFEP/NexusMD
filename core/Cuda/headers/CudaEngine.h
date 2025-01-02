@@ -7,6 +7,7 @@
 #include "SystemXMLParser.h"
 #include "PDBResidueParser.h"
 #include "ResidueForceMapper.h"
+#include "CudaForceMapper.h"
 #include "CudaDataStructures.h"
 #include "CudaBridge.h"
 #include "CudaPeriodicTorsionForce.h"
@@ -95,8 +96,11 @@ namespace Cuda {
         std::vector<AngleParams> _angleParams;
         NonbondedParams _nonbondedParams;
         std::vector<std::set<int>> _exclusions;
+        //std::vector<double> _bondPEnergies;
+
         // PDBResidueParser
         std::vector<Residues> _residues; 
+        std::vector<CudaBonds> _cudaBonds;
         // ResidueForceMapper
         RemainedBonds _remainedBonds;
         // CudaDatastructures
@@ -147,6 +151,9 @@ namespace Cuda {
         double3* _boxSize_double3 = nullptr;
         double3* _lb_double3 = nullptr;
         double3* _ub_double3 = nullptr;
+        double* _bondPEnergies = nullptr;
+
+
 
         // GPU data members
         double3* d_atomPositions;      // Positions of the atoms (GPU)
@@ -160,12 +167,14 @@ namespace Cuda {
         NonbondedParams* d_nonbondedParams;     // Nonbonded interaction parameters (GPU)
         //ModifiedAtomBondInfo* d_atomsBondLoaded;
         D_Residues* d_residues = nullptr; //protein residue device pointer
+        D_CudaBonds* d_cudaBonds = nullptr; //protein residue device pointer
 
         // CudaDatastructures
         int* d_startResidues;
         int* d_endResidues;
 
         double* d_totalPEnergy;
+        double* d_bondPEnergies;
         double* d_kineticEnergies;
         double* d_totalKEnergy;
         double* d_totalEnergy;
