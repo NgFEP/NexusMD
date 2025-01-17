@@ -1,0 +1,9 @@
+﻿  -- Install configuration: "Release"
+  -- Installing: C:/Program Files (x86)/pugixml/lib/pugixml.lib
+  -- Installing: C:/Program Files (x86)/pugixml/lib/cmake/pugixml/pugixml-targets.cmake
+  -- Installing: C:/Program Files (x86)/pugixml/lib/cmake/pugixml/pugixml-targets-release.cmake
+  -- Installing: C:/Program Files (x86)/pugixml/lib/cmake/pugixml/pugixml-config-version.cmake
+  -- Installing: C:/Program Files (x86)/pugixml/lib/cmake/pugixml/pugixml-config.cmake
+  -- Installing: C:/Program Files (x86)/pugixml/lib/pkgconfig/pugixml.pc
+  -- Up-to-date: C:/Program Files (x86)/pugixml/include/pugiconfig.hpp
+  -- Up-to-date: C:/Program Files (x86)/pugixml/include/pugixml.hpp
