@@ -102,7 +102,7 @@ Nexus is the next-generation molecular dynamics simulation software package to p
      ```
    - Install the Nexus library:
      ```bash
-     pip install dist/Nexus-1.0.0-py3-none-any.whl
+     pip install dist/Nexus-1.0.0-py3-none-any.whl --force-reinstall
      ```
 
 10. **Run the Test File**:
@@ -168,7 +168,7 @@ Nexus is the next-generation molecular dynamics simulation software package to p
      ```
    - Install the Nexus library:
      ```bash
-     pip3 install dist/Nexus-1.0.0-py3-none-any.whl
+     pip install dist/Nexus-1.0.0-py3-none-any.whl --force-reinstall
      ```
 
 7. **Run the Test File**:
