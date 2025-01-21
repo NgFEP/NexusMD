@@ -14,6 +14,25 @@ Nexus is the next-generation molecular dynamics simulation software package to p
 * Visual Studio 2022 for execution via the source code
 * (Optional) Anaconda for execution via the published version
 
+### Dependencies
+
+* **Python**: Version 3.8 or above
+* **Operating Systems**: 
+  * Windows 10, 11
+  * Linux (Tested on Ubuntu 20.04 or later)
+* **Execution via the source code**:
+  * For Windows: Visual Studio 2022
+  * For Linux: GCC or Clang (latest version recommended)
+* **SWIG**: Required for code generation.
+* **Execution the published version**:
+  *Anaconda*
+* **Python Packages**:
+  - `setuptools`, `wheel`, and `cython`
+
+---
+
+
+
 ### Installation Instructions (Source code)
 
 #### Windows
@@ -22,12 +41,31 @@ Nexus is the next-generation molecular dynamics simulation software package to p
    - Ensure the following components are installed:
      * Desktop development with C++
      * Python development tools
+2. **Install SWIG**:
+   - Download the SWIG `.zip` file for Windows from the [official website](http://www.swig.org/download.html).
+   - Extract the downloaded file to a folder, e.g., `C:\swigwin`.
 
-2. **Clone the Repository**:
+3. **Add SWIG to the System PATH**:
+   - Locate the extracted SWIG folder, e.g., `C:\swigwin`.
+   - Open **Environment Variables**:
+     1. Press `Win + S` and type **Environment Variables**.
+     2. Select **Edit the system environment variables**.
+     3. In the **System Properties** window, click **Environment Variables**.
+   - Edit the `Path` variable:
+     1. In the **System Variables** section, find and select the variable named `Path`.
+     2. Click **Edit**.
+     3. Click **New** and enter the full path to the SWIG folder (e.g., `C:\swigwin`).
+     4. Click **OK** to save changes.
+   - Restart any open terminals or your system for the changes to take effect.
+   - Verify the installation by running:
+     ```bash
+     swig -version
+     ```
+4. **Clone the Repository**:
    - Clone the repository to your local machine.
    - Open the main folder in Visual Studio 2022.
 
-3. **Generate Build Files**:
+5. **Generate Build Files**:
    - Open the terminal in Visual Studio:
      * Go to `View` → `Terminal` → `Developer PowerShell`.
    - Navigate to the `out/build` directory:
@@ -39,24 +77,24 @@ Nexus is the next-generation molecular dynamics simulation software package to p
      cmake ../../.
      ```
 
-4. **Build the Project**:
+6. **Build the Project**:
    - Open the generated `Nexus.sln` file located in the `out/build` folder.
    - Ensure the solution configuration is set to **Release** (not Debug).
    - In the Solution Explorer:
      * Right-click on `ALL_BUILD` and select `Build`.
 
-5. **Switch Solution Explorer View**:
+7. **Switch Solution Explorer View**:
    - Change the Solution Explorer view to "Folder View":
      * Click the "Switch between solution and available views" button (top-left corner of the Solution Explorer).
 
-6. **Install Required Python Packages**:
+8. **Install Required Python Packages**:
    - Open the terminal again and navigate to the main folder.
    - Install the following Python packages:
      ```bash
      pip install setuptools wheel cython
      ```
 
-7. **Build and Install the Nexus Library**:
+9. **Build and Install the Nexus Library**:
    - Run the following commands in the terminal:
      ```bash
      python setup.py build -cmingw32
@@ -67,7 +105,7 @@ Nexus is the next-generation molecular dynamics simulation software package to p
      pip install dist/Nexus-1.0.0-py3-none-any.whl
      ```
 
-8. **Run the Test File**:
+10. **Run the Test File**:
    - Open `NexusTest.py` inside the test folder containing .pdb and system, state .xml files.
    - Adjust the options as desired.
    - Run the test file using the following command:
@@ -82,7 +120,8 @@ Nexus is the next-generation molecular dynamics simulation software package to p
    - Ensure the following packages are installed:
      ```bash
      sudo apt update
-     sudo apt install build-essential cmake python3-dev python3-pip
+     sudo apt install build-essential cmake swig python3-dev python3-pip
+     pip3 install --upgrade pip
      ```
 
 2. **Clone the Repository**:
@@ -145,20 +184,30 @@ Nexus is the next-generation molecular dynamics simulation software package to p
 
 #### Windows
 
-1. **Install Required Tools**:
-   - Install **Python** (version 3.8 or later) from the [official Python website](https://www.python.org/downloads/).
-   - Upgrade `pip` and install **Anaconda** for managing dependencies:
+1. **Install Anaconda**:
+   - Download and install **Anaconda** from the [official website](https://www.anaconda.com/).
+
+2. **Create a New Anaconda Environment**:
+   - Open the Anaconda Prompt.
+   - Create a new environment with Python 3.8 or later:
      ```bash
-     pip install --upgrade pip
+     conda create -n nexus_env python=3.8
+     ```
+   - Activate the environment:
+     ```bash
+     conda activate nexus_env
      ```
 
-2. **Install Nexus**:
-   - Open the terminal and install Nexus version 1.0.0:
+3. **Install Dependencies**:
+   - While in the `nexus_env` environment, install the required Python packages:
+     ```bash
+     pip install setuptools wheel cython
+     ```
+   - Install Nexus version 1.0.0:
      ```bash
      pip install -i https://test.pypi.org/simple/ Nexus==1.0.0
      ```
-
-3. **Prepare the Folder**:
+4. **Prepare the Folder**:
    - Create a folder to contain all necessary files (available in the test folder (github repository)):
      - `Sample_Protein.pdb`: The PDB file for the system.
      - `system_Sample_Protein.xml`: The system XML configuration file.
@@ -166,11 +215,11 @@ Nexus is the next-generation molecular dynamics simulation software package to p
      - `NexusTest.py`: Test script for Nexus.
    - Copy these files into the folder.
 
-4. **Adjust Options in NexusTest.py**:
+5. **Adjust Options in NexusTest.py**:
    - Open `NexusTest.py` in any text editor or IDE.
    - Modify options such as file paths, configurations, or parameters as needed.
 
-5. **Run NexusTest.py**:
+6. **Run NexusTest.py**:
    - Navigate to the folder in the terminal.
    - Run the test script:
      ```bash
