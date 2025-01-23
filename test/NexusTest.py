@@ -4,7 +4,7 @@ def test_task_dispatcher():
     try:
         # Create a CPU-based TaskDispatcher instance using the factory method
         print("Creating TaskDispatcher for CPU...")
-        dispatcher = Nexus.TaskDispatcher.CreateDispatcher("CPU")
+        dispatcher = Nexus.TaskDispatcher.CreateDispatcher("CUDA")
         print(f"TaskDispatcher instance created: {dispatcher}")
 
         # Define dummy parameters for testing the Simulate method

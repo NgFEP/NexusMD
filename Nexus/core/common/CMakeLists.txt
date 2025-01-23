@@ -1,13 +1,9 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(common)
+project(common LANGUAGES CXX)
 
-file(GLOB COMMON_HEADERS
-    "${CMAKE_CURRENT_SOURCE_DIR}/headers/*.h"
-)
-file(GLOB COMMON_SOURCES
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
-)
+file(GLOB COMMON_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/headers/*.h")
+file(GLOB COMMON_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 add_library(common STATIC ${COMMON_HEADERS} ${COMMON_SOURCES})
 

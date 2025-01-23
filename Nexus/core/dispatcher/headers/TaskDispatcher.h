@@ -4,7 +4,9 @@
 #include <string>
 //#include <vector>
 #include <iostream>
-#include <Engine.h>
+#include <SystemXMLParser.h>
+#include <PeriodicBoundaryCondition.h>
+#include <Coords3D.h>
 
 class TaskDispatcher {
 public:

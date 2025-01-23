@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(dispatcher)
+project(dispatcher LANGUAGES CXX)
 
 file(GLOB DISPATCHER_HEADERS
     "${CMAKE_CURRENT_SOURCE_DIR}/headers/*.h"
@@ -17,9 +17,15 @@ target_include_directories(dispatcher PUBLIC
 
 )
 
+set_target_properties(dispatcher PROPERTIES
+    CUDA_SEPARABLE_COMPILATION ON
+)
+
+
 target_link_libraries(dispatcher PRIVATE 
     common        
-    baseline      
+    baseline
+    cuda
     libs          
 )
 
