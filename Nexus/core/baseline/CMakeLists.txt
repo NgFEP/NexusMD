@@ -17,13 +17,12 @@ add_library(baseline STATIC ${BASELINE_HEADERS} ${BASELINE_SOURCES})
 target_include_directories(baseline PUBLIC 
     "${CMAKE_CURRENT_SOURCE_DIR}/headers"
     "${CMAKE_CURRENT_SOURCE_DIR}/headers/Forces"
-    "${CMAKE_SOURCE_DIR}/core/common/headers"
-    "${CMAKE_SOURCE_DIR}/core/libs/pugixml-1.14/src"
-    "${CMAKE_SOURCE_DIR}/core/libs/fftw-3.3.5-dll64"
-
+    "${CMAKE_SOURCE_DIR}/Nexus/core/common/headers"
+    "${CMAKE_SOURCE_DIR}/Nexus/core/libs/pugixml-1.14/src"
 )
 
 target_link_libraries(baseline PRIVATE 
-    common 
-    libs
+    pugixml_lib
+    FFTW3::fftw3
+    common
 )

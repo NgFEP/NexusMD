@@ -1,11 +1,9 @@
 #pragma once
 
-#include <memory>
 #include <string>
-//#include <vector>
-#include <iostream>
+#include <vector>
+#include <memory>
 #include <SystemXMLParser.h>
-#include <PeriodicBoundaryCondition.h>
 #include <Coords3D.h>
 
 class TaskDispatcher {
@@ -20,8 +18,13 @@ public:
     // Factory method to create TaskDispatcher instances
     static std::shared_ptr<TaskDispatcher> CreateDispatcher(const std::string& processorChoice);
 
+    // Functions to enable specific forces
+    void EnableHarmonicBondForce() { harmonicBondForceEnabled = true; }
+    void EnableHarmonicAngleForce() { harmonicAngleForceEnabled = true; }
+    void EnablePeriodicTorsionForce() { periodicTorsionForceEnabled = true; }
+    void EnableNonbondedForce() { nonbondedForceEnabled = true; }
+
 protected:
-    // Protected helper methods to initialize default parameters
     virtual void initializeParameters();
 
     // Simulation parameters stored as members
@@ -31,5 +34,10 @@ protected:
     std::vector<BondParams> bondParams;
     std::vector<AngleParams> angleParams;
     NonbondedParams nonbondedParams;
-    PeriodicBoundaryCondition::BoxInfo boxInfo;
+
+    // Individual flags for enabled forces
+    bool harmonicBondForceEnabled = false;
+    bool harmonicAngleForceEnabled = false;
+    bool periodicTorsionForceEnabled = false;
+    bool nonbondedForceEnabled = false;
 };

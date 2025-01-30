@@ -1,12 +1,14 @@
+"""
+setup.py: Used for packaging the Nexus Python wrapper.
+"""
 import os
 import sys
 from setuptools import setup, find_packages
 
-# Define the version of the library
+# Defining the version of the library
 MAJOR_VERSION_NUM = '1'
 MINOR_VERSION_NUM = '0'
 BUILD_INFO = '0'
-
 
 def reportError(message):
     sys.stdout.write("ERROR: ")
@@ -14,70 +16,35 @@ def reportError(message):
     sys.stdout.write("\nExiting\n")
     sys.exit(1)
 
-
-def create_init_files():
-    """
-    Create `__init__.py` files in required directories.
-    """
-    # Paths to the directories where __init__.py needs to be created
-    base_wrapper_dir = os.path.join("out", "build", "wrapper")
-    release_dir = os.path.join(base_wrapper_dir, "Release")
-
-    # __init__.py content for `out/build/wrapper`
-    wrapper_init_content = '''"""
-Nexus: Python wrapper for the Nexus library.
-"""
-
-from .Nexus import *  # Import symbols from Nexus.py
-from .Release._Nexus import *  # Import symbols from _Nexus.pyd
-'''
-
-    # __init__.py content for `out/build/wrapper/Release`
-    release_init_content = '''import os
-import sys
-
-# Get the absolute path of the current directory (Release folder)
-current_dir = os.path.dirname(os.path.abspath(__file__))
-
-# Ensure the current directory is in sys.path
-if current_dir not in sys.path:
-    sys.path.insert(0, current_dir)
-
-# Import the .pyd module
-try:
-    from _Nexus import *  # Import all symbols from the .pyd file
-except ImportError as e:
-    raise ImportError(f"Could not load _Nexus.pyd. Ensure it is in the Release folder: {current_dir}. Error: {e}")
-'''
-
-    # Create __init__.py in `out/build/wrapper`
-    os.makedirs(base_wrapper_dir, exist_ok=True)
-    with open(os.path.join(base_wrapper_dir, "__init__.py"), "w") as f:
-        f.write(wrapper_init_content)
-
-    # Create __init__.py in `out/build/wrapper/Release`
-    os.makedirs(release_dir, exist_ok=True)
-    with open(os.path.join(release_dir, "__init__.py"), "w") as f:
-        f.write(release_init_content)
-
-
 def buildKeywordDictionary():
-    """
-    Build the dictionary of keywords for the setup process.
-    """
-    # Find the .pyd and .py files (already built by CMake)
-    wrapper_py_path = os.path.join("out", "build", "wrapper", "Nexus.py")
+    # Finding the .pyd and .py files
+    wrapper_py_path = os.path.join("out", "build", "wrapper", "Release","Nexus.py")
     wrapper_pyd_path = os.path.join("out", "build", "wrapper", "Release", "_Nexus.pyd")
+    fftw_dll_path = os.path.join("out", "build", "wrapper", "Release", "libfftw3-3.dll")
 
+    print(f"Wrapper Python Path: {wrapper_py_path}")
+    print(f"Wrapper PYD Path: {wrapper_pyd_path}")
+    print(f"Nexus FFTW DLL Path: {fftw_dll_path}")
+
+    # Checking for the .py file
     if not os.path.exists(wrapper_py_path):
         reportError(f"Missing Nexus.py at {wrapper_py_path}")
+    else:
+        print(f"Found Nexus.py at {wrapper_py_path}")
+
+    # Checking for the .pyd file
     if not os.path.exists(wrapper_pyd_path):
         reportError(f"Missing _Nexus.pyd at {wrapper_pyd_path}")
+    else:
+        print(f"Found _Nexus.pyd at {wrapper_pyd_path}")
 
-    print(f"Found Nexus.py at {wrapper_py_path}")
-    print(f"Found _Nexus.pyd at {wrapper_pyd_path}")
+    # Checking for FFTW3 DLL
+    if not os.path.exists(fftw_dll_path):
+        sys.stdout.write(f"WARNING: FFTW3 DLL not found at {fftw_dll_path}\n")
+    else:
+        print(f"Found libfftw3-3.dll at {fftw_dll_path}")
 
-    # Define package data and setup keywords
+    # Defining package data and setup keywords
     setupKeywords = {
         "name": "Nexus",
         "version": f"{MAJOR_VERSION_NUM}.{MINOR_VERSION_NUM}.{BUILD_INFO}",
@@ -89,31 +56,25 @@ def buildKeywordDictionary():
         Nexus is a toolkit for molecular simulation, including Python wrappers
         for efficient execution and scripting.
         """,
-        "packages": find_packages(where="out/build/wrapper"),
+        "packages": find_packages(),
         "package_dir": {"": "out/build/wrapper"},
         "package_data": {
-            "": ["*.py", "*.pyd"],  # Include .py and .pyd files
+            "": ["*.py", "*.pyd", "libfftw3-3.dll"],
         },
-        "include_package_data": True,
+        "include_packag e_data": True,
         "data_files": [
-            ("", [wrapper_py_path, wrapper_pyd_path])  # Copy these files to the package root
+            ("Nexus", [wrapper_py_path, wrapper_pyd_path,fftw_dll_path])
         ],
     }
 
     return setupKeywords
 
-
 def main():
     if sys.version_info < (3, 6):
         reportError("Nexus requires Python 3.6 or better.")
 
-    # Create necessary __init__.py files
-    create_init_files()
-
-    # Build the setup keywords and run setup
     setupKeywords = buildKeywordDictionary()
     setup(**setupKeywords)
-
 
 if __name__ == '__main__':
     main()

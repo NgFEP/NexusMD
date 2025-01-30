@@ -3,39 +3,10 @@
 using namespace std;
 
 // Constructor to initialize with file name
-//PDBResidueParser(const string& filename, vector<PResidues> residues, vector<Connection> connections, vector<WaterMols> waterMols);
 
 PDBResidueParser::PDBResidueParser() {};
 PDBResidueParser::~PDBResidueParser() {};
-//PDBAtomInfo PDBResidueParser::parsePDBLine(const string& line) {
-//    PDBAtomInfo atom;
-//    atom.recordType = line.substr(0, 6);
-//    atom.atomNum = stoi(line.substr(6, 5));
-//    atom.atomName = line.substr(12, 4);
-//    atom.resName = line.substr(17, 3);
-//    atom.chainID = line[21];
-//    atom.resSeq = stoi(line.substr(22, 4));
-//
-//    // Using Coords3D for coordinates
-//    atom.position[0] = stod(line.substr(30, 8));
-//    atom.position[1] = stod(line.substr(38, 8));
-//    atom.position[2] = stod(line.substr(46, 8));
-//
-//    atom.occupancy = stod(line.substr(54, 6));
-//    atom.tempFactor = stod(line.substr(60, 6));
-//    atom.element = line.substr(76, 2);
-//    return atom;
-//}
-//
 
-//std::string PDBResidueParser::inferElementFromAtomName(const std::string& atomName) {
-//    for (char c : atomName) {
-//        if (std::isalpha(c)) {
-//            return std::string(1, c); // Return the first non-numerical character as a string
-//        }
-//    }
-//    return ""; // Return empty if no alphabetic character is found
-//}
 
 // Utility function to trim whitespace
 void PDBResidueParser::trim(std::string& str) {
@@ -47,7 +18,7 @@ void PDBResidueParser::trim(std::string& str) {
 std::string PDBResidueParser::inferElementFromAtomName(const std::string& atomName) {
     if (atomName.empty()) return "";
 
-    // Remove numerical characters from the atom name
+    // To remove numerical characters from the atom name
     std::string filteredAtomName;
     for (char c : atomName) {
         if (!std::isdigit(c)) {
@@ -55,7 +26,7 @@ std::string PDBResidueParser::inferElementFromAtomName(const std::string& atomNa
         }
     }
 
-    // Initialize the element string with the first character (uppercase)
+    // To initialize the element string with the first character (uppercase)
     std::string element;
     if (!filteredAtomName.empty()) {
         element += filteredAtomName[0];
@@ -70,19 +41,12 @@ std::string PDBResidueParser::inferElementFromAtomName(const std::string& atomNa
     return element;
 }
 
-
-
-
-
-
 // Function to parse a single line from the PDB file
 
 PDBAtomInfo PDBResidueParser::parsePDBLine(const std::string& line) {
     PDBAtomInfo atom;
-    //std::istringstream stream(line);
-    //std::string buffer;
 
-    // Extract record type (ATOM or HETATM)
+    // To extract record type (ATOM or HETATM)
     atom.recordType = line.substr(0, 6);
     trim(atom.recordType);
 
@@ -115,7 +79,7 @@ PDBAtomInfo PDBResidueParser::parsePDBLine(const std::string& line) {
         atom.tempFactor = std::stod(line.substr(60, 6));
     }
     catch (...) {
-        // Use default values if parsing fails
+        // To use default values if parsing fails
         atom.occupancy = 1.0;
         atom.tempFactor = 0.0;
     }
@@ -148,14 +112,14 @@ void PDBResidueParser::parseFile(const string& filename, vector<Residues>& resid
             PDBAtomInfo atom = parsePDBLine(line);
             atoms.push_back(atom);
 
-            // Check if the residue has changed
+            // To check if the residue has changed
             if (currentResSeq != atom.resSeq || currentResName != atom.resName) {
                 // If there was a previous residue, process it
                 if (!atomIndices.empty()) {
                     processResidue(atomIndices, currentResName, residues);
                 }
 
-                // Start a new residue
+                // To start a new residue
                 atomIndices.clear(); // Clear the indices for the new residue
                 currentResName = atom.resName;
                 currentResSeq = atom.resSeq;
@@ -180,24 +144,23 @@ void PDBResidueParser::processResidue(vector<int> atomIndices, string currentRes
     if (currentResName == "WAT") { // Process water molecules
         Residues wResidue;
         wResidue.resName = currentResName;
-        wResidue.AllAtomsIndices = atomIndices;//atomNum starts from 1
+        wResidue.AllAtomsIndices = atomIndices;
 
         residues.push_back(wResidue);
     }
-    else { // Process protein or other residues
+    else { // To process protein or other residues
         Residues pResidue;
-        pResidue.AllAtomsIndices = atomIndices;//atomNum starts from 1
+        pResidue.AllAtomsIndices = atomIndices;
 
         pResidue.resName = currentResName;
 
-
-        // Extract Hydrogen Atoms
-        for (int i = pResidue.AllAtomsIndices[0]; i <= pResidue.AllAtomsIndices.back(); ++i) {
+        // To extract Hydrogen Atoms
+        for (int i = pResidue.AllAtomsIndices[0]; i < pResidue.AllAtomsIndices.size(); ++i) {
             if (atoms[i].element == "H") {
                 pResidue.HAtomsIndices.push_back(atoms[i].atomNum-1);
             }
             else {
-                pResidue.NonHAtomsIndices.push_back(atoms[i].atomNum - 1);// atomNum starts from 1 in pdb
+                pResidue.NonHAtomsIndices.push_back(atoms[i].atomNum - 1);
 
             }
         }
@@ -206,35 +169,6 @@ void PDBResidueParser::processResidue(vector<int> atomIndices, string currentRes
         // Push the residue without bond information
         residues.push_back(pResidue);
 
-        //// Check for standard amino acids to establish connections
-        //if (standardAminoAcids.find(currentResName) != standardAminoAcids.end()) {
-        //    if (pResidues.size() > 1) {
-        //        Connection connection;
-        //        int atomC, atomN;
-        //        //int atomC = atoms[pResidues[pResidues.size() - 2].highBound].atomNum - 2;
-        //        for (int i = atoms[pResidues[pResidues.size() - 2].lowBound].atomNum-1; i <= atoms[pResidues[pResidues.size() - 2].highBound].atomNum-1; ++i) {
-        //            if (atoms[i].atomName == "C") {
-        //                atomC = i;
-        //                break;
-        //            }
-        //        }
-        //        for (int i = atoms[pResidues.back().lowBound].atomNum - 1; i <= atoms[pResidues.back().highBound].atomNum - 1; ++i) {
-        //            if (atoms[i].atomName == "N") {
-        //                atomN = i;
-        //                break;
-        //            }
-        //        }
 
-        //        //atomC = atoms[pResidues[pResidues.size() - 2].highBound].atomNum-2;
-        //        //atomN = atoms[pResidues.back().lowBound].atomNum-1;
-        //        // Only push atomC and atomN as a pair
-        //        connection.atomC = atomC;  // Now only storing a pair of atom indices
-        //        connection.atomN = atomN;  // Now only storing a pair of atom indices
-        //        //connection.Bond = ;  // Now only storing a pair of atom indices
-        //        connections.push_back(connection);
-
-
-        //    }
-        //}
     }
 }

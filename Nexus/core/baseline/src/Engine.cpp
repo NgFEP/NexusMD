@@ -1,5 +1,5 @@
-//Engine is the combiner of all the simulation elements: .pdb state reader, initializer(total forces and velocities), total force calculator, integrator, and reporter 
-//#include "stdafx.h"
+//Engine is the combiner of all the simulation elements: .pdb state reader, initializer(total forces and velocities), total force calculator, integrator, reporter 
+
 #pragma once
 
 #include <iostream>
@@ -16,7 +16,6 @@
 using namespace std;
 using namespace BaseLine;;
 
-
 Engine::Engine(
     const std::string& systemFilename,
     const std::string& stateFilename,
@@ -26,7 +25,10 @@ Engine::Engine(
     const std::vector<BondParams>& bondParams,
     const std::vector<AngleParams>& angleParams,
     const NonbondedParams& nonbondedParams,
-    const PeriodicBoundaryCondition::BoxInfo& boxInfo
+    const bool& harmonicBondForceEnabled,
+    const bool& harmonicAngleForceEnabled,
+    const bool& periodicTorsionForceEnabled,
+    const bool& nonbondedForceEnabled
 ) : _systemFilename(systemFilename),
 _stateFilename(stateFilename),
 _atomPositions(atomPositions),
@@ -35,7 +37,10 @@ _torsionParams(torsionParams),
 _bondParams(bondParams),
 _angleParams(angleParams),
 _nonbondedParams(nonbondedParams),
-_boxInfo(boxInfo)
+_harmonicBondForceEnabled(harmonicBondForceEnabled),
+_harmonicAngleForceEnabled(harmonicAngleForceEnabled),
+_periodicTorsionForceEnabled(periodicTorsionForceEnabled),
+_nonbondedForceEnabled(nonbondedForceEnabled)
 {
     if (_boxInfo.boxSize == Coords3D(0, 0, 0)) { // Check if box size is uninitialized
         // Extract box size from XML if not provided
@@ -60,48 +65,32 @@ void Engine::InitializeSimulationParameters() {
         //_boxInfo.boxSize = { 100,100,100 };
     }
 
-    // To extract box boundaries from the initial atom positions
+    // Extract box boundaries from the initial atom positions
     PeriodicBoundaryCondition::extractBoxBoundaries(_atomPositions, _boxInfo, _stateFilename);
 
     Initializer initializer;
     initializer.InitializeForcesAndVelocities(_atomPositions, _totalForces, _velocities);
 }
 
-
-
 void Engine::CalculateForces() {
-    //since energy is calculated during force calculation for each step _totalPEnergy gets reseted
-    //potential energy is calculated per force and per atom energy is not calculated therefore only totalPEnergy is going to be reported
     _totalPEnergy = 0.0;
 
 
-    //To reset Forces
     _totalForces.assign(_numAtoms, Coords3D(0, 0, 0));
 
-    //long startTime = clock();
-    auto startTime = chrono::high_resolution_clock::now();
-
-    // Forces calculation logic here, updating `totalForces` by adding PtorsionForces
-    if (!_torsionParams.empty()) {
-        //Forces::AddPTorsion(_totalForces, _atomPositions, _torsionParams, _totalPEnergy, _boxInfo);
-    }
-    if (!_bondParams.empty()) {
+    // Forces calculation logic here, updating `totalForces` by adding enabled forces
+    if (_harmonicBondForceEnabled) {
         Forces::AddHBond(_totalForces, _atomPositions, _bondParams, _totalPEnergy, _boxInfo);
     }
-    if (!_angleParams.empty()) {
-        //Forces::AddHAngle(_totalForces, _atomPositions, _angleParams, _totalPEnergy, _boxInfo);
+    if (_harmonicAngleForceEnabled) {
+        Forces::AddHAngle(_totalForces, _atomPositions, _angleParams, _totalPEnergy, _boxInfo);
     }
-    if (!_nonbondedParams.particles.empty()) {// if there is no particle infor available to perform the NonBondCalculations
-        //Forces::AddNonBondElectroPME(_totalForces, _atomPositions, _nonbondedParams, _totalPEnergy, _boxInfo, _exclusions);
+    if (_periodicTorsionForceEnabled) {
+        Forces::AddPTorsion(_totalForces, _atomPositions, _torsionParams, _totalPEnergy, _boxInfo);
     }
-
-    //long finishTime = clock();
-    auto finishTime = chrono::high_resolution_clock::now();
-
-    // To calculate the elapsed time in microseconds
-    auto duration = chrono::duration_cast<chrono::nanoseconds>(finishTime - startTime).count();
-    cout << "Force Calculation Runtime is " << duration << " nanoseconds" << endl;
-
+    if (_nonbondedForceEnabled) {
+        Forces::AddNonBondElectroPME(_totalForces, _atomPositions, _nonbondedParams, _totalPEnergy, _boxInfo, _exclusions);
+    }
 
 }
 
@@ -119,20 +108,16 @@ void Engine::TotalEnergy(double& timestep) {
     _totalEnergy = 0.0;
     _kineticEnergies.assign(_numAtoms, 0.0);
 
-    //KineticEnergy::calculateKineticEnergy(_velocities, _masses,_numAtoms, _kineticEnergies, _totalKEnergy);
     KineticEnergy::calculateKineticEnergy(_velocities, _masses, _totalForces, timestep, _numAtoms, _kineticEnergies, _totalKEnergy);
 
     _totalEnergy = _totalPEnergy + _totalKEnergy;
-    if (_totalEnergy > 200) {
-        cout << "";
-    }
 
 }
 
-void Engine::Report(const string& inputFilename, const string& outputFilename, int& step,double& timestep, int& interval) {
+void Engine::Report(const string& inputFilename, const string& outputFilename, int& step, double& timestep, int& interval) {
     // Reporting logic here, potentially writing to `outputFilename` for the current `step`
     Reporter reporter;
-    if (_RealSimRun){
+    if (_RealSimRun) {
 
 
         if ((((step + 1) % interval) == 0) || step == 0) {
@@ -141,10 +126,10 @@ void Engine::Report(const string& inputFilename, const string& outputFilename, i
             TotalEnergy(timestep);
         }
 
-        // To write the REMARK line with the current date
         // Model number is different than step number. it's step divided by interval (the interval at which the reporters will save data)
 
-        if (step == 0 ) {
+        if (step == 0) {
+            //reporter.pdbOutputGenerator(inputFilename, outputFilename, _outputTemplate, _atomPositions, step);
             reporter.pdbOutputGeneratorPart1(inputFilename, outputFilename, _outputTemplate);
             _Modelnum = (step + 1) / interval;//in pdb step starts from 1
             reporter.pdbOutputGeneratorPart2(outputFilename, _outputTemplate, _atomPositions, _Modelnum);
@@ -174,43 +159,30 @@ void Engine::Report(const string& inputFilename, const string& outputFilename, i
 
 
 
-void Engine::RunSimulation(const string& inputFilename, const string& outputFilename, double& timestep, int& numSteps, int& interval){ // const string& systemFilename, const string& stateFilename, vector<Coords3D>& totalForces, vector<Coords3D>& velocities) {    // Unpack the tuple returned by Inputs
+void Engine::RunSimulation(const string& inputFilename, const string& outputFilename, double& timestep, int& numSteps, int& interval) { // const string& systemFilename, const string& stateFilename, vector<Coords3D>& totalForces, vector<Coords3D>& velocities) {    // Unpack the tuple returned by Inputs
 
-    // To initialize using the unpacked atomPositions
+    // Initialize using the unpacked atomPositions
     _numAtoms = _atomPositions.size();
     _dt = { timestep ,timestep };
 
-    // To initialize _exclusions with the size of _numAtoms
+    // Initialize _exclusions with the size of _numAtoms
     _exclusions.resize(_numAtoms);
 
     Exclusions::createExclusions(_numAtoms, _bondParams, _exclusions, _bondCutoff);
 
-    // To loop through each simulation step
+    // Loop through each simulation step
     for (int currentStep = 0; currentStep < numSteps; ++currentStep) {
 
-
-        //long startTime = clock();
-        auto startTime2 = chrono::high_resolution_clock::now();
-
-
-        // To update forces based on current positions
+        // Update forces based on current positions
         CalculateForces();
-        //TotalEnergy();
 
-        // To report current state, clearing the file only at the first step
-        
         Report(inputFilename, outputFilename, currentStep, timestep, interval);
 
-        // To update positions and velocities based on new forces
+        // Update positions and velocities based on new forces
         Integrate(currentStep);
 
+        cout << "Simulation Step #" << currentStep + 1 << " is completed" << endl;
 
-        // To prepare for the next iteration by updating positions and velocities
-
-        auto finishTime2 = chrono::high_resolution_clock::now();
-        // To calculate the elapsed time in microseconds
-        auto duration = chrono::duration_cast<chrono::nanoseconds>(finishTime2 - startTime2).count();
-        cout << "1 step simulation Runtime is " << duration << " nanoseconds" << endl;
 
     }
 }

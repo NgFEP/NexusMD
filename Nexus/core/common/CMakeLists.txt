@@ -1,9 +1,13 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(common LANGUAGES CXX)
+project(common)
 
-file(GLOB COMMON_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/headers/*.h")
-file(GLOB COMMON_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
+file(GLOB COMMON_HEADERS
+    "${CMAKE_CURRENT_SOURCE_DIR}/headers/*.h"
+)
+file(GLOB COMMON_SOURCES
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+)
 
 add_library(common STATIC ${COMMON_HEADERS} ${COMMON_SOURCES})
 
@@ -15,8 +19,7 @@ find_package(CUDAToolkit REQUIRED)
 
 target_link_libraries(common PRIVATE 
     CUDA::cudart 
-    baseline
-    libs 
+    pugixml_lib 
 )
 
 set_target_properties(common PROPERTIES
