@@ -38,7 +38,7 @@ Nexus is the next-generation molecular dynamics simulation software package to p
 #### Windows
 
 1. **Install Visual Studio 2022**:
-   - Ensure the following components are installed:
+   - Ensure the following components are installed [Link](https://visualstudio.microsoft.com/downloads/):
      * Desktop development with C++
      * Python development tools
 2. **Install SWIG**:
