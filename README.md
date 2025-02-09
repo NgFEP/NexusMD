@@ -128,11 +128,11 @@ NexusMD is the next-generation molecular dynamics simulation software package to
    - Open the Anaconda Prompt.
    - Create a new environment with Python 3.8 or later:
      ```bash
-     conda create -n NexusMD_env python=3.10
+     conda create -n nexusMD_env python=3.11.5
      ```
    - Activate the environment:
      ```bash
-     conda activate NexusMD_env
+     conda activate nexusMD_env
      ```
 3. **Install CUDA Toolkit and Add to System PATH**:
    
@@ -162,7 +162,7 @@ NexusMD is the next-generation molecular dynamics simulation software package to
 3. **Install NexusMDMD library**:
    - run the following command to install NexusMDMD 1.0.0:
      ```bash
-     pip install -i https://test.pypi.org/simple/ NexusMDMD
+     pip install -i https://test.pypi.org/simple/ NexusMD
      ```
 3. **Install Dependencies**:
    - While in the `NexusMD_env` environment, install the required Python packages:
