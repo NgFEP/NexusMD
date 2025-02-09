@@ -1,9 +1,9 @@
-# Nexus
+# NexusMD
 
-A demo version of the Python user interface for molecular dynamics simulation software package called Nexus
+A demo version of the Python user interface for molecular dynamics simulation software package called NexusMD
 ## Description
 
-Nexus is the next-generation molecular dynamics simulation software package to predict protein-ligand binding affinities leading to drug discovery. Nexus is equipped with modern free energy methods, novel sampling algorithms, and parallel programming to support diverse scientific applications.
+NexusMD is the next-generation molecular dynamics simulation software package to predict protein-ligand binding affinities leading to drug discovery. NexusMD is equipped with modern free energy methods, novel sampling algorithms, and parallel programming to support diverse scientific applications.
 
 ## Getting Started
 
@@ -79,7 +79,7 @@ Nexus is the next-generation molecular dynamics simulation software package to p
      ```
 
 6. **Build the Project**:
-   - Open the generated `Nexus.sln` file located in the `out/build` folder.
+   - Open the generated `NexusMD.sln` file located in the `out/build` folder.
    - Ensure the solution configuration is set to **Release** (not Debug).
    - In the Solution Explorer:
      * Right-click on `ALL_BUILD` and select `Build`.
@@ -95,24 +95,24 @@ Nexus is the next-generation molecular dynamics simulation software package to p
      pip install setuptools wheel cython
      ```
 
-9. **Build and Install the Nexus Library**:
+9. **Build and Install the NexusMD Library**:
    - Run the following commands in the terminal:
      ```bash
      python setup.py build -cmingw32
      python setup.py bdist_wheel
      ```
-   - Install the Nexus library:
+   - Install the NexusMD library:
      ```bash
-     pip install dist/Nexus-1.0.0-py3-none-any.whl --force-reinstall
+     pip install dist/NexusMD-1.0.0-py3-none-any.whl --force-reinstall
      ```
 
 10. **Run the Test File**:
-   - Open `NexusTest.py` inside the test folder containing .pdb and system, state .xml files.
+   - Open `NexusMDTest.py` inside the test folder containing .pdb and system, state .xml files.
    - Adjust the options as desired.
    - Run the test file using the following command:
      ```bash
 	 cd .\test\
-     python .\NexusTest.py
+     python .\NexusMDTest.py
      ```
 
 ### Installation Instructions (Published Version)
@@ -128,11 +128,11 @@ Nexus is the next-generation molecular dynamics simulation software package to p
    - Open the Anaconda Prompt.
    - Create a new environment with Python 3.8 or later:
      ```bash
-     conda create -n nexus_env python=3.10
+     conda create -n NexusMD_env python=3.10
      ```
    - Activate the environment:
      ```bash
-     conda activate nexus_env
+     conda activate NexusMD_env
      ```
 3. **Install CUDA Toolkit and Add to System PATH**:
    
@@ -159,44 +159,44 @@ Nexus is the next-generation molecular dynamics simulation software package to p
      ```bash
      nvidia-smi
      ```
-3. **Install NexusMD library**:
-   - run the following command to install NexusMD 1.0.0:
+3. **Install NexusMDMD library**:
+   - run the following command to install NexusMDMD 1.0.0:
      ```bash
-     pip install -i https://test.pypi.org/simple/ NexusMD
+     pip install -i https://test.pypi.org/simple/ NexusMDMD
      ```
 3. **Install Dependencies**:
-   - While in the `nexus_env` environment, install the required Python packages:
+   - While in the `NexusMD_env` environment, install the required Python packages:
      ```bash
      pip install setuptools wheel cython
      ```
-   - Install Nexus version 1.0.0:
+   - Install NexusMD version 1.0.0:
      ```bash
-     pip install -i https://test.pypi.org/simple/ Nexus==1.0.0
+     pip install -i https://test.pypi.org/simple/ NexusMD==1.0.0
      ```
 4. **Prepare the Folder**:
    - Create a folder to contain all necessary files (available in the test folder (github repository)):
      - `Sample_Protein.pdb`: The PDB file for the system.
      - `system_Sample_Protein.xml`: The system XML configuration file.
      - `state_Sample_Protein.xml`: The state XML configuration file.
-     - `NexusTest.py`: Test script for Nexus.
+     - `NexusMDTest.py`: Test script for NexusMD.
    - Copy these files into the folder.
 
-5. **Adjust Options in NexusTest.py**:
-   - Open `NexusTest.py` in any text editor or IDE.
+5. **Adjust Options in NexusMDTest.py**:
+   - Open `NexusMDTest.py` in any text editor or IDE.
    - Modify options such as file paths, configurations, or parameters as needed.
 
-6. **Run NexusTest.py**:
+6. **Run NexusMDTest.py**:
    - Navigate to the folder in the terminal.
    - Run the test script:
      ```bash
-     python NexusTest.py
+     python NexusMDTest.py
      ```
 
 ---
 
 ### Key Notes
-- Ensure the `.pdb`, `.xml`, and `NexusTest.py` files are all in the same folder for convenience.
-- Adjust any parameters in the `NexusTest.py` file to match your use case (e.g., file paths, simulation parameters, etc.).
+- Ensure the `.pdb`, `.xml`, and `NexusMDTest.py` files are all in the same folder for convenience.
+- Adjust any parameters in the `NexusMDTest.py` file to match your use case (e.g., file paths, simulation parameters, etc.).
 - Output and results will depend on the configuration of the provided `.xml` and `.pdb` files.
 
 
