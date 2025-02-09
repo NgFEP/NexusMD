@@ -1,5 +1,5 @@
 """
-setup.py: Used for packaging the Nexus Python wrapper.
+setup.py: Used for packaging the NexusMD Python wrapper.
 """
 import os
 import sys
@@ -18,25 +18,25 @@ def reportError(message):
 
 def buildKeywordDictionary():
     # Finding the .pyd and .py files
-    wrapper_py_path = os.path.join("out", "build", "wrapper", "Release","Nexus.py")
-    wrapper_pyd_path = os.path.join("out", "build", "wrapper", "Release", "_Nexus.pyd")
+    wrapper_py_path = os.path.join("out", "build", "wrapper", "Release","NexusMD.py")
+    wrapper_pyd_path = os.path.join("out", "build", "wrapper", "Release", "_NexusMD.pyd")
     fftw_dll_path = os.path.join("out", "build", "wrapper", "Release", "libfftw3-3.dll")
 
     print(f"Wrapper Python Path: {wrapper_py_path}")
     print(f"Wrapper PYD Path: {wrapper_pyd_path}")
-    print(f"Nexus FFTW DLL Path: {fftw_dll_path}")
+    print(f"NexusMD FFTW DLL Path: {fftw_dll_path}")
 
     # Checking for the .py file
     if not os.path.exists(wrapper_py_path):
-        reportError(f"Missing Nexus.py at {wrapper_py_path}")
+        reportError(f"Missing NexusMD.py at {wrapper_py_path}")
     else:
-        print(f"Found Nexus.py at {wrapper_py_path}")
+        print(f"Found NexusMD.py at {wrapper_py_path}")
 
     # Checking for the .pyd file
     if not os.path.exists(wrapper_pyd_path):
-        reportError(f"Missing _Nexus.pyd at {wrapper_pyd_path}")
+        reportError(f"Missing _NexusMD.pyd at {wrapper_pyd_path}")
     else:
-        print(f"Found _Nexus.pyd at {wrapper_pyd_path}")
+        print(f"Found _NexusMD.pyd at {wrapper_pyd_path}")
 
     # Checking for FFTW3 DLL
     if not os.path.exists(fftw_dll_path):
@@ -46,14 +46,14 @@ def buildKeywordDictionary():
 
     # Defining package data and setup keywords
     setupKeywords = {
-        "name": "Nexus",
+        "name": "NexusMD",
         "version": f"{MAJOR_VERSION_NUM}.{MINOR_VERSION_NUM}.{BUILD_INFO}",
         "author": "Omid JM, IQB Group",
         "license": "BSD-like",
         "platforms": ["Linux", "Mac OS X", "Windows"],
-        "description": "Python wrapper for the Nexus library",
+        "description": "Python wrapper for the NexusMD library",
         "long_description": """
-        Nexus is a toolkit for molecular simulation, including Python wrappers
+        NexusMD is a toolkit for molecular simulation, including Python wrappers
         for efficient execution and scripting.
         """,
         "packages": find_packages(),
@@ -63,7 +63,7 @@ def buildKeywordDictionary():
         },
         "include_packag e_data": True,
         "data_files": [
-            ("Nexus", [wrapper_py_path, wrapper_pyd_path,fftw_dll_path])
+            ("", [wrapper_py_path, wrapper_pyd_path,fftw_dll_path])
         ],
     }
 
@@ -71,7 +71,7 @@ def buildKeywordDictionary():
 
 def main():
     if sys.version_info < (3, 6):
-        reportError("Nexus requires Python 3.6 or better.")
+        reportError("NexusMD requires Python 3.6 or better.")
 
     setupKeywords = buildKeywordDictionary()
     setup(**setupKeywords)
