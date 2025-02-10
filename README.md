@@ -31,6 +31,89 @@ NexusMD is the next-generation molecular dynamics simulation software package to
 
 ---
 
+### Installation Instructions (Published Version)
+
+#### Windows
+
+1. **Install Anaconda**:
+   - Download and install **Anaconda** from the [official website](https://docs.anaconda.com/anaconda/install/).
+
+2. **Create a New Anaconda Environment**:
+   - Press `Win + S` and type **Environment Variables**.
+   - Open the Anaconda Prompt.
+   - Create a new environment with Python 3.11.5:
+     ```bash
+     conda create -n nexusMD_env python=3.11.5
+     ```
+   - Activate the environment:
+     ```bash
+     conda activate nexusMD_env
+     ```
+3. **Install NexusMDMD library**:
+   - run the following command to install NexusMDMD 1.0.0 MD software package:
+     ```bash
+     pip install -i https://test.pypi.org/simple/ NexusMD
+     ```
+4. **Prepare the Folder**:
+   - Create a folder (preferebly on your Desktop for easy navigation on Anaconda Prompt) to contain all necessary files (available in the test folder (NexusMD github repository)):
+     - `Sample_Protein.pdb`: The PDB file for the system.
+     - `system_Sample_Protein.xml`: The system XML configuration file.
+     - `state_Sample_Protein.xml`: The state XML configuration file.
+     - `NexusMDTest.py`: Test script for NexusMD.
+   - Copy these files into the folder.
+
+5. **Adjust Options in NexusMDTest.py**:
+   - Open `NexusMDTest.py` in any text editor or IDE. A straightforward option's [Notepad++](https://notepad-plus-plus.org/downloads/)
+   - Uncomment any or all of the following 4 forces inside the `NexusMDTest.py` to enable their calculations during the MD simulation.
+     ```bash
+     #dispatcher.EnableHarmonicBondForce()
+     #dispatcher.EnableHarmonicAngleForce()
+     #dispatcher.EnablePeriodicTorsionForce()
+     #dispatcher.EnableNonbondedForce()
+     ```
+
+6. **Run NexusMDTest.py**:
+   - Navigate to the folder in the Anaconda Prompt make sure nexusMD_env environment is activated.
+   - Run the test script:
+     ```bash
+     python NexusMDTest.py
+     ```
+---
+
+### Key Notes
+- Ensure the `.pdb`, `.xml`, and `NexusMDTest.py` files are all in the same folder for convenience.
+- Adjust any parameters in the `NexusMDTest.py` file to match your use case (e.g., simulation parameters, desired forces to enable, etc.).
+- Output and results will depend on the configuration of the provided `.xml` and `.pdb` files.
+
+## **Expected Output**
+
+### **Terminal Output**
+```bash
+Enabling forces...
+Running simulation...
+Harmonic Bond Force is enabled
+Harmonic Angle Force is enabled
+Periodic Torsion Force is enabled
+Nonbonded Force is enabled
+
+1   Simulation Step #1 completed
+2   Simulation Step #2 completed
+3   Simulation Step #3 completed
+4   Simulation Step #4 completed
+5   Simulation Step #5 completed
+6   Simulation Step #6 completed
+7   Simulation Step #7 completed
+8   Simulation Step #8 completed
+9   Simulation Step #9 completed
+10  Simulation Step #10 completed
+
+Simulation completed successfully with all selected forces enabled.
+```
+
+### **Generated Files**
+- **`output_SimRun_Sample_Protein.pdb`** – Final simulation output in PDB format.
+- **`PVFReport_output_SimRun_Sample_Protein.pdb`** – Contains **position, velocity, and force** quantities.
+- **`TotalEnergy_output_SimRun_Sample_Protein.pdb`** – Records **kinetic, potential, and total energy** values in kJ/mol.
 
 
 ### Installation Instructions (Source code)
@@ -140,90 +223,6 @@ NexusMD is the next-generation molecular dynamics simulation software package to
 	 cd .\test\
      python .\NexusMDTest.py
      ```
-
-### Installation Instructions (Published Version)
-
-#### Windows
-
-1. **Install Anaconda**:
-   - Download and install **Anaconda** from the [official website](https://docs.anaconda.com/anaconda/install/).
-
-2. **Create a New Anaconda Environment**:
-   - Press `Win + S` and type **Environment Variables**.
-   - Open the Anaconda Prompt.
-   - Create a new environment with Python 3.11.5:
-     ```bash
-     conda create -n nexusMD_env python=3.11.5
-     ```
-   - Activate the environment:
-     ```bash
-     conda activate nexusMD_env
-     ```
-3. **Install NexusMDMD library**:
-   - run the following command to install NexusMDMD 1.0.0 MD software package:
-     ```bash
-     pip install -i https://test.pypi.org/simple/ NexusMD
-     ```
-4. **Prepare the Folder**:
-   - Create a folder (preferebly on your Desktop for easy navigation on Anaconda Prompt) to contain all necessary files (available in the test folder (NexusMD github repository)):
-     - `Sample_Protein.pdb`: The PDB file for the system.
-     - `system_Sample_Protein.xml`: The system XML configuration file.
-     - `state_Sample_Protein.xml`: The state XML configuration file.
-     - `NexusMDTest.py`: Test script for NexusMD.
-   - Copy these files into the folder.
-
-5. **Adjust Options in NexusMDTest.py**:
-   - Open `NexusMDTest.py` in any text editor or IDE. A straightforward option's [Notepad++](https://notepad-plus-plus.org/downloads/)
-   - Uncomment any or all of the following 4 forces inside the `NexusMDTest.py` to enable their calculations during the MD simulation.
-     ```bash
-     #dispatcher.EnableHarmonicBondForce()
-     #dispatcher.EnableHarmonicAngleForce()
-     #dispatcher.EnablePeriodicTorsionForce()
-     #dispatcher.EnableNonbondedForce()
-     ```
-
-6. **Run NexusMDTest.py**:
-   - Navigate to the folder in the Anaconda Prompt make sure nexusMD_env environment is activated.
-   - Run the test script:
-     ```bash
-     python NexusMDTest.py
-     ```
----
-
-### Key Notes
-- Ensure the `.pdb`, `.xml`, and `NexusMDTest.py` files are all in the same folder for convenience.
-- Adjust any parameters in the `NexusMDTest.py` file to match your use case (e.g., simulation parameters, desired forces to enable, etc.).
-- Output and results will depend on the configuration of the provided `.xml` and `.pdb` files.
-
-## **Expected Output**
-
-### **Terminal Output**
-```bash
-Enabling forces...
-Running simulation...
-Harmonic Bond Force is enabled
-Harmonic Angle Force is enabled
-Periodic Torsion Force is enabled
-Nonbonded Force is enabled
-
-1   Simulation Step #1 completed
-2   Simulation Step #2 completed
-3   Simulation Step #3 completed
-4   Simulation Step #4 completed
-5   Simulation Step #5 completed
-6   Simulation Step #6 completed
-7   Simulation Step #7 completed
-8   Simulation Step #8 completed
-9   Simulation Step #9 completed
-10  Simulation Step #10 completed
-
-Simulation completed successfully with all selected forces enabled.
-```
-
-### **Generated Files**
-- **`output_SimRun_Sample_Protein.pdb`** – Final simulation output in PDB format.
-- **`PVFReport_output_SimRun_Sample_Protein.pdb`** – Contains **position, velocity, and force** quantities.
-- **`TotalEnergy_output_SimRun_Sample_Protein.pdb`** – Records **kinetic, potential, and total energy** values in kJ/mol.
 
 
 
