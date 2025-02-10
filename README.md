@@ -141,8 +141,8 @@ Simulation completed successfully with all selected forces enabled.
      4. Click **OK** to save changes.
    - Restart any open terminals or your system for the changes to take effect.
    - Verify the installation by running:
-     ```
      Windows key + R (to open the Run dialog), then type "cmd" and press Enter to open command prompt, type
+     ``` bash
      swig -version
      ```
 
@@ -150,30 +150,38 @@ Simulation completed successfully with all selected forces enabled.
    
    - Download **CUDA Toolkit** from [NVIDIA's official site](https://developer.nvidia.com/cuda-downloads).
    - Choose the appropriate version for your **GPU and operating system**.
-   - Install it following the **on-screen instructions**.
+   - During Intallation 
+   - Following the **on-screen instructions** make sure to choose **custom** for Options and check that **Visual Studio Integration** is selected
+   - Install
    
    - **Add CUDA binaries to the system's PATH**:
      1. Press `Win + S`, type **Environment Variables**, and open it.
      2. In **System Properties**, click **Environment Variables**.
      3. Under **System variables**, find and edit the **Path** variable.
      4. Click **New**, then add the following paths (adjust for your CUDA version):
+     	If the version installed is v12.8 (adjust according to the version installed on your machine)
         ```
-        C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\bin
-        C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\libnvvm\bin
-        C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.2\libnvvm\lib
+        C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.8\bin
+        C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.8\lib\x64
+	C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.8\include
         ```
      5. Click **OK** to save changes.
 
    - **Verify CUDA Installation**:
+     Windows key + R (to open the Run dialog), then type "cmd" and press Enter to open command prompt, type
      ```bash
      nvcc --version
      ```
      ```bash
      nvidia-smi
      ```
+   - **Restart your computer**:
+     Restart your computer to make sure cuda in integrated with visual studio.
+     
 4. **Clone the Repository**:
-   - Clone the repository to your local machine.
-   - Open the main folder in Visual Studio 2022.
+   - Clone the repository to your local machine preferebly at : C:\Users\[YourUsername]\source\repos.
+   - 
+   - Open the main folder in Visual Studio 2022 using **Open a local folder**.
 
 5. **Generate Build Files**:
    - Open the terminal in Visual Studio:
@@ -182,29 +190,37 @@ Simulation completed successfully with all selected forces enabled.
      ```bash
      cd .\out\build\
      ```
-   - Run the following command to generate the build files:
+   - Make sure to clean the build folder If it has files from previous attempts:
+     
+   - From ...\out\build directory Run the following command to generate the build files:
      ```bash
      cmake ../../.
      ```
-
+     
 6. **Build the Project**:
    - Open the generated `NexusMD.sln` file located in the `out/build` folder.
-   - Ensure the solution configuration is set to **Release** (not Debug).
+   - Ensure the solution configuration is set to **Release** (not Debug!).
    - In the Solution Explorer:
      * Right-click on `ALL_BUILD` and select `Build`.
 
 7. **Switch Solution Explorer View**:
    - Change the Solution Explorer view to "Folder View":
      * Click the "Switch between solution and available views" button (top-left corner of the Solution Explorer).
+     * Click on Folder view.
 
 8. **Install Required Python Packages**:
-   - Open the terminal again and navigate to the main folder.
+   - Open the terminal one more time.
+   - Install pip
+     ```bash
+     python -m pip install --upgrade pip
+     ```
    - Install the following Python packages:
      ```bash
      pip install setuptools wheel cython
      ```
 
 9. **Build and Install the NexusMD Library**:
+   - navigate to the main folder **NexusMD**.
    - Run the following commands in the terminal:
      ```bash
      python setup.py build -cmingw32
@@ -215,7 +231,7 @@ Simulation completed successfully with all selected forces enabled.
      pip install dist/NexusMD-1.0.0-py3-none-any.whl --force-reinstall
      ```
 
-10. **Run the Test File**:
+11. **Run the Test File**:
    - Open `NexusMDTest.py` inside the test folder containing .pdb and system, state .xml files.
    - Adjust the options as desired.
    - Run the test file using the following command:
@@ -224,6 +240,13 @@ Simulation completed successfully with all selected forces enabled.
      python .\NexusMDTest.py
      ```
 
+## **Expected Output**
+
+### **Terminal Output**
+Similar to the published version
+
+### **Generated Files**
+Similar to the published version
 
 
 ## Authors
