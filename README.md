@@ -136,7 +136,8 @@ Simulation completed successfully with all selected forces enabled.
 	C:\Users\[YourUsername]\anaconda3\Library\bin
 	C:\Users\[YourUsername]\anaconda3\Scripts
         ```
-   to do so:    - Open **Environment Variables**:
+   
+     to do so open **Environment Variables**:
      1. Press `Win + S` and type **Environment Variables**.
      2. Select **Edit the system environment variables**.
      3. In the **System Properties** window and **Advanced** tab, click **Environment Variables**.
