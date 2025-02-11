@@ -37,6 +37,8 @@ NexusMD is the next-generation molecular dynamics simulation software package to
 
 1. **Install Anaconda**:
    - Download and install **Anaconda** from the [official website](https://docs.anaconda.com/anaconda/install/).
+   - Select the following Advanced Instalation Options during installation:
+     ![image](https://github.com/user-attachments/assets/bce75eea-439d-4f04-88cc-be6c3c7e6d50)
 
 2. **Create a New Anaconda Environment**:
    - Press `Win + S` and type **Environment Variables**.
@@ -123,7 +125,33 @@ Simulation completed successfully with all selected forces enabled.
 1. **Install Visual Studio 2022**:
    - Ensure the following components are installed [Link](https://visualstudio.microsoft.com/downloads/):
      * Desktop development with C++
-     * Python development package 
+     * Python development package
+2. **Python requirement**
+   - If Anaconda is not instal follow the 1st step of the above **Installation Instructions (Published Version)** therefore Anaconda3 will be atomaticcaly added to the system PATH
+   - If Anaconda is already installed make sure the addresses with the following formats are added to the system PATH
+     	```
+        C:\Users\[YourUsername]\anaconda3
+        C:\Users\[YourUsername]\anaconda3\Library\mingw-w64\bin
+	C:\Users\[YourUsername]\anaconda3\Library\usr\bin
+	C:\Users\[YourUsername]\anaconda3\Library\bin
+	C:\Users\[YourUsername]\anaconda3\Scripts
+        ```
+   to do so:    - Open **Environment Variables**:
+     1. Press `Win + S` and type **Environment Variables**.
+     2. Select **Edit the system environment variables**.
+     3. In the **System Properties** window and **Advanced** tab, click **Environment Variables**.
+     4. In the **User Variables for ...** section, find and select the variable named `Path`.
+     5. Click **Edit**.
+     6. Click **New** and add the above addresses by adjusting [YourUsername].
+     7. Click **OK** to save changes.
+        
+   - To prevent conflict with other installed python packages on windows 11:
+     1. Press `Win + S` and type **Settings**.
+     2. Select **Apps** then **Advanced app settings**
+     3. In the **Advanced app settings** window select **App execution aliases**.
+     4. Switch off **App Installer** for python.exe and python3.exe.
+
+     
 2. **Install SWIG**:
    - Download the swigwin latest version `.zip` file for Windows from the [official website](http://www.swig.org/download.html).
    - Extract the downloaded file to a folder, e.g., `C:\Users\[YourUsername]\swigwin-4.3.0`.
@@ -135,7 +163,7 @@ Simulation completed successfully with all selected forces enabled.
      2. Select **Edit the system environment variables**.
      3. In the **System Properties** window and **Advanced** tab, click **Environment Variables**.
    - Edit the `Path` variable:
-     1. In the **System Variables** section, find and select the variable named `Path`.
+     1. In the **User Variables for ...** section, find and select the variable named `Path`.
      2. Click **Edit**.
      3. Click **New** and enter the full path to the SWIG folder containing **swig.exe** (e.g., `C:\Users\[YourUsername]\swigwin-4.3.0`).
      4. Click **OK** to save changes.
@@ -157,7 +185,7 @@ Simulation completed successfully with all selected forces enabled.
    - **Add CUDA binaries to the system's PATH**:
      1. Press `Win + S`, type **Environment Variables**, and open it.
      2. In **System Properties**, click **Environment Variables**.
-     3. Under **System variables**, find and edit the **Path** variable.
+     3. Under **User Variables for ...**, find and edit the **Path** variable.
      4. Click **New**, then add the following paths (adjust for your CUDA version):
      	If the version installed is v12.8 (adjust according to the version installed on your machine)
         ```
@@ -220,7 +248,10 @@ Simulation completed successfully with all selected forces enabled.
      ```
 
 9. **Build and Install the NexusMD Library**:
-   - navigate to the main folder **NexusMD**.
+   - navigate to the main folder **NexusMD** from the build folder.
+     ```bash
+     cd ../..
+     ```
    - Run the following commands in the terminal:
      ```bash
      python setup.py build -cmingw32
