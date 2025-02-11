@@ -129,23 +129,23 @@ Simulation completed successfully with all selected forces enabled.
 2. **Python requirement**
    - If Anaconda is not instal follow the 1st step of the above **Installation Instructions (Published Version)** therefore Anaconda3 will be atomaticcaly added to the system PATH
    - If Anaconda is already installed make sure the addresses with the following formats are added to the system PATH
-     	```
+     Open **Environment Variables**:
+	1. Press `Win + S` and type **Environment Variables**.
+	2. Select **Edit the system environment variables**.
+	3. In the **System Properties** window and **Advanced** tab, click **Environment Variables**.
+	4. In the **User Variables for ...** section, find and select the variable named `Path`.
+	5. Click **Edit**.
+	6. Click **New** and add the following addresses by adjusting [YourUsername].
+	7. Click **OK** to save changes.
+    
+     	```bash
         C:\Users\[YourUsername]\anaconda3
         C:\Users\[YourUsername]\anaconda3\Library\mingw-w64\bin
 	C:\Users\[YourUsername]\anaconda3\Library\usr\bin
 	C:\Users\[YourUsername]\anaconda3\Library\bin
 	C:\Users\[YourUsername]\anaconda3\Scripts
         ```
-   
-     to do so open **Environment Variables**:
-     1. Press `Win + S` and type **Environment Variables**.
-     2. Select **Edit the system environment variables**.
-     3. In the **System Properties** window and **Advanced** tab, click **Environment Variables**.
-     4. In the **User Variables for ...** section, find and select the variable named `Path`.
-     5. Click **Edit**.
-     6. Click **New** and add the above addresses by adjusting [YourUsername].
-     7. Click **OK** to save changes.
-        
+
    - To prevent conflict with other installed python packages on windows 11:
      1. Press `Win + S` and type **Settings**.
      2. Select **Apps** then **Advanced app settings**
@@ -189,11 +189,13 @@ Simulation completed successfully with all selected forces enabled.
      3. Under **User Variables for ...**, find and edit the **Path** variable.
      4. Click **New**, then add the following paths (adjust for your CUDA version):
      	If the version installed is v12.8 (adjust according to the version installed on your machine)
-        ```
+
+        ```bash
         C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.8\bin
         C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.8\lib\x64
 	C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.8\include
         ```
+   
      5. Click **OK** to save changes.
 
    - **Verify CUDA Installation**:
@@ -207,12 +209,12 @@ Simulation completed successfully with all selected forces enabled.
    - **Restart your computer**:
      Restart your computer to make sure cuda in integrated with visual studio.
      
-4. **Clone the Repository**:
+5. **Clone the Repository**:
    - Clone the repository to your local machine preferebly at : C:\Users\[YourUsername]\source\repos.
    - 
    - Open the main folder in Visual Studio 2022 using **Open a local folder**.
 
-5. **Generate Build Files**:
+6. **Generate Build Files**:
    - Open the terminal in Visual Studio:
      * Go to `View` → `Terminal` → `Developer PowerShell`.
    - Navigate to the `out/build` directory:
@@ -226,18 +228,18 @@ Simulation completed successfully with all selected forces enabled.
      cmake ../../.
      ```
      
-6. **Build the Project**:
+7. **Build the Project**:
    - Open the generated `NexusMD.sln` file located in the `out/build` folder.
    - Ensure the solution configuration is set to **Release** (not Debug!).
    - In the Solution Explorer:
      * Right-click on `ALL_BUILD` and select `Build`.
 
-7. **Switch Solution Explorer View**:
+8. **Switch Solution Explorer View**:
    - Change the Solution Explorer view to "Folder View":
      * Click the "Switch between solution and available views" button (top-left corner of the Solution Explorer).
      * Click on Folder view.
 
-8. **Install Required Python Packages**:
+9. **Install Required Python Packages**:
    - Open the terminal one more time.
    - Install pip
      ```bash
@@ -248,7 +250,7 @@ Simulation completed successfully with all selected forces enabled.
      pip install setuptools wheel cython
      ```
 
-9. **Build and Install the NexusMD Library**:
+10. **Build and Install the NexusMD Library**:
    - navigate to the main folder **NexusMD** from the build folder.
      ```bash
      cd ../..
