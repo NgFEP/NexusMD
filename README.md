@@ -9,14 +9,14 @@ NexusMD is the next-generation molecular dynamics simulation software package to
 
 ### Dependencies
 
-* Python 3.8 or above
+* Python 3.11
 * OS: Windows 10, 11
 * Visual Studio 2022 for execution via the source code
 * (Optional) Anaconda for execution via the published version
 
 ### Dependencies
 
-* **Python**: Version 3.8 or above
+* **Python**: Version 3.11
 * **Operating Systems**: 
   * Windows 10, 11
   * Linux (Tested on Ubuntu 20.04 or later)
@@ -24,6 +24,8 @@ NexusMD is the next-generation molecular dynamics simulation software package to
   * For Windows: Visual Studio 2022
   * For Linux: GCC or Clang (latest version recommended)
 * **SWIG**: Required for code generation.
+* **CUDA**: Required for GPU programming.
+
 * **Execution the published version**:
   *Anaconda*
 * **Python Packages**:
@@ -43,9 +45,9 @@ NexusMD is the next-generation molecular dynamics simulation software package to
 2. **Create a New Anaconda Environment**:
    - Press `Win + S` and type **Environment Variables**.
    - Open the Anaconda Prompt.
-   - Create a new environment with Python 3.11.5:
+   - Create a new environment with Python 3.11:
      ```bash
-     conda create -n nexusMD_env python=3.11.5
+     conda create -n nexusMD_env python=3.11
      ```
    - Activate the environment:
      ```bash
