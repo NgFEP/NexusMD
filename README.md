@@ -37,8 +37,8 @@ NexusMD is the next-generation molecular dynamics simulation software package to
 
 1. **Install Anaconda**:
    - Download and install **Anaconda** from the [official website](https://docs.anaconda.com/anaconda/install/).
-   - Select the following Advanced Instalation Options during installation:
-     ![image](https://github.com/user-attachments/assets/bce75eea-439d-4f04-88cc-be6c3c7e6d50)
+   - Select the following Advanced Installation Options during installation:
+     <img src="https://github.com/user-attachments/assets/bce75eea-439d-4f04-88cc-be6c3c7e6d50" style="width:50%; height:50%;">
 
 2. **Create a New Anaconda Environment**:
    - Press `Win + S` and type **Environment Variables**.
@@ -122,35 +122,36 @@ Simulation completed successfully with all selected forces enabled.
 
 #### Windows
 
-1. **Install Visual Studio 2022**:
-   - Ensure the following components are installed [Link](https://visualstudio.microsoft.com/downloads/):
-     * Desktop development with C++
-     * Python development package
-2. **Python requirement**
-   - If Anaconda is not instal follow the 1st step of the above **Installation Instructions (Published Version)** therefore Anaconda3 will be atomaticcaly added to the system PATH
-   - If Anaconda is already installed make sure the addresses with the following formats are added to the system PATH
+1. **Install Visual Studio 2022**  
+   - Download and install from [Visual Studio](https://visualstudio.microsoft.com/downloads/).
+   - Ensure the following components are installed:
+     - **Desktop development with C++**
+     - **Python development package**
+       
+2. **Set Up Python (Anaconda)**  
+   - If Anaconda is not installed, follow the first step of the **Installation Instructions (Published Version)** to automatically add Anaconda3 to the system PATH.
+   - If Anaconda is already installed, ensure the following directories are added to the system PATH:
      Open **Environment Variables**:
-	1. Press `Win + S` and type **Environment Variables**.
-	2. Select **Edit the system environment variables**.
-	3. In the **System Properties** window and **Advanced** tab, click **Environment Variables**.
-	4. In the **User Variables for ...** section, find and select the variable named `Path`.
-	5. Click **Edit**.
-	6. Click **New** and add the following addresses by adjusting [YourUsername].
-	7. Click **OK** to save changes.
-    
-     	```bash
-        C:\Users\[YourUsername]\anaconda3
-        C:\Users\[YourUsername]\anaconda3\Library\mingw-w64\bin
-	C:\Users\[YourUsername]\anaconda3\Library\usr\bin
-	C:\Users\[YourUsername]\anaconda3\Library\bin
-	C:\Users\[YourUsername]\anaconda3\Scripts
-        ```
+        - Press `Win + S` and type **Environment Variables**.
+        - Select **Edit the system environment variables**.
+        - In the **System Properties** window under the **Advanced** tab, click **Environment Variables**.
+        - In the **User Variables** section, find and select `Path`.
+        - Click **Edit**, then **New**, and add the following paths (adjust `[YourUsername]` accordingly):
 
-   - To prevent conflict with other installed python packages on windows 11:
+      ```bash
+      C:\Users\[YourUsername]\anaconda3
+      C:\Users\[YourUsername]\anaconda3\Library\mingw-w64\bin
+      C:\Users\[YourUsername]\anaconda3\Library\usr\bin
+      C:\Users\[YourUsername]\anaconda3\Library\bin
+      C:\Users\[YourUsername]\anaconda3\Scripts
+      ```
+
+   - **Prevent conflicts with other Python installations**:
      1. Press `Win + S` and type **Settings**.
-     2. Select **Apps** then **Advanced app settings**
-     3. In the **Advanced app settings** window select **App execution aliases**.
-     4. Switch off **App Installer** for python.exe and python3.exe.
+     2. Navigate to **Apps** → **Advanced app settings**.
+     3. Select **App execution aliases**.
+     4. Disable **App Installer** for `python.exe` and `python3.exe`.
+
 
      
 2. **Install SWIG**:
@@ -174,16 +175,12 @@ Simulation completed successfully with all selected forces enabled.
      ``` bash
      swig -version
      ```
-
-3. **Install CUDA Toolkit and Add to System PATH**:
-   
-   - Download **CUDA Toolkit** from [NVIDIA's official site](https://developer.nvidia.com/cuda-downloads).
-   - Choose the appropriate version for your **GPU and operating system**.
-   - During Intallation 
-   - Following the **on-screen instructions** make sure to choose **custom** for Options and check that **Visual Studio Integration** is selected
-   - Install
-   
-   - **Add CUDA binaries to the system's PATH**:
+     
+3. **Install CUDA Toolkit and Add to System PATH**  
+   - Download **CUDA Toolkit** from [NVIDIA](https://developer.nvidia.com/cuda-downloads).
+   - Choose the version 12.8 or 12.6 preferably.
+   - During installation, select **Custom Options** and ensure **Visual Studio Integration** is enabled.
+   - After installation, add CUDA binaries to the system's PATH:
      1. Press `Win + S`, type **Environment Variables**, and open it.
      2. In **System Properties**, click **Environment Variables**.
      3. Under **User Variables for ...**, find and edit the **Path** variable.
@@ -193,9 +190,9 @@ Simulation completed successfully with all selected forces enabled.
         ```bash
         C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.8\bin
         C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.8\lib\x64
-	C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.8\include
+        C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.8\include
         ```
-   
+
      5. Click **OK** to save changes.
 
    - **Verify CUDA Installation**:
@@ -207,7 +204,7 @@ Simulation completed successfully with all selected forces enabled.
      nvidia-smi
      ```
    - **Restart your computer**:
-     Restart your computer to make sure cuda in integrated with visual studio.
+     Restart your system to apply the updates.
      
 5. **Clone the Repository**:
    - Clone the repository to your local machine preferebly at : C:\Users\[YourUsername]\source\repos.
