@@ -1,0 +1,10 @@
+^C:\USERS\OJ53\SOURCE\REPOS\2_20_2024_NEXABIND_PROTOTYPE_WITH_OPENMM_IN_CPP\NEXABIND_BACKEND\CORE\PUGIXML-1.14\BUILD\CMAKEFILES\FB48B2CAF2EC9BA37E56685C42303BE8\GENERATE.STAMP.RULE
+setlocal
+C:\Users\oj53\anaconda3\Library\bin\cmake.exe -SC:/Users/oj53/source/repos/2_20_2024_nexabind_prototype_with_openmm_in_cpp/NexaBind_BackEnd/core/pugixml-1.14 -BC:/Users/oj53/source/repos/2_20_2024_nexabind_prototype_with_openmm_in_cpp/NexaBind_BackEnd/core/pugixml-1.14/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/oj53/source/repos/2_20_2024_nexabind_prototype_with_openmm_in_cpp/NexaBind_BackEnd/core/pugixml-1.14/build/pugixml.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

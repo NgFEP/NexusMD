@@ -1,9 +1,0 @@
-C:/Users/oj53/source/repos/2_20_2024_nexabind_prototype_with_openmm_in_cpp/Nexus/Nexus/Nexus/core/libs/pugixml-1.14/build/CMakeFiles/Experimental.dir
-C:/Users/oj53/source/repos/2_20_2024_nexabind_prototype_with_openmm_in_cpp/Nexus/Nexus/Nexus/core/libs/pugixml-1.14/build/CMakeFiles/Nightly.dir
-C:/Users/oj53/source/repos/2_20_2024_nexabind_prototype_with_openmm_in_cpp/Nexus/Nexus/Nexus/core/libs/pugixml-1.14/build/CMakeFiles/Continuous.dir
-C:/Users/oj53/source/repos/2_20_2024_nexabind_prototype_with_openmm_in_cpp/Nexus/Nexus/Nexus/core/libs/pugixml-1.14/build/CMakeFiles/NightlyMemoryCheck.dir
-C:/Users/oj53/source/repos/2_20_2024_nexabind_prototype_with_openmm_in_cpp/Nexus/Nexus/Nexus/core/libs/pugixml-1.14/build/CMakeFiles/pugixml-static.dir
-C:/Users/oj53/source/repos/2_20_2024_nexabind_prototype_with_openmm_in_cpp/Nexus/Nexus/Nexus/core/libs/pugixml-1.14/build/CMakeFiles/RUN_TESTS.dir
-C:/Users/oj53/source/repos/2_20_2024_nexabind_prototype_with_openmm_in_cpp/Nexus/Nexus/Nexus/core/libs/pugixml-1.14/build/CMakeFiles/INSTALL.dir
-C:/Users/oj53/source/repos/2_20_2024_nexabind_prototype_with_openmm_in_cpp/Nexus/Nexus/Nexus/core/libs/pugixml-1.14/build/CMakeFiles/ALL_BUILD.dir
-C:/Users/oj53/source/repos/2_20_2024_nexabind_prototype_with_openmm_in_cpp/Nexus/Nexus/Nexus/core/libs/pugixml-1.14/build/CMakeFiles/ZERO_CHECK.dir

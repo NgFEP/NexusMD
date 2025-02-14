@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\oj53\source\repos\2_20_2024_nexabind_prototype_with_openmm_in_cpp\NexaBind_BackEnd\core\pugixml-1.14\build\CMakeFiles\fb48b2caf2ec9ba37e56685c42303be8\RUN_TESTS_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{EFD5345B-FC3F-359B-AA88-2E176ED6EE8C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

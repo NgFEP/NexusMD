@@ -1,8 +1,0 @@
-C:/Program Files (x86)/pugixml/lib/pugixml.lib
-C:/Program Files (x86)/pugixml/lib/cmake/pugixml/pugixml-targets.cmake
-C:/Program Files (x86)/pugixml/lib/cmake/pugixml/pugixml-targets-release.cmake
-C:/Program Files (x86)/pugixml/lib/cmake/pugixml/pugixml-config-version.cmake
-C:/Program Files (x86)/pugixml/lib/cmake/pugixml/pugixml-config.cmake
-C:/Program Files (x86)/pugixml/lib/pkgconfig/pugixml.pc
-C:/Program Files (x86)/pugixml/include/pugiconfig.hpp
-C:/Program Files (x86)/pugixml/include/pugixml.hpp
