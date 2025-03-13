@@ -4,7 +4,7 @@
 #include "SystemXMLParser.h"
 #include "PDBResidueParser.h" // Include for residues, Connection, wResidues
 #include <vector>
-#include <optional>
+//#include <optional>
 #include <set>
 #include <algorithm> 
 #include <unordered_set>

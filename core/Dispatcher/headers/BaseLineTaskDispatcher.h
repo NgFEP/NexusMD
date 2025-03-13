@@ -28,12 +28,10 @@ public:
             std::cout << "Nonbonded Force is enabled" << std::endl;
         }
 
-
         // Using initialized parameters in Engine
-        Engine engine(systemFilename, stateFilename, atomPositions, masses, torsionParams,
+        Engine engine(systemFilename, stateFilename, inputFilename, atomPositions, masses, torsionParams,
             bondParams, angleParams, nonbondedParams, harmonicBondForceEnabled,
-            harmonicAngleForceEnabled, periodicTorsionForceEnabled, nonbondedForceEnabled);
-
+            harmonicAngleForceEnabled, periodicTorsionForceEnabled, nonbondedForceEnabled, _temperature, _collisionFrequency, _pressure, _frequency);
 
         // Run simulation for CPU
         engine.RunSimulation(inputFilename, outputFilename, StepSize, TotalSteps, interval);

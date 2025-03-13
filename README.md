@@ -33,7 +33,7 @@ NexusMD is the next-generation molecular dynamics simulation software package to
 
 
 
-### Installation Instructions (Source code)
+### Visual Studio Solution Properties (Source code)
 
 #### Windows
 

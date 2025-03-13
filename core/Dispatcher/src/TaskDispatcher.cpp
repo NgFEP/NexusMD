@@ -3,11 +3,12 @@
 #include "TaskDispatcher.h"
 #include "BaseLineTaskDispatcher.h"
 #include "CudaTaskDispatcher.h"
+
 std::shared_ptr<TaskDispatcher> TaskDispatcher::CreateDispatcher(const std::string& processorChoice) {
-    if (processorChoice == "CPU") {
+    if (processorChoice == "CPU" || processorChoice == "Cpu" || processorChoice == "cpu") {
         return std::make_shared<BaseLineTaskDispatcher>();
     }
-    else if (processorChoice == "CUDA") {
+    else if (processorChoice == "CUDA" || processorChoice == "Cuda" || processorChoice == "cuda") {
         return std::make_shared<CudaTaskDispatcher>();
     }
     else {

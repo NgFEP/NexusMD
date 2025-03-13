@@ -24,6 +24,17 @@ public:
     void EnablePeriodicTorsionForce() { periodicTorsionForceEnabled = true; }
     void EnableNonbondedForce() { nonbondedForceEnabled = true; }
 
+    //AndersenThermostat
+    void AndersenThermostat(double Temperature = 300, double CollisionFrequency=10) {//kelvin
+        _temperature = Temperature;
+        _collisionFrequency = CollisionFrequency;
+    }
+
+    void MonteCarloBarostat(double Pressure = 1.5, double Frequency = 10) {//bar
+        _pressure = Pressure;
+        _frequency = Frequency;
+    }
+
 protected:
     virtual void initializeParameters();
 
@@ -40,4 +51,9 @@ protected:
     bool harmonicAngleForceEnabled = false;
     bool periodicTorsionForceEnabled = false;
     bool nonbondedForceEnabled = false;
+    double _temperature;
+    double _collisionFrequency;
+    double _pressure;
+    double _frequency;
+
 };

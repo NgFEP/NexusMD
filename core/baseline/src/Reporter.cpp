@@ -222,9 +222,37 @@ void Reporter::pdbOutputGeneratorPart2(const string& outputFilename, vector<PDBA
                 << setw(4) << right << atom.resSeq << endl;
 
         }
+    }
+    outputFile << "ENDMDL" << endl;
+    outputFile.close();
+}
 
+// Function to report thermostat and barostat-related properties
+void Reporter::EnsembleReport(const string& baseFilename, double& totalKEnergy, double& calcTemp, double& volume, double& density, int& step) {
+    // Open file in append mode if step > 0, otherwise create a new file
+
+    string filename = "EnsembleReport" + baseFilename;
+    ios_base::openmode fileMode = (step == 0) ? (ios::out) : (ios::out | ios::app);
+    ofstream outputFile(filename, fileMode);
+
+    // Check if the file opened successfully
+    if (!outputFile.is_open()) {
+        cerr << "Unable to open the file: " << filename << endl;
+        return;
     }
 
-    outputFile << "ENDMDL" << endl;
+    // Write header if this is the first step
+    if (step == 0) {
+        outputFile << "#Step,Kinetic Energy (kJ/mole),Temperature (K),Box Volume (nm^3),Density (g/mL)\n";
+    }
+
+    // Append data for the current step
+    outputFile << step << ",  "
+        << fixed << setprecision(6) << totalKEnergy << ",  "
+        << fixed << setprecision(6) << calcTemp << ",  "
+        << fixed << setprecision(6) << volume << ",  "
+        << fixed << setprecision(6) << density << "  \n";
+
+    // Close file
     outputFile.close();
 }

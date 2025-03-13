@@ -8,10 +8,10 @@
 #include <fstream>
 #include <iostream>
 #include "Coords3D.h"
-#include <optional>
 #include <iomanip>
 #include <cctype>
 #include <algorithm>
+#include <optional>
 #include "DataStructures.h"
 //#include <unordered_set>
 
@@ -30,7 +30,13 @@ struct PDBAtomInfo {
 };
 
 
-// Unified host Residue Struct for storing residue information of Protein, water, ...
+struct Molecules {
+    std::vector<int> AllAtomsIndices; // List of atom indices
+    std::string type; // Polymer (protein) and Non-polymer (ligand, water) 
+};
+
+
+// Unified host Residue Struct for storing residue information of polymer and non-polymer 
 struct Residues {
     std::vector<int> AllAtomsIndices; // List of atom indices
     std::string resName;
@@ -43,7 +49,7 @@ struct Residues {
     std::optional<std::vector<int>> NonResBondAtoms; // List of all atoms in bonds that not belong to the current residue
     std::optional<std::vector<int>> AngleIndices;
     std::optional<std::vector<int>> TorsionIndices;
-    int resMemSize = 0; // residue memory size
+    int resMemSize = 0; // Residue memory size
 };
 
 
@@ -72,7 +78,7 @@ class PDBResidueParser {
 public:
     PDBResidueParser();
     ~PDBResidueParser();
-    void parseFile(const std::string& filename, std::vector<Residues>& Residues);
+    void parseFile(const std::string& filename, std::vector<Residues>& Residues, std::vector<Molecules>& molecules);
     //const std::vector<PResidues>& getResidues() const { return residues; }
     //const std::vector<Connection>& getConnections() const { return connections; }
     //const std::vector<wResidues>& getWaters() const { return wResidues; }

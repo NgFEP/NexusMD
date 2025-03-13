@@ -18,7 +18,8 @@ public:
             : lb(lower), ub(upper), boxSize(std::abs(upper[0] - lower[0]), std::abs(upper[1] - lower[1]), std::abs(upper[2] - lower[2])) {}
     };
         
-    static void extractBoxBoundaries(const std::vector<Coords3D>& atomPositions, BoxInfo& boxInfo, const std::string& stateFilename);
+    //static void extractBoxBoundaries(const std::vector<Coords3D>& atomPositions, BoxInfo& boxInfo, const std::string& stateFilename);
+    static void extractBoxBoundaries(BoxInfo& boxInfo);
     static Coords3D minimumImageVector(const Coords3D& coords1, const Coords3D& coords2, const BoxInfo& boxInfo);
 
 };

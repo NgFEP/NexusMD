@@ -81,12 +81,12 @@ namespace Cuda {
         void InitializeSimulationParameters();
         bool _RealSimRun=false;
         int _numAtoms;
-        int _numAtomsBondLoaded;
         int _numBonds;
         int _numAngles;
         int _numTorsions;
         int _numNonbonded;
         int _numResidues;
+        int _numMolecules;
         //int _maxResidueSize;
         int _totalBondsInResidues = 0;
         int _totalMemoryOfResidues = 0;
@@ -106,6 +106,7 @@ namespace Cuda {
 
         // PDBResidueParser
         std::vector<Residues> _residues; 
+        std::vector<Molecules> _molecules;
         std::vector<CudaBonds> _cudaBonds;
         // ResidueForceMapper
         RemainedBonds _remainedBonds;

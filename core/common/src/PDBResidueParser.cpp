@@ -135,49 +135,78 @@ PDBAtomInfo PDBResidueParser::parsePDBLine(const std::string& line) {
 }
 
 
+
 // Main function to parse the PDB file
-void PDBResidueParser::parseFile(const string& filename, vector<Residues>& residues) {
+void PDBResidueParser::parseFile(const string& filename, vector<Residues>& residues, vector<Molecules>& molecules) {
     ifstream pdbFile(filename);
     string line;
     vector<int> atomIndices; // To store indices of atoms for the current residue
     string currentResName;
     int currentResSeq = -1;
 
+    Molecules molecule;
+    bool inMolecule = false; // Tracks parsing a molecule
+
     while (getline(pdbFile, line)) {
-        if (line.substr(0, 4) == "ATOM") {
+        if (line.substr(0, 4) == "ATOM" || line.substr(0, 6) == "HETATM") {
             PDBAtomInfo atom = parsePDBLine(line);
             atoms.push_back(atom);
 
-            // Check if the residue has changed
+            // Start a new molecule if needed
+            if (!inMolecule) {
+                molecule.type = (standardAminoAcids.count(atom.resName) > 0) ? "Polymer" : "NonPolymer";
+                inMolecule = true;
+            }
+
+
+            // Check if residue has changed
             if (currentResSeq != atom.resSeq || currentResName != atom.resName) {
-                // If there was a previous residue, process it
                 if (!atomIndices.empty()) {
                     processResidue(atomIndices, currentResName, residues);
+                    if (molecule.type== "NonPolymer") {
+                        molecules.push_back(molecule); // Save the completed molecule
+                        molecule.AllAtomsIndices.clear();
+                        inMolecule = false;
+                    }
                 }
-
-                // Start a new residue
-                atomIndices.clear(); // Clear the indices for the new residue
+                atomIndices.clear();
                 currentResName = atom.resName;
                 currentResSeq = atom.resSeq;
             }
 
-            // Add the atom index to the current residue's indices
+            // Store atom index in residue
             atomIndices.push_back(atom.atomNum - 1);
+            // Add atom index to current molecule
+            molecule.AllAtomsIndices.push_back(atom.atomNum - 1);
+        }
+
+
+
+
+        else if (line.substr(0, 3) == "TER") {
+            if (inMolecule) {
+                molecules.push_back(molecule); // Save the completed molecule
+                inMolecule = false;
+            }
         }
     }
 
-    // Final residue processing
+    // Final processing of last residue and molecule
     if (!atomIndices.empty()) {
         processResidue(atomIndices, currentResName, residues);
+    }
+    if (inMolecule) {
+        molecules.push_back(molecule);
     }
 
     pdbFile.close();
 }
 
 
+
 // Helper function to process each residue and identify connections
 void PDBResidueParser::processResidue(vector<int> atomIndices, string currentResName, vector<Residues>& residues) {
-    if (currentResName == "WAT") { // Process water molecules
+    if (currentResName == "WAT" || currentResName == "HOH") { // Process water molecules
         Residues wResidue;
         wResidue.resName = currentResName;
         wResidue.AllAtomsIndices = atomIndices;//atomNum starts from 1

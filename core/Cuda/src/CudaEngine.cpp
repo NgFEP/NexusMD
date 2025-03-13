@@ -111,15 +111,16 @@ void Engine::InitializeSimulationParameters() {
         _numAngles = _angleParams.size();
         _numTorsions = _torsionParams.size();
         _numNonbonded = _nonbondedParams.particles.size();
-
+        
         // create _atomsBondLoaded
         //_numAtomsBondLoaded = _atomsBondLoaded.size();
 
         PDBResidueParser pdbResidueParser;
-        pdbResidueParser.parseFile(_inputFilename,_residues);// extracting _residues
+        pdbResidueParser.parseFile(_inputFilename,_residues, _molecules);// extracting _residues
 
         _numResidues = _residues.size();
-     
+        _numMolecules = _molecules.size();
+
         //long startTime = clock();
         auto startTime = chrono::high_resolution_clock::now();
         ResidueForceMapper ResidueForceMapper;
@@ -376,8 +377,10 @@ void Engine::InitializeSimulationParameters() {
         // Handle test files case, if any
     }
 
-    // Extract box boundaries from atom positions
-    PeriodicBoundaryCondition::extractBoxBoundaries(_atomPositions, _boxInfo, _stateFilename);
+    // Extract box size and boundaries
+    _boxInfo.boxSize = StateXMLParser::extractBoxSize(_stateFilename);
+    PeriodicBoundaryCondition::extractBoxBoundaries(_boxInfo);
+
 
     *_boxSize_double3 = make_double3(_boxInfo.boxSize[0], _boxInfo.boxSize[1], _boxInfo.boxSize[2]);
     *_lb_double3 = make_double3(_boxInfo.lb[0], _boxInfo.lb[1], _boxInfo.lb[2]);

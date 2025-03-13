@@ -34,16 +34,6 @@ VerletIntegration::~VerletIntegration() {
 }
 
 
-void VerletIntegration::InverseMasses(vector<double>& masses, vector<double>& inverseMasses) {
-    // To initialize inverse masses only once to prevent overcomputation of inverseMasses for every steps
-    if (inverseMasses.empty()) {
-        inverseMasses.resize(masses.size());
-        for (int i = 0; i < masses.size(); ++i) {
-            inverseMasses[i] = (masses[i] == 0.0) ? 0.0 : 1.0 / masses[i];
-        }
-    }
-}
-
 
 //modified version Nexus modified with cuda openmm method
 void VerletIntegration::Advance(vector<Coords3D>& atomPositions, vector<Coords3D>& velocities, vector<Coords3D>& totalForces, vector<double>& inverseMasses, int& StepNum, const vector<double>& dt, const PeriodicBoundaryCondition::BoxInfo& boxInfo) {
